@@ -3,7 +3,10 @@
 Instructions for automatically accepting webcam & mic permissions:
 https://testingbot.com/support/selenium/permission-popups
 
-These are actually using a fake video stream, that won't work for the purpose.
+Another set of instructions for faking webcam & mic stream:
+https://webrtc.github.io/webrtc-org/testing/
+
+These are actually using a fake video stream, which won't be sufficient alone for testing the functionality (but can be a helpful starting point).
 
 ## Chromium flags
 
