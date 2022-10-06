@@ -1,0 +1,5 @@
+id: kivu-full
+unit: test plan
+_name: Kivu - Full
+include:
+    com.canonical.certification::kivu.*
