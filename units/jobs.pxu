@@ -1,3 +1,67 @@
+id: kivu/gstreamer_h264_encoding
+category_id: kivu
+plugin: shell
+user: root
+_summary: Generate json GPU usage file when encoding a H264 video using gstreamer
+requires:
+  executable.name == "gst-launch-1.0"
+  executable.name == "intel_gpu_top"
+command:
+  timeout 10 gst-launch-1.0 videotestsrc ! video/x-raw,width=3840,height=2160 ! vaapih264enc ! fakesink &
+  timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_encoding_intel_gpu_top.json
+  if [[ "$?" -eq 124 ]]
+  then
+      echo "Test finished"
+      exit 0
+  else
+      echo "Error"
+      exit 1
+  fi
+
+id: kivu/gstreamer_h264_decoding
+category_id: kivu
+plugin: shell
+user: root
+_summary: Generate json GPU usage file when decoding a H264 video using gstreamer
+requires:
+  executable.name == "gst-launch-1.0"
+  executable.name == "intel_gpu_top"
+command:
+  gst-launch-1.0 -v playbin uri=file://"${PLAINBOX_PROVIDER_DATA}"/bbb_h264_2160p_60fps_extract.mp4 &
+  timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_decoding_intel_gpu_top.json
+  if [[ "$?" -eq 124 ]]
+  then
+      echo "Test finished"
+      exit 0
+  else
+      echo "Error"
+      exit 1
+  fi
+
+id: kivu/check_gstreamer_h264_encoding
+category_id: kivu
+flags: simple
+_summary: Check GPU is used when encoding a H264 video using gstreamer
+requires:
+  executable.name == "gst-launch-1.0"
+  executable.name == "intel_gpu_top"
+after:
+  kivu/gstreamer_h264_encoding
+command:
+  parse_intel_gpu_json.py "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_encoding_intel_gpu_top.json
+
+id: kivu/check_gstreamer_h264_decoding
+category_id: kivu
+flags: simple
+_summary: Check GPU is used when decoding a H264 video using gstreamer
+requires:
+  executable.name == "gst-launch-1.0"
+  executable.name == "intel_gpu_top"
+after:
+  kivu/gstreamer_h264_decoding
+command:
+  parse_intel_gpu_json.py "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_decoding_intel_gpu_top.json
+
 id: kivu/chromium_capture_logs_h264_video
 category_id: kivu
 flags: simple
