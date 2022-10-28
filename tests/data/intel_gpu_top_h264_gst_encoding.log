@@ -1,0 +1,281 @@
+
+{
+	"period": {
+		"duration": 0.003880,
+		"unit": "ms"
+	},
+	"frequency": {
+		"requested": 0.000000,
+		"actual": 0.000000,
+		"unit": "MHz"
+	},
+	"interrupts": {
+		"count": 0.000000,
+		"unit": "irq/s"
+	},
+	"rc6": {
+		"value": 0.000000,
+		"unit": "%"
+	},
+	"power": {
+		"GPU": 0.000000,
+		"Package": 0.000000,
+		"unit": "W"
+	},
+	"engines": {
+		"Render/3D/0": {
+			"busy": 0.000000,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		},
+		"Blitter/0": {
+			"busy": 0.000000,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		},
+		"Video/0": {
+			"busy": 0.000000,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		},
+		"Video/1": {
+			"busy": 0.000000,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		},
+		"VideoEnhance/0": {
+			"busy": 0.000000,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		}
+	}
+},
+{
+	"period": {
+		"duration": 1000.198153,
+		"unit": "ms"
+	},
+	"frequency": {
+		"requested": 502.900349,
+		"actual": 486.903519,
+		"unit": "MHz"
+	},
+	"interrupts": {
+		"count": 1386.725216,
+		"unit": "irq/s"
+	},
+	"rc6": {
+		"value": 3.760023,
+		"unit": "%"
+	},
+	"power": {
+		"GPU": 0.686326,
+		"Package": 10.536181,
+		"unit": "W"
+	},
+	"engines": {
+		"Render/3D/0": {
+			"busy": 36.677750,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		},
+		"Blitter/0": {
+			"busy": 0.000000,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		},
+		"Video/0": {
+			"busy": 43.773392,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		},
+		"Video/1": {
+			"busy": 0.000000,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		},
+		"VideoEnhance/0": {
+			"busy": 0.000000,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		}
+	}
+},
+{
+	"period": {
+		"duration": 1000.162392,
+		"unit": "ms"
+	},
+	"frequency": {
+		"requested": 516.916057,
+		"actual": 499.918817,
+		"unit": "MHz"
+	},
+	"interrupts": {
+		"count": 1386.774799,
+		"unit": "irq/s"
+	},
+	"rc6": {
+		"value": 3.758622,
+		"unit": "%"
+	},
+	"power": {
+		"GPU": 0.685436,
+		"Package": 10.443006,
+		"unit": "W"
+	},
+	"engines": {
+		"Render/3D/0": {
+			"busy": 38.245584,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		},
+		"Blitter/0": {
+			"busy": 0.000000,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		},
+		"Video/0": {
+			"busy": 45.175584,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		},
+		"Video/1": {
+			"busy": 0.000000,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		},
+		"VideoEnhance/0": {
+			"busy": 0.000000,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		}
+	}
+},
+{
+	"period": {
+		"duration": 1000.365594,
+		"unit": "ms"
+	},
+	"frequency": {
+		"requested": 508.813981,
+		"actual": 492.819828,
+		"unit": "MHz"
+	},
+	"interrupts": {
+		"count": 1383.494203,
+		"unit": "irq/s"
+	},
+	"rc6": {
+		"value": 3.734187,
+		"unit": "%"
+	},
+	"power": {
+		"GPU": 0.685723,
+		"Package": 10.477005,
+		"unit": "W"
+	},
+	"engines": {
+		"Render/3D/0": {
+			"busy": 35.760745,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		},
+		"Blitter/0": {
+			"busy": 0.000000,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		},
+		"Video/0": {
+			"busy": 44.666322,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		},
+		"Video/1": {
+			"busy": 0.000000,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		},
+		"VideoEnhance/0": {
+			"busy": 0.000000,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		}
+	}
+},
+{
+	"period": {
+		"duration": 1000.159331,
+		"unit": "ms"
+	},
+	"frequency": {
+		"requested": 499.920347,
+		"actual": 477.923852,
+		"unit": "MHz"
+	},
+	"interrupts": {
+		"count": 1390.778406,
+		"unit": "irq/s"
+	},
+	"rc6": {
+		"value": 3.539276,
+		"unit": "%"
+	},
+	"power": {
+		"GPU": 0.684583,
+		"Package": 10.452619,
+		"unit": "W"
+	},
+	"engines": {
+		"Render/3D/0": {
+			"busy": 34.264910,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		},
+		"Blitter/0": {
+			"busy": 0.000000,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		},
+		"Video/0": {
+			"busy": 45.729653,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		},
+		"Video/1": {
+			"busy": 0.000000,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		},
+		"VideoEnhance/0": {
+			"busy": 0.000000,
+			"sema": 0.000000,
+			"wait": 0.000000,
+			"unit": "%"
+		}
+	}
+}
