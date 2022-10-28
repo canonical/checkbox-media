@@ -1,3 +1,11 @@
+id: kivu/vainfo
+category_id: kivu
+plugin: attachment
+_summary: Attach content of vainfo
+requires: executable.name == "vainfo"
+command:
+  vainfo
+
 id: kivu/gstreamer_h264_encoding
 category_id: kivu
 plugin: shell
