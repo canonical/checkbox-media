@@ -1,0 +1,7 @@
+unit: packaging meta-data
+os-id: ubuntu
+Depends:
+ intel-gpu-tools,
+ gstreamer1.0-vaapi,
+ gstreamer1.0-tools,
+ vainfo,
