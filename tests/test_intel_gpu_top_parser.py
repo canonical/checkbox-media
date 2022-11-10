@@ -3,7 +3,7 @@
 import os
 import unittest
 
-import parse_intel_gpu_json
+import intel_gpu_top_parser
 
 logfile1 = os.path.join(
     os.path.dirname(os.path.realpath(__file__)),
@@ -19,13 +19,13 @@ logfile2 = os.path.join(
 
 class TestParseLog(unittest.TestCase):
     def test_parse_ok(self):
-        avg = parse_intel_gpu_json.parse(logfile1)
+        avg = intel_gpu_top_parser.parse(logfile1)
         self.assertEqual(avg, 35.8689902)
 
     def test_parse_no_gpu(self):
-        avg = parse_intel_gpu_json.parse(logfile2)
+        avg = intel_gpu_top_parser.parse(logfile2)
         self.assertEqual(avg, 0.0)
 
     def test_wrong_file(self):
         with self.assertRaises(FileNotFoundError):
-            parse_intel_gpu_json.parse("wrong_log_file.log")
+            intel_gpu_top_parser.parse("wrong_log_file.log")
