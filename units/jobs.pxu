@@ -10,7 +10,7 @@ id: kivu/gstreamer_h264_encoding
 category_id: kivu
 plugin: shell
 user: root
-_summary: Generate json GPU usage file when encoding a H264 video using gstreamer
+_summary: Encode H264 video with gstreamer and capture GPU usage
 requires:
   executable.name == "gst-launch-1.0"
   executable.name == "intel_gpu_top"
@@ -30,7 +30,7 @@ id: kivu/gstreamer_h264_decoding
 category_id: kivu
 plugin: shell
 user: root
-_summary: Generate json GPU usage file when decoding a H264 video using gstreamer
+_summary: Decode H264 video with gstreamer and capture GPU usage
 requires:
   executable.name == "gst-launch-1.0"
   executable.name == "intel_gpu_top"
@@ -50,25 +50,19 @@ id: kivu/check_gstreamer_h264_encoding
 category_id: kivu
 flags: simple
 _summary: Check GPU is used when encoding a H264 video using gstreamer
-requires:
-  executable.name == "gst-launch-1.0"
-  executable.name == "intel_gpu_top"
-after:
+depends:
   kivu/gstreamer_h264_encoding
 command:
-  parse_intel_gpu_json.py "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_encoding_intel_gpu_top.json
+  parse_intel_gpu_top_json.py "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_encoding_intel_gpu_top.json
 
 id: kivu/check_gstreamer_h264_decoding
 category_id: kivu
 flags: simple
 _summary: Check GPU is used when decoding a H264 video using gstreamer
-requires:
-  executable.name == "gst-launch-1.0"
-  executable.name == "intel_gpu_top"
-after:
+depends:
   kivu/gstreamer_h264_decoding
 command:
-  parse_intel_gpu_json.py "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_decoding_intel_gpu_top.json
+  parse_intel_gpu_top_json.py "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_decoding_intel_gpu_top.json
 
 id: kivu/chromium_capture_logs_h264_video
 category_id: kivu
