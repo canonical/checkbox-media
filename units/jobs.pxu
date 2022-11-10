@@ -124,24 +124,40 @@ command:
       exit 1
   fi
 
-id: kivu/check_cpu_usage_logs_h264_video
-category_id: kivu
-flags: simple
-depends:
-  kivu/chromium_capture_logs_h264_video
-  kivu/check_chromium_hw_decoder
-_summary: Compare average CPU usage with/without hardware acceleration (H264 video)
-command:
-  parse_pidstat_logs.py "${PLAINBOX_SESSION_SHARE}"/chromium_h264_video_vaapi_disabled_pidstat.log "${PLAINBOX_SESSION_SHARE}"/chromium_h264_video_vaapi_enabled_pidstat.log
-
-id: kivu/cpu_usage_attachment_h264_video.json
-category_id: kivu
-depends:
-  kivu/chromium_capture_logs_h264_video
-  kivu/check_chromium_hw_decoder
-plugin: attachment
-command:
-  parse_pidstat_logs.py --json "${PLAINBOX_SESSION_SHARE}"/chromium_h264_video_vaapi_disabled_pidstat.log "${PLAINBOX_SESSION_SHARE}"/chromium_h264_video_vaapi_enabled_pidstat.log
+#id: kivu/chromium_capture_logs_webrtc_broadcast
+#category_id: kivu
+#flags: simple
+#command:
+#  timeout 30 chromium --start-fullscreen --enable-logging=stderr 2>&1 http://localhost:4000/ | tee "${PLAINBOX_SESSION_SHARE}"/chromium_webrtc_broadcast_vaapi_enabled.log &
+#  sleep 1 &
+#  pidstat 30 1 -uhlH -G .*chrom.* > "${PLAINBOX_SESSION_SHARE}"/chromium_webrtc_broadcast_vaapi_enabled_pidstat.log
+#
+#id: kivu/chromium_capture_logs_webrtc_broadcast_vaapi_disabled
+#category_id: kivu
+#flags: simple
+#command:
+#  timeout 30 chromium --start-fullscreen --disable-features=VaapiVideoDecoder --enable-logging=stderr 2>&1 http://localhost:4000/ | tee "${PLAINBOX_SESSION_SHARE}"/chromium_webrtc_broadcast_vaapi_disabled.log &
+#  sleep 1 &
+#  pidstat 30 1 -uhlH -G .*chrom.* > "${PLAINBOX_SESSION_SHARE}"/chromium_webrtc_broadcast_vaapi_disabled_pidstat.log
+#
+#id: kivu/check_cpu_usage_logs_webrtc_broadcast
+#category_id: kivu
+#flags: simple
+#_summary: Compare average CPU usage with/without hardware acceleration (WebRTC broadcast)
+#depends:
+#  kivu/chromium_capture_logs_webrtc_broadcast
+#  kivu/chromium_capture_logs_webrtc_broadcast_vaapi_disabled
+#command:
+#  parse_pidstat_logs.py "${PLAINBOX_SESSION_SHARE}"/chromium_webrtc_broadcast_vaapi_disabled_pidstat.log "${PLAINBOX_SESSION_SHARE}"/chromium_webrtc_broadcast_vaapi_enabled_pidstat.log
+#
+#id: kivu/cpu_usage_attachment_webrtc_broadcast.json
+#category_id: kivu
+#plugin: attachment
+#depends:
+#  kivu/chromium_capture_logs_webrtc_broadcast
+#  kivu/chromium_capture_logs_webrtc_broadcast_vaapi_disabled
+#command:
+#  parse_pidstat_logs.py --json "${PLAINBOX_SESSION_SHARE}"/chromium_webrtc_broadcast_vaapi_disabled_pidstat.log "${PLAINBOX_SESSION_SHARE}"/chromium_webrtc_broadcast_vaapi_enabled_pidstat.log
 
 id: kivu/check_chromium_logs_h264
 category_id: kivu
