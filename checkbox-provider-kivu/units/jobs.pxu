@@ -201,7 +201,8 @@ command:
 id: kivu/check_chromium_h264_decoding
 category_id: kivu
 flags: simple
-_summary: Compare average GPU usage with/without hardware acceleration (H264 video decoding on Chromium)
+_summary: Check average GPU usage (H264 video decoding on Chromium)
+_description: Compare average GPU usage with/without hardware acceleration (H264 video decoding on Chromium)
 depends:
   kivu/chromium_h264_decoding
   kivu/chromium_h264_decoding_vaapi_disabled
@@ -221,7 +222,8 @@ command:
 id: kivu/check_chromium_h264_encoding
 category_id: kivu
 flags: simple
-_summary: Compare average GPU usage with/without hardware acceleration (H264 video encoding on Chromium)
+_summary: Check GPU usage (H264 video encoding on Chromium)
+_description: Compare average GPU usage with/without hardware acceleration (H264 video encoding on Chromium)
 depends:
   kivu/chromium_h264_encoding
   kivu/chromium_h264_encoding_vaapi_disabled
