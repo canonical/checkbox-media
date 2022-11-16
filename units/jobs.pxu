@@ -64,7 +64,7 @@ depends:
 command:
   parse_intel_gpu_top_json.py "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_decoding_intel_gpu_top.json
 
-id: kivu/chromium_capture_logs_h264_video
+id: kivu/chromium_h264_decoding
 category_id: kivu
 flags: simple
 user: root
@@ -74,9 +74,32 @@ requires:
   snap.name == "chromium"
 command:
   # Play fullscreen looping video in Chromium
-  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 30 chromium --start-fullscreen --enable-logging=stderr 2>&1 "${PLAINBOX_PROVIDER_DATA}"/h264-video.html | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_video_vaapi_enabled.log &
+  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 30 chromium --start-fullscreen --enable-logging=stderr 2>&1 "${PLAINBOX_PROVIDER_DATA}"/h264-video.html | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_enabled.log &
   # Gather GPU logs (JSON pseudo-format)
-  timeout 30 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_video_vaapi_enabled_intel_gpu_top.json
+  timeout 30 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_enabled_intel_gpu_top.json
+  if [[ "$?" -eq 124 ]]
+  then
+      echo "Test finished"
+      exit 0
+  else
+      echo "Error"
+      exit 1
+  fi
+
+id: kivu/chromium_h264_decoding_vaapi_disabled
+category_id: kivu
+flags: simple
+user: root
+_summary: Play H264 video using Chromium (VAAPI disabled) and capture GPU usage
+requires:
+  executable.name == "intel_gpu_top"
+  snap.name == "chromium"
+command:
+  # Play fullscreen looping video in Chromium
+  # (HW decoder feature disabled)
+  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 30 chromium --start-fullscreen --disable-features=VaapiVideoDecoder --enable-logging=stderr 2>&1 "${PLAINBOX_PROVIDER_DATA}"/h264-video.html | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_disabled.log &
+  # Gather GPU logs (JSON pseudo-format)
+  timeout 30 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_disabled_intel_gpu_top.json
   if [[ "$?" -eq 124 ]]
   then
       echo "Test finished"
@@ -91,24 +114,46 @@ category_id: kivu
 flags: simple
 _summary: Make sure video was played in Chromium using a hardware decoder
 depends:
-  kivu/chromium_capture_logs_h264_video
+  kivu/chromium_h264_decoding
 command:
-  parse_chromium_logs.py "${PLAINBOX_SESSION_SHARE}"/chromium_h264_video_vaapi_enabled.log
+  parse_chromium_logs.py "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_enabled.log
 
-id: kivu/chromium_capture_logs_h264_video_vaapi_disabled
+id: kivu/chromium_h264_encoding
 category_id: kivu
 flags: simple
 user: root
-_summary: Play H264 video using Chromium (VAAPI disabled) and capture GPU usage
+_summary: Encode H264 stream from within Chromium (VAAPI enabled) and capture GPU usage
 requires:
   executable.name == "intel_gpu_top"
   snap.name == "chromium"
 command:
-  # Play fullscreen looping video in Chromium
-  # (HW decoder feature disabled)
-  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 30 chromium --start-fullscreen --disable-features=VaapiVideoDecoder --enable-logging=stderr 2>&1 "${PLAINBOX_PROVIDER_DATA}"/h264-video.html | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_video_vaapi_disabled.log &
+  # Open video encoding page in Chromium
+  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 10 chromium --start-fullscreen --enable-logging=stderr 2>&1 file://"${PLAINBOX_PROVIDER_DATA}"/video-encoding.html?encoding=h264 | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_enabled.log &
   # Gather GPU logs (JSON pseudo-format)
-  timeout 30 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_video_vaapi_disabled_intel_gpu_top.json
+  timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_enabled_intel_gpu_top.json
+  if [[ "$?" -eq 124 ]]
+  then
+      echo "Test finished"
+      exit 0
+  else
+      echo "Error"
+      exit 1
+  fi
+
+id: kivu/chromium_h264_encoding_vaapi_disabled
+category_id: kivu
+flags: simple
+user: root
+_summary: Encode H264 stream from within Chromium (VAAPI disabled) and capture GPU usage
+requires:
+  executable.name == "intel_gpu_top"
+  snap.name == "chromium"
+command:
+  # Open video encoding page in Chromium
+  # (HW decoder feature disabled)
+  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 10 chromium --start-fullscreen --disable-features=VaapiVideoEncoder --enable-logging=stderr 2>&1 file://"${PLAINBOX_PROVIDER_DATA}"/video-encoding.html?encoding=h264 | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_disabled.log &
+  # Gather GPU logs (JSON pseudo-format)
+  timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_disabled_intel_gpu_top.json
   if [[ "$?" -eq 124 ]]
   then
       echo "Test finished"
@@ -153,23 +198,43 @@ command:
 #command:
 #  parse_pidstat_logs.py --json "${PLAINBOX_SESSION_SHARE}"/chromium_webrtc_broadcast_vaapi_disabled_pidstat.log "${PLAINBOX_SESSION_SHARE}"/chromium_webrtc_broadcast_vaapi_enabled_pidstat.log
 
-id: kivu/check_chromium_logs_h264
+id: kivu/check_chromium_h264_decoding
 category_id: kivu
 flags: simple
-_summary: Compare average GPU usage with/without hardware acceleration (H264 video on Chromium)
+_summary: Compare average GPU usage with/without hardware acceleration (H264 video decoding on Chromium)
 depends:
-  kivu/chromium_capture_logs_h264_video
-  kivu/chromium_capture_logs_h264_video_vaapi_disabled
+  kivu/chromium_h264_decoding
+  kivu/chromium_h264_decoding_vaapi_disabled
 command:
-  compare_intel_gpu_top_json.py "${PLAINBOX_SESSION_SHARE}"/chromium_h264_video_vaapi_enabled_intel_gpu_top.json "${PLAINBOX_SESSION_SHARE}"/chromium_h264_video_vaapi_disabled_intel_gpu_top.json
+  compare_intel_gpu_top_json.py "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_enabled_intel_gpu_top.json "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_disabled_intel_gpu_top.json
 
-id: kivu/gpu_usage_attachment_chromium_h264_video.json
+id: kivu/gpu_usage_attachment_chromium_h264_decoding.json
 category_id: kivu
 _summary: Attach GPU usage info (H264 video on Chromium)
 plugin: attachment
 depends:
-  kivu/chromium_capture_logs_h264_video
-  kivu/chromium_capture_logs_h264_video_vaapi_disabled
+  kivu/chromium_h264_decoding
+  kivu/chromium_h264_decoding_vaapi_disabled
 command:
-  compare_intel_gpu_top_json.py --json "${PLAINBOX_SESSION_SHARE}"/chromium_h264_video_vaapi_enabled_intel_gpu_top.json "${PLAINBOX_SESSION_SHARE}"/chromium_h264_video_vaapi_disabled_intel_gpu_top.json
+  compare_intel_gpu_top_json.py --json "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_enabled_intel_gpu_top.json "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_disabled_intel_gpu_top.json
+
+id: kivu/check_chromium_h264_encoding
+category_id: kivu
+flags: simple
+_summary: Compare average GPU usage with/without hardware acceleration (H264 video encoding on Chromium)
+depends:
+  kivu/chromium_h264_encoding
+  kivu/chromium_h264_encoding_vaapi_disabled
+command:
+  compare_intel_gpu_top_json.py "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_enabled_intel_gpu_top.json "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_disabled_intel_gpu_top.json
+
+id: kivu/gpu_usage_attachment_chromium_h264_encoding.json
+category_id: kivu
+_summary: Attach GPU usage info (H264 video on Chromium)
+plugin: attachment
+depends:
+  kivu/chromium_h264_encoding
+  kivu/chromium_h264_encoding_vaapi_disabled
+command:
+  compare_intel_gpu_top_json.py --json "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_enabled_intel_gpu_top.json "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_disabled_intel_gpu_top.json
 
