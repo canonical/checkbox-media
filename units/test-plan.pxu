@@ -1,5 +1,10 @@
 id: kivu-full
 unit: test plan
-_name: Kivu - Full
+_name: Kivu (Full Tests)
 include:
-    com.canonical.certification::kivu.*
+    kivu/.*
+mandatory_include:
+    com.canonical.certification::miscellanea/submission-resources
+bootstrap_include:
+    com.canonical.certification::executable
+    com.canonical.certification::snap
