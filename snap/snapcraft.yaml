@@ -1,0 +1,61 @@
+name: checkbox-kivu-classic
+summary: Checkbox tests for the kivu classic project
+description: |
+  Collection of tests to be run on devices that are part of the kivu project
+version: '0.1dev'
+confinement: classic
+grade: stable
+
+base: core22
+
+apps:
+  checkbox-cli:
+    command-chain: [bin/wrapper_local]
+    command: bin/checkbox-cli-wrapper
+  configure:
+    command-chain: [bin/wrapper_local]
+    command: bin/configure
+  remote-slave:
+    command-chain: [bin/wrapper_local]
+    command: bin/checkbox-cli-wrapper slave
+    daemon: simple
+    restart-condition: on-failure
+  shell:
+    command-chain: [bin/wrapper_local]
+    command: bin/shell-wrapper
+  test-runner:
+    command-chain: [bin/wrapper_local]
+    command: bin/test-runner
+
+passthrough:
+  hooks:
+    configure:
+      command-chain: [bin/wrapper_local]
+
+parts:
+  checkbox-provider-kivu:
+    plugin: dump
+    source: ./checkbox-provider-kivu
+    source-type: local
+    stage-packages:
+      - intel-gpu-tools
+      - gstreamer1.0-vaapi
+      - gstreamer1.0-tools
+      - vainfo
+    #build-attributes: [no-patchelf]    # This workaround is not required for series older than jammy
+    override-build: |
+      export PYTHONPATH=$SNAPCRAFT_STAGE/lib/python3.10/site-packages:$SNAPCRAFT_STAGE/usr/lib/python3/dist-packages
+      #for path in $(find "$SNAPCRAFT_STAGE/providers/" -mindepth 1 -maxdepth 1 -type d); do export PROVIDERPATH=$path${PROVIDERPATH:+:$PROVIDERPATH}; done
+      python3 manage.py validate
+      python3 manage.py build
+      python3 manage.py install --layout=relocatable --prefix=/providers/checkbox-provider-kivu --root="$SNAPCRAFT_PART_INSTALL"
+  launchers:
+    plugin: dump
+    source: launchers/
+    #build-attributes: [no-patchelf]    # This workaround is not required for series older than jammy
+    organize:
+      '*': bin/
+  config-variables:
+    plugin: dump
+    source: config/
+    #build-attributes: [no-patchelf]    # This workaround is not required for series older than jammy
