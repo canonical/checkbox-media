@@ -37,25 +37,21 @@ parts:
     plugin: dump
     source: ./checkbox-provider-kivu
     source-type: local
-    stage-packages:
-      - intel-gpu-tools
-      - gstreamer1.0-vaapi
-      - gstreamer1.0-tools
-      - vainfo
-    #build-attributes: [no-patchelf]    # This workaround is not required for series older than jammy
+    build-snaps:
+      - checkbox-provider-tools
+      - checkbox22
     override-build: |
       export PYTHONPATH=$SNAPCRAFT_STAGE/lib/python3.10/site-packages:$SNAPCRAFT_STAGE/usr/lib/python3/dist-packages
-      #for path in $(find "$SNAPCRAFT_STAGE/providers/" -mindepth 1 -maxdepth 1 -type d); do export PROVIDERPATH=$path${PROVIDERPATH:+:$PROVIDERPATH}; done
-      python3 manage.py validate
-      python3 manage.py build
-      python3 manage.py install --layout=relocatable --prefix=/providers/checkbox-provider-kivu --root="$SNAPCRAFT_PART_INSTALL"
+      for path in $(find "/snap/checkbox22/current/providers/" -mindepth 1 -maxdepth 1 -type d); do export PROVIDERPATH=$path${PROVIDERPATH:+:$PROVIDERPATH}; done
+      checkbox-provider-tools validate
+      checkbox-provider-tools build
+      checkbox-provider-tools install --layout=relocatable --prefix=/providers/checkbox-provider-kivu --root="$SNAPCRAFT_PART_INSTALL"
   launchers:
     plugin: dump
     source: launchers/
-    #build-attributes: [no-patchelf]    # This workaround is not required for series older than jammy
     organize:
       '*': bin/
   config-variables:
     plugin: dump
     source: config/
-    #build-attributes: [no-patchelf]    # This workaround is not required for series older than jammy
+
