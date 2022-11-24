@@ -66,17 +66,42 @@ depends:
 command:
   parse_intel_gpu_top_json.py "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_decoding_intel_gpu_top.json
 
+id: kivu/prepare-test-data
+category_id: kivu
+flags: simple
+_summary: Prepare test data for Chromium-related tests
+command:
+  # Chromium is a snap, and its confinment rules prevent it from accessing data
+  # from another snap. Checkbox data files need to be copied to the user's home
+  mkdir -p ${HOME}/checkbox-test-data
+  cp "${PLAINBOX_PROVIDER_DATA}"/* ${HOME}/checkbox-test-data/
+
+id: kivu/cleanup-test-data
+category_id: kivu
+flags: simple
+_summary: Remove test data for Chromium-related tests
+command:
+  rm -rf ${HOME}/checkbox-test-data
+after:
+  kivu/chromium_h264_decoding
+  kivu/chromium_h264_decoding_vaapi_disabled
+  kivu/chromium_h264_encoding
+  kivu/chromium_h264_encoding_vaapi_disabled
+
+
 id: kivu/chromium_h264_decoding
 category_id: kivu
 flags: simple
 user: root
 _summary: Play H264 video using Chromium (VAAPI enabled) and capture GPU usage
+depends:
+  kivu/prepare-test-data
 requires:
   executable.name == "intel_gpu_top"
   snap.name == "chromium"
 command:
   # Play fullscreen looping video in Chromium
-  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 30 chromium --start-fullscreen --enable-logging=stderr 2>&1 "${PLAINBOX_PROVIDER_DATA}"/h264-video.html | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_enabled.log &
+  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 30 chromium --start-fullscreen --enable-logging=stderr 2>&1 /home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_enabled.log &
   # Gather GPU logs (JSON pseudo-format)
   timeout 30 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_enabled_intel_gpu_top.json
   if [[ "$?" -eq 124 ]]
@@ -93,13 +118,15 @@ category_id: kivu
 flags: simple
 user: root
 _summary: Play H264 video using Chromium (VAAPI disabled) and capture GPU usage
+depends:
+  kivu/prepare-test-data
 requires:
   executable.name == "intel_gpu_top"
   snap.name == "chromium"
 command:
   # Play fullscreen looping video in Chromium
   # (HW decoder feature disabled)
-  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 30 chromium --start-fullscreen --disable-features=VaapiVideoDecoder --enable-logging=stderr 2>&1 "${PLAINBOX_PROVIDER_DATA}"/h264-video.html | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_disabled.log &
+  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 30 chromium --start-fullscreen --disable-features=VaapiVideoDecoder --enable-logging=stderr 2>&1 /home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_disabled.log &
   # Gather GPU logs (JSON pseudo-format)
   timeout 30 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_disabled_intel_gpu_top.json
   if [[ "$?" -eq 124 ]]
@@ -125,12 +152,14 @@ category_id: kivu
 flags: simple
 user: root
 _summary: Encode H264 stream from within Chromium (VAAPI enabled) and capture GPU usage
+depends:
+  kivu/prepare-test-data
 requires:
   executable.name == "intel_gpu_top"
   snap.name == "chromium"
 command:
   # Open video encoding page in Chromium
-  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 10 chromium --start-fullscreen --enable-logging=stderr 2>&1 file://"${PLAINBOX_PROVIDER_DATA}"/video-encoding.html?encoding=h264 | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_enabled.log &
+  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 10 chromium --start-fullscreen --enable-logging=stderr 2>&1 file:///home/"${NORMAL_USER}"/checkbox-test-data/video-encoding.html?encoding=h264 | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_enabled.log &
   # Gather GPU logs (JSON pseudo-format)
   timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_enabled_intel_gpu_top.json
   if [[ "$?" -eq 124 ]]
@@ -147,13 +176,15 @@ category_id: kivu
 flags: simple
 user: root
 _summary: Encode H264 stream from within Chromium (VAAPI disabled) and capture GPU usage
+depends:
+  kivu/prepare-test-data
 requires:
   executable.name == "intel_gpu_top"
   snap.name == "chromium"
 command:
   # Open video encoding page in Chromium
   # (HW decoder feature disabled)
-  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 10 chromium --start-fullscreen --disable-features=VaapiVideoEncoder --enable-logging=stderr 2>&1 file://"${PLAINBOX_PROVIDER_DATA}"/video-encoding.html?encoding=h264 | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_disabled.log &
+  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 10 chromium --start-fullscreen --disable-features=VaapiVideoEncoder --enable-logging=stderr 2>&1 file:///home/"${NORMAL_USER}"/checkbox-test-data/video-encoding.html?encoding=h264 | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_disabled.log &
   # Gather GPU logs (JSON pseudo-format)
   timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_disabled_intel_gpu_top.json
   if [[ "$?" -eq 124 ]]
