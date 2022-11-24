@@ -14,8 +14,9 @@ _summary: Encode H264 video with gstreamer and capture GPU usage
 requires:
   executable.name == "gst-launch-1.0"
   executable.name == "intel_gpu_top"
+environ: GST_PLUGIN
 command:
-  timeout 10 gst-launch-1.0 videotestsrc ! video/x-raw,width=3840,height=2160 ! vaapih264enc ! fakesink &
+  timeout 10 gst-launch-1.0 --gst-plugin-path="${GST_PLUGIN}" videotestsrc ! video/x-raw,width=3840,height=2160 ! vaapih264enc ! fakesink &
   timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_encoding_intel_gpu_top.json
   if [[ "$?" -eq 124 ]]
   then
@@ -34,8 +35,9 @@ _summary: Decode H264 video with gstreamer and capture GPU usage
 requires:
   executable.name == "gst-launch-1.0"
   executable.name == "intel_gpu_top"
+environ: GST_PLUGIN_PATH
 command:
-  gst-launch-1.0 -v playbin uri=file://"${PLAINBOX_PROVIDER_DATA}"/bbb_h264_2160p_60fps_extract.mp4 &
+  gst-launch-1.0 --gst-plugin-path="${GST_PLUGIN}" -v playbin uri=file://"${PLAINBOX_PROVIDER_DATA}"/bbb_h264_2160p_60fps_extract.mp4 &
   timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_decoding_intel_gpu_top.json
   if [[ "$?" -eq 124 ]]
   then

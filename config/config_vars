@@ -30,3 +30,4 @@ WWAN_SETUPTIME=30
 TPM2TOOLS_TCTI_NAME=device
 TPM2TOOLS_DEVICE_FILE=/dev/tpm0
 STORE_ID=foobar
+GST_PLUGIN=/usr/lib/x86_64-linux-gnu/gstreamer-1.0/
