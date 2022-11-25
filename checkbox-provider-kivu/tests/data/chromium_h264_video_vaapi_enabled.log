@@ -1,0 +1,26 @@
+[55408:55408:1003/142714.201669:WARNING:wayland_object.cc(106)] Binding to gtk_shell1 version 4 but version 5 is available.
+[55408:55408:1003/142714.201703:WARNING:wayland_object.cc(106)] Binding to zwp_pointer_gestures_v1 version 1 but version 3 is available.
+[55408:55408:1003/142714.201718:WARNING:wayland_object.cc(106)] Binding to zwp_linux_dmabuf_v1 version 3 but version 4 is available.
+[55408:55408:1003/142714.351204:WARNING:account_consistency_mode_manager.cc(70)] Desktop Identity Consistency cannot be enabled as no OAuth client ID and client secret have been configured.
+[55533:55533:1003/142714.370753:ERROR:gpu_init.cc(486)] Passthrough is not supported, GL is egl, ANGLE is 
+[55533:55533:1003/142714.373161:WARNING:sandbox_linux.cc(376)] InitializeSandbox() called with multiple threads in process gpu-process.
+[55408:55408:1003/142714.375801:WARNING:wayland_surface.cc(130)] Server doesn't support zcr_alpha_compositing_v1.
+[55408:55408:1003/142714.375819:WARNING:wayland_surface.cc(141)] Server doesn't support overlay_prioritizer.
+[55408:55408:1003/142714.375824:WARNING:wayland_surface.cc(151)] Server doesn't support surface_augmenter.
+[55408:55408:1003/142714.375833:WARNING:wayland_surface.cc(130)] Server doesn't support zcr_alpha_compositing_v1.
+[55408:55408:1003/142714.375838:WARNING:wayland_surface.cc(141)] Server doesn't support overlay_prioritizer.
+[55408:55408:1003/142714.375841:WARNING:wayland_surface.cc(151)] Server doesn't support surface_augmenter.
+[55408:55408:1003/142714.376002:WARNING:cursor_loader.cc(119)] Failed to load a platform cursor of type kNull
+[55408:55408:1003/142714.418347:WARNING:wayland_surface.cc(130)] Server doesn't support zcr_alpha_compositing_v1.
+[55408:55408:1003/142714.418367:WARNING:wayland_surface.cc(141)] Server doesn't support overlay_prioritizer.
+[55408:55408:1003/142714.418371:WARNING:wayland_surface.cc(151)] Server doesn't support surface_augmenter.
+[55408:55408:1003/142714.418380:WARNING:wayland_surface.cc(130)] Server doesn't support zcr_alpha_compositing_v1.
+[55408:55408:1003/142714.418384:WARNING:wayland_surface.cc(141)] Server doesn't support overlay_prioritizer.
+[55408:55408:1003/142714.418387:WARNING:wayland_surface.cc(151)] Server doesn't support surface_augmenter.
+[55408:55408:1003/142714.420259:WARNING:bluez_dbus_manager.cc(247)] Floss manager not present, cannot set Floss enable/disable.
+WARNING: Kernel has no file descriptor comparison support: Operation not permitted
+[55571:14:1003/142714.551946:INFO:decoder.cc(41)] DecryptingVideoDecoder
+[55533:55753:1003/142714.553037:INFO:decoder.cc(65)] VDAVideoDecoder
+[55571:14:1003/142714.554542:INFO:decoder.cc(65)] VDAVideoDecoder
+[55571:14:1003/142714.554633:INFO:decoder.cc(65)] VDAVideoDecoder
+[55408:55527:1003/142716.534698:ERROR:udev_watcher.cc(98)] Failed to begin udev enumeration.

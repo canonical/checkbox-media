@@ -1,0 +1,19 @@
+#!/usr/bin/env checkbox-cli-wrapper
+[launcher]
+app_id = com.canonical.qa.kivu:checkbox
+launcher_version = 1
+stock_reports = text, submission_files
+
+[test plan]
+unit = com.certification.canonical::kivu-full
+forced = yes
+
+[test selection]
+forced = yes
+
+[ui]
+type = silent
+auto_retry = no
+max_attempts = 4
+delay_before_retry = 30
+
