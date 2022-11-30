@@ -48,6 +48,7 @@ jobs:
         name: Verify checkbox-kivu-classic snap
         run: |
           # Make sure it is installable.
+          sudo snap install checkbox22
           sudo snap install --dangerous --classic ${{ steps.build.outputs.snap }}
 
       - if: needs.check-secret.outputs.snap-key == 'true'
