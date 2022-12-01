@@ -3,6 +3,14 @@ name: Do a snap build and push to store
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - '**.md' # Don't trigger if doc updated
+  pull_request:
+    types:
+      - closed
+    paths-ignore:
+      - '**.md' # Don't trigger if doc updated
+  workflow_dispatch: # Allow manual trigger
 
 jobs:
 
