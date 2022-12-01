@@ -5,7 +5,7 @@ launcher_version = 1
 stock_reports = text, submission_files
 
 [test plan]
-unit = com.certification.canonical::kivu-full
+unit = com.canonical.certification::kivu-full
 forced = yes
 
 [test selection]
