@@ -26,6 +26,9 @@ apps:
   test-runner:
     command-chain: [bin/wrapper_local]
     command: bin/test-runner
+  test-runner-automated:
+    command-chain: [bin/wrapper_local]
+    command: bin/test-runner-automated
 
 passthrough:
   hooks:
