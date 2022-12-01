@@ -2,7 +2,7 @@ name: checkbox-kivu-classic
 summary: Checkbox tests for the kivu classic project
 description: |
   Collection of tests to be run on devices that are part of the kivu project
-version: '0.1dev'
+version: '1.0'
 confinement: classic
 grade: stable
 
