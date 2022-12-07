@@ -1,100 +1,62 @@
-## Accept the webcam permissions
+# Welcome to the Checkbox Kivu project!
 
-Instructions for automatically accepting webcam & mic permissions:
-https://testingbot.com/support/selenium/permission-popups
+This repository contains the Checkbox Kivu Provider (Kivu-specific test cases and test plans for [Checkbox]) as well as everything that is required to build the [checkbox-kivu-classic] snap in the snapstore.
 
-Another set of instructions for faking webcam & mic stream:
-https://webrtc.github.io/webrtc-org/testing/
+# Checkbox Kivu Provider
 
-These are actually using a fake video stream, which won't be sufficient alone for testing the functionality (but can be a helpful starting point).
+Located in the `checkbox-provider-kivu` directory, it contains:
 
-## Chromium flags
+- the test cases (also called "jobs" in the Checkbox jargon) and test plans to be run by Checkbox (in the `units` directory)
+- the scripts required by some of the test cases (in the `bin` directory)
+- the data (sample video, HTML pages) required by some of the test cases (in the `data` directory)
+- unit tests for the scripts (in the `tests` directory)
 
-### CLI flags to fake video and mic streams
+# Installation
 
-#### With file
+Two devices are needed:
 
-#### With random data
+- a host to control the testing (any computer running Ubuntu)
+- a device to test (aka DUT for "Device Under Test")
 
-## WebRTC server to connect to
+On the host, install the Checkbox snaps:
 
-Tested receiving and presenting WebRTC data from https://github.com/TannerGabriel/WebRTC-Video-Broadcast.git
+```shell
+sudo snap install checkbox22
+sudo snap install checkbox --classic
+```
 
-## Testing power draw
+On the DUT, install the Checkbox runtime and the Checkbox Kivu snaps:
 
-### powertop
+```shell
+sudo snap install checkbox22
+sudo snap install checkbox-kivu-classic --classic
+```
 
-https://wiki.archlinux.org/title/powertop
+Then, from the host, run:
 
-- Crashes on both my AMD systems when trying to use the CSV output. Maybe because I didn't run enough on battery power?
+```shell
+checkbox.checkbox-cli remote <IP of the DUT>
+```
 
-### powerstat
+You will be presented with a long list of available test plans. You can filter this out using the `/` key to search for `Kivu`. Select the Kivu test plan, and follow the instructions on screen to start the test run.
 
-### Perf counters
+# Develop the Checkbox Kivu provider
 
-sudo cpupower frequency-set --governor performance
-echo -1 | sudo tee /proc/sys/kernel/perf_event_paranoid
+Since snaps are immutable, it is not possible to modify the content of the scripts or the test cases. Fortunately, Checkbox provides a functionality to side-load a provider on the DUT.
 
-#### baseline (sleep for 10s)
+Therefore, if you want to edit a job definition, a script or a test plan, run the followinf commands on the DUT:
 
-perf stat -e power/energy-pkg/ sleep 10
+```shell
+cd $HOME
+git clone git@github.com:canonical/checkbox-kivu.git
+mkdir /var/tmp/checkbox-providers
+cp -r $HOME/checkbox-kivu/checkbox-provider-kivu /var/tmp/checkbox-providers/
+```
 
-#### Run chromium
+You can then modify the content of the provider in `/var/tmp/checkbox-providers/checkbox-provider-kivu/`, and it's this version that will be used when you run `checkbox.checkbox-cli remote <IP of the DUT>` on the host.
 
-perf stat -e power/energy-pkg/ chromium
+Please refer to the [Checkbox documentation] on side-loading providers for more information.
 
-#### Every second
-
-perf stat -e power/energy-pkg/ -I 1000 chromium
-
-# Example
-
-## Setup:
-
-# On a remote fixed host
-
-## launch WebRTC server
-
-docker run -d -p 4000:4000 webrtcvideobroadcast
-
-# On test device
-
-## set up perf_event support on test device
-
-sudo cpupower frequency-set --governor performance
-echo -1 | sudo tee /proc/sys/kernel/perf_event_paranoid
-
-## Navigate to broadcast URL with test device to enable access to mic and video:
-
-(sikulix to visit https://localhost:4000/broadcast.html and close itself)
-
-## Test
-
-- Run sleep N
-- Run chromium without optimisation flags to visit broadcast.html
-- Run chromium with optimisation flags to visit broadcast.html
-
-4. Visit broadcast.html with perf stats on, no flags:
-
-perf stat -e power/energy-pkg/ chromium http://localhost:4000/broadcast.html
-
-perf stat -e power/energy-cores/,power/energy-ram/,power/energy-gpu/,power/energy-pkg/,power/energy-psys chromium https://localhost:4000/broadcast.html
-
-5.  Close chromium after N seconds.
-
-6.  Visit broadcast.html with perf stats on:
-    perf stat -e power/energy-pkg/ timeout 10s chromium http://localhost:4000/broadcast.html
-
-              3,674.97 Joules power/energy-pkg/
-
-          34.606339526 seconds time elapsed
-
-7.  Sleep for N seconds and do the same measurement:
-
-    perf stat -e power/energy-pkg/ sleep 34
-
-    Performance counter stats for 'system wide':
-
-          3,274.36 Joules power/energy-pkg/
-
-    34.001334823 seconds time elapsed
+[Checkbox]: https://checkbox.readthedocs.io/
+[checkbox-kivu-classic]: https://snapcraft.io/checkbox-kivu-classic
+[Checkbox documentation]: https://checkbox.readthedocs.io/en/latest/side-loading.html
