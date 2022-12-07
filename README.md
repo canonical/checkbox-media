@@ -44,7 +44,7 @@ You will be presented with a long list of available test plans. You can filter t
 
 Since snaps are immutable, it is not possible to modify the content of the scripts or the test cases. Fortunately, Checkbox provides a functionality to side-load a provider on the DUT.
 
-Therefore, if you want to edit a job definition, a script or a test plan, run the followinf commands on the DUT:
+Therefore, if you want to edit a job definition, a script or a test plan, run the following commands on the DUT:
 
 ```shell
 cd $HOME
