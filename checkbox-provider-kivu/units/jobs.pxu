@@ -85,6 +85,7 @@ command:
 after:
   kivu/chromium_h264_decoding
   kivu/chromium_h264_decoding_vaapi_disabled
+  kivu/chromium_h264_decoding_no_embed
   kivu/chromium_h264_encoding
   kivu/chromium_h264_encoding_vaapi_disabled
 
@@ -101,6 +102,7 @@ requires:
   snap.name == "chromium"
 command:
   # Play fullscreen looping video in Chromium
+  echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
   exec sudo --preserve-env -u "${NORMAL_USER}" timeout 30 chromium --start-fullscreen --enable-logging=stderr 2>&1 /home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_enabled.log &
   # Gather GPU logs (JSON pseudo-format)
   timeout 30 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_enabled_intel_gpu_top.json
@@ -126,9 +128,33 @@ requires:
 command:
   # Play fullscreen looping video in Chromium
   # (HW decoder feature disabled)
+  echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
   exec sudo --preserve-env -u "${NORMAL_USER}" timeout 30 chromium --start-fullscreen --disable-features=VaapiVideoDecoder --enable-logging=stderr 2>&1 /home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_disabled.log &
   # Gather GPU logs (JSON pseudo-format)
   timeout 30 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_disabled_intel_gpu_top.json
+  if [[ "$?" -eq 124 ]]
+  then
+      echo "Test finished"
+      exit 0
+  else
+      echo "Error"
+      exit 1
+  fi
+
+id: kivu/chromium_h264_decoding_no_embed
+category_id: kivu
+flags: simple
+user: root
+_summary: Play non-embedded H264 video using Chromium (VAAPI enabled)
+depends:
+  kivu/prepare-test-data
+requires:
+  executable.name == "intel_gpu_top"
+  snap.name == "chromium"
+command:
+  echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
+  # Play fullscreen looping video in Chromium
+  sudo --preserve-env -u "${NORMAL_USER}" timeout 30 chromium --start-fullscreen --enable-logging=stderr 2>&1 /home/"${NORMAL_USER}"/checkbox-test-data/bbb_h264_2160p_60fps_extract.mp4 | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_no_embed.log
   if [[ "$?" -eq 124 ]]
   then
       echo "Test finished"
