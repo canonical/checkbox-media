@@ -1,0 +1,34 @@
+id: kivu-webcam/gstreamer_h264_webcam_encoding
+category_id: kivu-webcam
+plugin: shell
+user: root
+_summary: Encode H264 webcam video with gstreamer and capture GPU usage
+depends: camera/detect
+requires:
+  executable.name == "gst-launch-1.0"
+  executable.name == "intel_gpu_top"
+  package.name == "gstreamer1.0-vaapi"
+  package.name == "gstreamer1.0-pulseaudio"
+environ: GST_PLUGIN
+command:
+  timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/gstreamer_raw_webcam_encoding_intel_gpu_top.json &
+  gpu_top_pid=$!
+  timeout 10 gst-launch-1.0 -v --gst-plugin-path="${GST_PLUGIN}" v4l2src ! videoconvert ! video/x-raw ! fakesink
+  if [[ "$?" -ne 124 ]]; then
+      echo "Error"
+      exit 1
+  fi
+  kill -TERM ${gpu_top_pid} &> /dev/null || true
+  timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_webcam_encoding_intel_gpu_top.json &
+  gpu_top_pid=$!
+  timeout 10 gst-launch-1.0 -v --gst-plugin-path="${GST_PLUGIN}" v4l2src ! videoconvert ! video/x-raw ! vaapih264enc ! fakesink
+  if [[ "$?" -ne 124 ]]; then
+      echo "Error"
+      exit 1
+  fi
+  kill -TERM ${gpu_top_pid} &> /dev/null || true
+  compare_intel_gpu_top_json.py "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_webcam_encoding_intel_gpu_top.json "${PLAINBOX_SESSION_SHARE}"/gstreamer_raw_webcam_encoding_intel_gpu_top.json
+_description:
+  This test checks the GPU usage by gstreamer for camera stream.
+  The test depends on the camera detect (camera/detect). The camera availibility
+  can be set in the [manifest] section of the checkbox configuration (checkbox-launcher)
