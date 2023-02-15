@@ -8,7 +8,6 @@ requires:
   executable.name == "gst-launch-1.0"
   executable.name == "intel_gpu_top"
   package.name == "gstreamer1.0-vaapi"
-  package.name == "gstreamer1.0-pulseaudio"
 environ: GST_PLUGIN
 command:
   timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/gstreamer_raw_webcam_encoding_intel_gpu_top.json &
