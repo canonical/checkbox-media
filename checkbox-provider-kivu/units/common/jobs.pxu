@@ -1,0 +1,23 @@
+id: kivu-common/prepare-test-data
+category_id: kivu-common
+flags: simple
+_summary: Prepare test data for Chromium-related tests
+command:
+  # Chromium is a snap, and its confinment rules prevent it from accessing data
+  # from another snap. Checkbox data files need to be copied to the user's home
+  mkdir -p ${HOME}/checkbox-test-data
+  cp "${PLAINBOX_PROVIDER_DATA}"/* ${HOME}/checkbox-test-data/
+
+id: kivu-common/cleanup-test-data
+category_id: kivu-common
+flags: simple
+_summary: Remove test data for Chromium-related tests
+command:
+  rm -rf ${HOME}/checkbox-test-data
+after:
+  kivu/chromium_h264_decoding
+  kivu/chromium_h264_decoding_vaapi_disabled
+  kivu/chromium_h264_decoding_no_embed
+  kivu/chromium_h264_encoding
+  kivu/chromium_h264_encoding_vaapi_disabled
+

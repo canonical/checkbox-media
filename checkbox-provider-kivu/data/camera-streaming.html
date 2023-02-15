@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta content="Webcam" name="title">
+<title>Webcam</title>
+<style>
+    body {
+      margin: 30px;
+    }
+
+    h1 {
+      font-family: sans-serif;
+      color: #666;
+    }
+
+    #container {
+      width: 1000px;
+      height: 750px;
+      border: 10px #333 solid;
+    }
+
+    #videoElement {
+      width: 1000px;
+      height: 750px;
+      background-color: #666;
+    }
+  </style>
+</head>
+<body>
+<div id="container">
+<video autoplay="true" id="videoElement">
+</video>
+</div>
+<script>
+  // Get query string from the URL
+  const params = new Proxy(new URLSearchParams(window.location.search), {
+    get: (searchParams, prop) => searchParams.get(prop),
+  });
+  // Get the value of "encoding" in eg "https://example.com/?encoding=vp8"
+  let value = params.encoding; // "vp8"
+  var encval = "h264"; // Default to H264 encoding
+  if (value) {
+    encval = value
+  }
+  var video = document.querySelector("#videoElement");
+  if (navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ audio:false, video: true })
+          .then(function (stream) {
+	      var mstream = new window.MediaStream(stream.getVideoTracks());
+
+	      const mediaRecorder = []
+	      for (let i=0;i<20;++i) {
+		  mediaRecorder[i] = new MediaRecorder(mstream, {
+		      mimeType: 'video/webm; codecs='+encval,
+		      videoBitsPerSecond: 5000000
+		  });
+		  mediaRecorder[i].start(1000);
+	      }
+	      video.srcObject = stream;
+          })
+          .catch(function (err) {
+              console.log("Something went wrong! " + err);
+          });
+  }
+</script>
+</body>

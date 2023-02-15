@@ -66,29 +66,6 @@ depends:
 command:
   parse_intel_gpu_top_json.py "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_decoding_intel_gpu_top.json
 
-id: kivu/prepare-test-data
-category_id: kivu
-flags: simple
-_summary: Prepare test data for Chromium-related tests
-command:
-  # Chromium is a snap, and its confinment rules prevent it from accessing data
-  # from another snap. Checkbox data files need to be copied to the user's home
-  mkdir -p ${HOME}/checkbox-test-data
-  cp "${PLAINBOX_PROVIDER_DATA}"/* ${HOME}/checkbox-test-data/
-
-id: kivu/cleanup-test-data
-category_id: kivu
-flags: simple
-_summary: Remove test data for Chromium-related tests
-command:
-  rm -rf ${HOME}/checkbox-test-data
-after:
-  kivu/chromium_h264_decoding
-  kivu/chromium_h264_decoding_vaapi_disabled
-  kivu/chromium_h264_decoding_no_embed
-  kivu/chromium_h264_encoding
-  kivu/chromium_h264_encoding_vaapi_disabled
-
 id: kivu/chromium_hardware_compositing
 category_id: kivu
 flags: simple
@@ -122,7 +99,7 @@ flags: simple
 user: root
 _summary: Play H264 video using Chromium (VAAPI enabled) and capture GPU usage
 depends:
-  kivu/prepare-test-data
+  kivu-common/prepare-test-data
 requires:
   executable.name == "intel_gpu_top"
   snap.name == "chromium"
@@ -147,7 +124,7 @@ flags: simple
 user: root
 _summary: Play H264 video using Chromium (VAAPI disabled) and capture GPU usage
 depends:
-  kivu/prepare-test-data
+  kivu-common/prepare-test-data
 requires:
   executable.name == "intel_gpu_top"
   snap.name == "chromium"
@@ -173,7 +150,7 @@ flags: simple
 user: root
 _summary: Play non-embedded H264 video using Chromium (VAAPI enabled)
 depends:
-  kivu/prepare-test-data
+  kivu-common/prepare-test-data
 requires:
   executable.name == "intel_gpu_top"
   snap.name == "chromium"
@@ -205,7 +182,7 @@ flags: simple
 user: root
 _summary: Encode H264 stream from within Chromium (VAAPI enabled) and capture GPU usage
 depends:
-  kivu/prepare-test-data
+  kivu-common/prepare-test-data
 requires:
   executable.name == "intel_gpu_top"
   snap.name == "chromium"
@@ -229,7 +206,7 @@ flags: simple
 user: root
 _summary: Encode H264 stream from within Chromium (VAAPI disabled) and capture GPU usage
 depends:
-  kivu/prepare-test-data
+  kivu-common/prepare-test-data
 requires:
   executable.name == "intel_gpu_top"
   snap.name == "chromium"

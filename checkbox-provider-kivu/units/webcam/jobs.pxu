@@ -31,3 +31,41 @@ _description:
   This test checks the GPU usage by gstreamer for camera stream.
   The test depends on the camera detect (camera/detect). The camera availibility
   can be set in the [manifest] section of the checkbox configuration (checkbox-launcher)
+
+id: kivu-webcam/chromium_h264_webcam_encoding
+category_id: kivu-webcam
+plugin: shell
+user: root
+_summary: Encode H264 webcam video with chromium and capture GPU usage
+depends:
+  camera/detect
+  kivu-common/prepare-test-data
+requires:
+  snap.name == "chromium"
+  executable.name == "intel_gpu_top"
+command:
+  timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_webcam_encoding_disabled_intel_gpu_top.json &
+  gpu_top_pid=$!
+  sudo --preserve-env -u "${NORMAL_USER}" timeout 10 bash -c 'chromium --start-fullscreen \
+                                                              --disable-features=VaapiVideoDecoder \
+                                                              --use-fake-ui-for-media-stream \
+                                                              --enable-logging=stderr 2>&1 \
+                                                              file:///home/"${NORMAL_USER}"/checkbox-test-data/camera-streaming.html?encoding=h264 \
+                                                              | tee "${PLAINBOX_SESSION_SHARE}"/chromium_camera_stream_encoding_vaapi_disabled.log'
+  if [[ "$?" -ne 124 ]]; then
+      echo "Error : ret=$?"
+      exit 1
+  fi
+  kill -TERM ${gpu_top_pid} &> /dev/null || true
+  timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_webcam_encoding_enabled_intel_gpu_top.json &
+  gpu_top_pid=$!
+  sudo --preserve-env -u "${NORMAL_USER}" timeout 10 bash -c 'chromium --start-fullscreen \
+                                                              --use-fake-ui-for-media-stream \
+                                                              --enable-logging=stderr 2>&1 \
+                                                              file:///home/"${NORMAL_USER}"/checkbox-test-data/camera-streaming.html?encoding=h264 \
+                                                              | tee "${PLAINBOX_SESSION_SHARE}"/chromium_camera_stream_encoding_vaapi_enabled.log'
+  if [[ "$?" -ne 124 ]]; then
+      echo "Error : ret=$?"
+      exit 1
+  fi
+  compare_intel_gpu_top_json.py "${PLAINBOX_SESSION_SHARE}"/chromium_h264_webcam_encoding_enabled_intel_gpu_top.json "${PLAINBOX_SESSION_SHARE}"/chromium_h264_webcam_encoding_disabled_intel_gpu_top.json
