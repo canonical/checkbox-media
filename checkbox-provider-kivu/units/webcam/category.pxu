@@ -1,4 +1,4 @@
 unit: category
 id: kivu-webcam
-_name: Intel Kivu tests
+_name: Intel Kivu HW Accel camera tests
 
