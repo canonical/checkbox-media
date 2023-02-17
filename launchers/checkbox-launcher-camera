@@ -1,0 +1,20 @@
+#!/usr/bin/env checkbox-cli
+
+# Please keep the indents below, for yaml formatting/templating
+[launcher]
+  launcher_version = 1
+  app_id = com.canonical.certification:kivu-test
+  stock_reports = text, submission_files, certification
+
+[test plan]
+  unit = com.canonical.certification::kivu-full
+  forced = yes
+
+[test selection]
+  forced = yes
+
+[ui]
+  type = silent
+
+[manifest]
+  com.canonical.certification::has_camera = true

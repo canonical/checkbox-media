@@ -3,6 +3,7 @@ unit: test plan
 _name: Kivu (Full Tests)
 include:
     kivu/.*
+    kivu-webcam/.*
 mandatory_include:
     com.canonical.certification::miscellanea/submission-resources
 bootstrap_include:
