@@ -96,6 +96,50 @@ command:
   echo "Lacks hardware compositing."
   exit 1
 
+id: kivu/chromium_flags_check
+category_id: kivu
+flags: simple
+user: root
+_summary: Grab chrome://version url and inspect the flags.
+requires:
+  executable.name == "ydotool"
+  executable.name == "wl-paste"
+  executable.name == "gnome-screensaver-command"
+  snap.name == "chromium"
+command:
+  echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
+  # disable screensaver that prevents wl-paste from working
+  sudo --preserve-env -u "${NORMAL_USER}" gnome-screensaver-command -d
+  # Launch the chromium browser.
+  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 30 chromium --start-maximized --enable-logging=stderr 2>&1 /home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html | tee "${PLAINBOX_SESSION_SHARE}"/chromium_flags_check.log &
+  # Grab the contents from the browser
+  copy_chrome_url_v0_ydo.sh chrome://version
+  # Paste the clipboard
+  wl-paste | tee "${PLAINBOX_SESSION_SHARE}"/chromium_flags.log
+  # If it misses crucial flags, we fail the test.
+  grep "enable-features=.*VaapiVideoDecoder" "${PLAINBOX_SESSION_SHARE}"/chromium_flags.log
+  ret_code=$?
+  if [[ "$ret_code" -ne 0 ]] # No lines selected by grep?
+  then
+      echo "VaapiVideoDecoder not enabled or other errors ($ret_code)."
+      exit 1
+  fi
+  grep "enable-features=.*VaapiVideoEncoder" "${PLAINBOX_SESSION_SHARE}"/chromium_flags.log
+  ret_code=$?
+  if [[ "$ret_code" -ne 0 ]] # No lines selected by grep?
+  then
+      echo "VaapiVideoEncoder not enabled or other errors ($ret_code)."
+      exit 1
+  fi
+  grep "enable-features=.*VaapiVideoDecodeLinuxGL" "${PLAINBOX_SESSION_SHARE}"/chromium_flags.log
+  ret_code=$?
+  if [[ "$ret_code" -ne 0 ]] # No lines selected by grep?
+  then
+      echo "VaapiVideoDecodeLinuxGL not enabled or other errors ($ret_code)."
+      exit 1
+  fi
+  exit 0
+
 id: kivu/chromium_h264_decoding
 category_id: kivu
 flags: simple
