@@ -69,3 +69,36 @@ command:
       exit 1
   fi
   compare_intel_gpu_top_json.py "${PLAINBOX_SESSION_SHARE}"/chromium_h264_webcam_encoding_enabled_intel_gpu_top.json "${PLAINBOX_SESSION_SHARE}"/chromium_h264_webcam_encoding_disabled_intel_gpu_top.json
+
+id: kivu-webcam/chromium_h264_onecopy
+category_id: kivu-webcam
+plugin: shell
+user: root
+_summary: Encode H264 webcam video and check onecopy usage
+depends:
+  camera/detect
+  kivu-common/prepare-test-data
+requires:
+  snap.name == "chromium"
+command:
+  sudo --preserve-env -u "${NORMAL_USER}" timeout 10 bash -c 'chromium --start-fullscreen \
+                                                              --use-fake-ui-for-media-stream \
+                                                              --enable-logging=stderr 2>&1 \
+                                                              --vmodule=*/video/linux/*=3,*/ui/gl/*=3,*/platform/wayland/*=3 \
+                                                              file:///home/"${NORMAL_USER}"/checkbox-test-data/camera-streaming.html?encoding=h264 \
+                                                              | tee "${PLAINBOX_SESSION_SHARE}"/chromium_camera_stream_onecopy.log'
+  if [[ "$?" -ne 124 ]]; then
+      echo "Error : ret=$?"
+      exit 1
+  fi
+  grep V4L2CaptureDelegateGpuHelper "${PLAINBOX_SESSION_SHARE}"/chromium_camera_stream_onecopy.log
+  if [[ $? -eq 1 ]] # No lines selected by grep?
+  then
+    echo "Failed: Could not detect use of V4L2CaptureDelegateGpuHelper"
+    exit 1
+  fi
+_description:
+  This test checks the verbose log of chromium after playing the camera video
+  stream. If the string V4L2CaptureDelegateGpuHelper is present in this log,
+  we know that the onecopy strategy is active.
+
