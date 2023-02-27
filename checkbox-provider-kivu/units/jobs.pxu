@@ -74,10 +74,13 @@ _summary: Grab chrome://gpu url and inspect for HW compositor.
 requires:
   executable.name == "ydotool"
   executable.name == "wl-paste"
+  executable.name == "gnome-screensaver-command"
   snap.name == "chromium"
 command:
   # Launch the chromium browser.
   echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
+  # disable screensaver that prevents wl-paste from working
+  sudo --preserve-env -u "${NORMAL_USER}" gnome-screensaver-command -d
   exec sudo --preserve-env -u "${NORMAL_USER}" timeout 30 chromium --start-maximized --enable-logging=stderr 2>&1 /home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html | tee "${PLAINBOX_SESSION_SHARE}"/chromium_hardware_compositing_browser.log &
   # Grab the contents from the browser
   copy_chrome_url_v0_ydo.sh chrome://gpu
