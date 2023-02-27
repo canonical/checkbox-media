@@ -92,9 +92,10 @@ command:
       exit 1
   fi
   grep V4L2CaptureDelegateGpuHelper "${PLAINBOX_SESSION_SHARE}"/chromium_camera_stream_onecopy.log
-  if [[ $? -eq 1 ]] # No lines selected by grep?
+  ret_code=$?
+  if [[ "$ret_code" -ne 0 ]] # No lines selected by grep?
   then
-    echo "Failed: Could not detect use of V4L2CaptureDelegateGpuHelper"
+    echo "Failed: Could not detect use of V4L2CaptureDelegateGpuHelper or other errors ($ret_code)"
     exit 1
   fi
 _description:
