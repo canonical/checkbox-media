@@ -2,6 +2,7 @@ id: kivu-full
 unit: test plan
 _name: Kivu (Full Tests)
 include:
+    kivu-powersaving/.*
     kivu/.*
     kivu-webcam/.*
 mandatory_include:

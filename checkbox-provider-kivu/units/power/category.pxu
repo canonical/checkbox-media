@@ -1,0 +1,4 @@
+unit: category
+id: kivu-powersaving
+_name: Intel Kivu HW Accel power saving tests
+

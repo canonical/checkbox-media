@@ -1,0 +1,45 @@
+id: kivu-powersaving/chromium_playing_4k_video
+category_id: kivu-powersaving
+plugin: shell
+user: root
+_summary: Check power saving on a video playback with Chromum Hw Acc
+depends:
+  kivu-common/prepare-test-data
+  kivu-common/disable-screensaver
+requires:
+  snap.name == "chromium"
+environ:
+  NORMAL_USER
+command:
+  export TEST_DURATION=600
+  export MIN_SAVING_PERCENT=10
+  rapl-power-stat.py ${TEST_DURATION} > "${PLAINBOX_SESSION_SHARE}"/powersaving_stat_hwacc_enabled.txt &
+  perf_pid=$!
+  sleep 1
+  ps -p ${perf_pid} &> /dev/null || exit 1
+  sudo --preserve-env -u "${NORMAL_USER}" timeout ${TEST_DURATION} bash -c 'chromium --start-fullscreen \
+                                                                          --enable-logging=stderr 2>&1 \
+                                                                          file:///home/${NORMAL_USER}/checkbox-test-data/video-loop.html \
+                                                                          | tee "${PLAINBOX_SESSION_SHARE}"/powersaving_chromium_hwacc_enabled.log'
+  if [[ "$?" -ne 124 ]]; then
+      echo "Error running chromium: ret=$?"
+      exit 1
+  fi
+  rapl-power-stat.py ${TEST_DURATION} > "${PLAINBOX_SESSION_SHARE}"/powersaving_stat_hwacc_disabled.txt &
+  perf_pid=$!
+  sleep 1
+  ps -p ${perf_pid} &> /dev/null || exit 1
+  sudo --preserve-env -u "${NORMAL_USER}" timeout ${TEST_DURATION} bash -c 'chromium --start-fullscreen \
+                                                                          --disable-features=VaapiVideoDecoder \
+                                                                          --enable-logging=stderr 2>&1 \
+                                                                          file:///home/${NORMAL_USER}/checkbox-test-data/video-loop.html \
+                                                                          | tee "${PLAINBOX_SESSION_SHARE}"/powersaving_chromium_hwacc_disabled.log'
+  if [[ "$?" -ne 124 ]]; then
+      echo "Error running chromium : ret=$?"
+      exit 1
+  fi
+  # check that we have at least 10% power saving gain
+  compare_power_consumption.py "${PLAINBOX_SESSION_SHARE}"/powersaving_stat_hwacc_enabled.txt "${PLAINBOX_SESSION_SHARE}"/powersaving_stat_hwacc_disabled.txt ${MIN_SAVING_PERCENT}
+_description:
+  This test checks the power saving offered by the HW acc feature of Chromium
+  The expected saving rate is more than 10%

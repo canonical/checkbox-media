@@ -21,3 +21,14 @@ after:
   kivu/chromium_h264_encoding
   kivu/chromium_h264_encoding_vaapi_disabled
 
+id: kivu-common/disable-screensaver
+plugin: shell
+category_id: kivu-common
+flags: simple
+_summary: Disable sreensaver (with GNOME)
+command:
+  dbus-send --session --print-reply=literal --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.GetActive | grep true
+  if [[ $? -eq 0 ]]; then
+    exit 0
+  fi
+  gnome-screensaver-command -d
