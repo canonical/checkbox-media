@@ -69,10 +69,6 @@ if __name__ == '__main__' :
                 print("No RAPL zones were found. Aborting.")
                 sys.exit(2)
 
-        # run the commands
-        user = os.environ.get("SUDO_USER")
-        assert(user)
-
         start_time, energy0 = measure()
         time.sleep(timeout)
         end_time, energy1 = measure()
