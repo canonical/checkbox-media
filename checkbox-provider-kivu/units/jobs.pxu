@@ -230,9 +230,9 @@ command:
   sudo --preserve-env -u "${NORMAL_USER}" timeout 30 \
     chromium \
     --start-fullscreen \
-    --enable-logging=stderr \
-    /home/"${NORMAL_USER}"/checkbox-test-data/bbb_h264_2160p_60fps_extract.mp4 \
-    &> "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_no_embed.log
+    --enable-logging=stdout \
+    /home/"${NORMAL_USER}"/checkbox-test-data/bbb_h264_2160p_60fps_extract.mp4 > \
+    "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_no_embed.log
   sudo_result=$?
   cat "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_no_embed.log
   if [[ "$sudo_result" -eq 124 ]]
@@ -270,8 +270,8 @@ command:
   sudo --preserve-env -u "${NORMAL_USER}" timeout 10 \
     chromium \
     --start-fullscreen \
-    --enable-logging=stderr \
-    file:///home/"${NORMAL_USER}"/checkbox-test-data/video-encoding.html?encoding=h264 &> \
+    --enable-logging=stdout \
+    file:///home/"${NORMAL_USER}"/checkbox-test-data/video-encoding.html?encoding=h264 > \
     "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_enabled.log
   sudo_retval=$?
   cat "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_enabled.log
@@ -303,7 +303,7 @@ command:
     chromium \
     --start-fullscreen \
     --disable-features=VaapiVideoEncoder \
-    --enable-logging=stderr file:///home/"${NORMAL_USER}"/checkbox-test-data/video-encoding.html?encoding=h264 >& \
+    --enable-logging=stdout file:///home/"${NORMAL_USER}"/checkbox-test-data/video-encoding.html?encoding=h264 > \
     "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_disabled.log
   sudo_retval=$?
   cat "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_disabled.log
