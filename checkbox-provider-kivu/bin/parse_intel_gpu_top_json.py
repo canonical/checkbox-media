@@ -27,7 +27,7 @@ def parse(log_file):
         # Looking at the `engines` section only
         for k, v in d["engines"].items():
             # Focus on GPU usage for video encoding/decoding only
-            if "Video/" in k and v.get("busy"):
+            if "Video/" in k and (v.get("busy") is not None):
                 if sumdata.get(k):
                     sumdata[k] += v["busy"]
                 else:
