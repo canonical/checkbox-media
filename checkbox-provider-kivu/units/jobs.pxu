@@ -16,8 +16,8 @@ requires:
   executable.name == "intel_gpu_top"
 environ: GST_PLUGIN
 command:
-  timeout 10 gst-launch-1.0 --gst-plugin-path="${GST_PLUGIN}" videotestsrc ! video/x-raw,width=3840,height=2160 ! vaapih264enc ! fakesink &
-  timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_encoding_intel_gpu_top.json
+  timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_encoding_intel_gpu_top.json &
+  timeout 10 gst-launch-1.0 --gst-plugin-path="${GST_PLUGIN}" videotestsrc ! video/x-raw,width=3840,height=2160 ! vaapih264enc ! fakesink
   if [[ "$?" -eq 124 ]]
   then
       echo "Test finished"
@@ -74,14 +74,18 @@ _summary: Grab chrome://gpu url and inspect for HW compositor.
 requires:
   executable.name == "ydotool"
   executable.name == "wl-paste"
-  executable.name == "gnome-screensaver-command"
   snap.name == "chromium"
+#depends:
+#  kivu-common/disable-screensaver
 command:
   # Launch the chromium browser.
   echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
-  # disable screensaver that prevents wl-paste from working
-  sudo --preserve-env -u "${NORMAL_USER}" gnome-screensaver-command -d
-  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 30 chromium --start-maximized --enable-logging=stderr 2>&1 /home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html | tee "${PLAINBOX_SESSION_SHARE}"/chromium_hardware_compositing_browser.log &
+  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 30 \
+    chromium \
+    --start-maximized \
+    --enable-logging=stderr \
+    /home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html &> \
+    "${PLAINBOX_SESSION_SHARE}"/chromium_hardware_compositing_browser.log &
   # Grab the contents from the browser
   copy_chrome_url_v0_ydo.sh chrome://gpu
   # Paste the clipboard
@@ -104,14 +108,18 @@ _summary: Grab chrome://version url and inspect the flags.
 requires:
   executable.name == "ydotool"
   executable.name == "wl-paste"
-  executable.name == "gnome-screensaver-command"
   snap.name == "chromium"
+#depends:
+#  kivu-common/disable-screensaver
 command:
   echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
-  # disable screensaver that prevents wl-paste from working
-  sudo --preserve-env -u "${NORMAL_USER}" gnome-screensaver-command -d
   # Launch the chromium browser.
-  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 30 chromium --start-maximized --enable-logging=stderr 2>&1 /home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html | tee "${PLAINBOX_SESSION_SHARE}"/chromium_flags_check.log &
+  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 30 \
+    chromium \
+    --start-maximized \
+    --enable-logging=stderr \
+    /home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html &> \
+    "${PLAINBOX_SESSION_SHARE}"/chromium_flags_check.log &
   # Grab the contents from the browser
   copy_chrome_url_v0_ydo.sh chrome://version
   # Paste the clipboard
@@ -151,17 +159,25 @@ requires:
   executable.name == "intel_gpu_top"
   snap.name == "chromium"
 command:
+  # Gather GPU logs (JSON pseudo-format)
+  timeout 30 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_enabled_intel_gpu_top.json &
   # Play fullscreen looping video in Chromium
   echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
-  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 30 chromium --start-fullscreen --enable-logging=stderr 2>&1 /home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_enabled.log &
-  # Gather GPU logs (JSON pseudo-format)
-  timeout 30 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_enabled_intel_gpu_top.json
-  if [[ "$?" -eq 124 ]]
+  echo PLAINBOX_SESSION_SHARE "${PLAINBOX_SESSION_SHARE}"
+  sudo --preserve-env -u "${NORMAL_USER}" timeout 30 \
+    chromium \
+    --start-fullscreen \
+    --enable-logging=stderr \
+    /home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html &> \
+    "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_enabled.log
+  sudo_result=$?
+  cat "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_enabled.log
+  if [[ "$sudo_result" -eq 124 ]]
   then
-      echo "Test finished"
+      echo "Test finished to timeout."
       exit 0
   else
-      echo "Error"
+      echo "Error. The sudo-timeout-chromium command returned $sudo_result"
       exit 1
   fi
 
@@ -176,18 +192,25 @@ requires:
   executable.name == "intel_gpu_top"
   snap.name == "chromium"
 command:
-  # Play fullscreen looping video in Chromium
-  # (HW decoder feature disabled)
-  echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
-  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 30 chromium --start-fullscreen --disable-features=VaapiVideoDecoder --enable-logging=stderr 2>&1 /home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_disabled.log &
   # Gather GPU logs (JSON pseudo-format)
-  timeout 30 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_disabled_intel_gpu_top.json
-  if [[ "$?" -eq 124 ]]
+  timeout 30 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_disabled_intel_gpu_top.json &
+  # Play fullscreen looping video in Chromium (HW decoder feature disabled)
+  echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
+  sudo --preserve-env -u "${NORMAL_USER}" timeout 30 \
+    chromium \
+    --start-fullscreen \
+    --disable-features=VaapiVideoDecoder \
+    --enable-logging=stderr \
+    /home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html &> \
+    "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_disabled.log
+  sudo_result=$?
+  cat "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_disabled.log
+  if [[ "$sudo_result" -eq 124 ]]
   then
-      echo "Test finished"
+      echo "Test finished to timeout."
       exit 0
   else
-      echo "Error"
+      echo "Error. The sudo-timeout-chromium command returned $sudo_result"
       exit 1
   fi
 
@@ -204,13 +227,20 @@ requires:
 command:
   echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
   # Play fullscreen looping video in Chromium
-  sudo --preserve-env -u "${NORMAL_USER}" timeout 30 chromium --start-fullscreen --enable-logging=stderr 2>&1 /home/"${NORMAL_USER}"/checkbox-test-data/bbb_h264_2160p_60fps_extract.mp4 | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_no_embed.log
-  if [[ "$?" -eq 124 ]]
+  sudo --preserve-env -u "${NORMAL_USER}" timeout 30 \
+    chromium \
+    --start-fullscreen \
+    --enable-logging=stderr \
+    /home/"${NORMAL_USER}"/checkbox-test-data/bbb_h264_2160p_60fps_extract.mp4 \
+    &> "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_no_embed.log
+  sudo_result=$?
+  cat "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_no_embed.log
+  if [[ "$sudo_result" -eq 124 ]]
   then
       echo "Test finished"
       exit 0
   else
-      echo "Error"
+      echo "Error: $sudo_result"
       exit 1
   fi
 
@@ -234,16 +264,23 @@ requires:
   executable.name == "intel_gpu_top"
   snap.name == "chromium"
 command:
-  # Open video encoding page in Chromium
-  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 10 chromium --start-fullscreen --enable-logging=stderr 2>&1 file:///home/"${NORMAL_USER}"/checkbox-test-data/video-encoding.html?encoding=h264 | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_enabled.log &
   # Gather GPU logs (JSON pseudo-format)
-  timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_enabled_intel_gpu_top.json
-  if [[ "$?" -eq 124 ]]
+  timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_enabled_intel_gpu_top.json &
+  # Open video encoding page in Chromium
+  sudo --preserve-env -u "${NORMAL_USER}" timeout 10 \
+    chromium \
+    --start-fullscreen \
+    --enable-logging=stderr \
+    file:///home/"${NORMAL_USER}"/checkbox-test-data/video-encoding.html?encoding=h264 &> \
+    "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_enabled.log
+  sudo_retval=$?
+  cat "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_enabled.log
+  if [[ "$sudo_retval" -eq 124 ]]
   then
       echo "Test finished"
       exit 0
   else
-      echo "Error"
+      echo "Error: $sudo_retval"
       exit 1
   fi
 
@@ -258,17 +295,24 @@ requires:
   executable.name == "intel_gpu_top"
   snap.name == "chromium"
 command:
+  # Gather GPU logs (JSON pseudo-format)
+  timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_disabled_intel_gpu_top.json &
   # Open video encoding page in Chromium
   # (HW decoder feature disabled)
-  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 10 chromium --start-fullscreen --disable-features=VaapiVideoEncoder --enable-logging=stderr 2>&1 file:///home/"${NORMAL_USER}"/checkbox-test-data/video-encoding.html?encoding=h264 | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_disabled.log &
-  # Gather GPU logs (JSON pseudo-format)
-  timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_disabled_intel_gpu_top.json
-  if [[ "$?" -eq 124 ]]
+  sudo --preserve-env -u "${NORMAL_USER}" timeout 10 \
+    chromium \
+    --start-fullscreen \
+    --disable-features=VaapiVideoEncoder \
+    --enable-logging=stderr file:///home/"${NORMAL_USER}"/checkbox-test-data/video-encoding.html?encoding=h264 >& \
+    "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_disabled.log
+  sudo_retval=$?
+  cat "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_disabled.log
+  if [[ "$sudo_retval" -eq 124 ]]
   then
       echo "Test finished"
       exit 0
   else
-      echo "Error"
+      echo "Error: $sudo_retval"
       exit 1
   fi
 
