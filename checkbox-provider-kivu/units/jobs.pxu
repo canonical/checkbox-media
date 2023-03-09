@@ -18,12 +18,13 @@ environ: GST_PLUGIN
 command:
   timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_encoding_intel_gpu_top.json &
   timeout 10 gst-launch-1.0 --gst-plugin-path="${GST_PLUGIN}" videotestsrc ! video/x-raw,width=3840,height=2160 ! vaapih264enc ! fakesink
-  if [[ "$?" -eq 124 ]]
+  ret_code=$?
+  if [[ "$retcode" -eq 124 ]]
   then
       echo "Test finished"
       exit 0
   else
-      echo "Error"
+      echo "Error: $ret_code"
       exit 1
   fi
 
@@ -37,14 +38,15 @@ requires:
   executable.name == "intel_gpu_top"
 environ: GST_PLUGIN_PATH
 command:
-  gst-launch-1.0 --gst-plugin-path="${GST_PLUGIN}" -v playbin uri=file://"${PLAINBOX_PROVIDER_DATA}"/bbb_h264_2160p_60fps_extract.mp4 &
-  timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_decoding_intel_gpu_top.json
-  if [[ "$?" -eq 124 ]]
+  timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_decoding_intel_gpu_top.json &
+  timeout 10 gst-launch-1.0 --gst-plugin-path="${GST_PLUGIN}" -v playbin uri=file://"${PLAINBOX_PROVIDER_DATA}"/bbb_h264_2160p_60fps_extract.mp4
+  ret_code=$?
+  if [[ "$ret_code" -eq 124 ]]
   then
       echo "Test finished"
       exit 0
   else
-      echo "Error"
+      echo "Error: $ret_code"
       exit 1
   fi
 
