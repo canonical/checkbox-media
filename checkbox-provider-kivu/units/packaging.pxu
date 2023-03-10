@@ -6,3 +6,5 @@ Depends:
  gstreamer1.0-tools,
  vainfo,
  mpv,
+ python3-tinydb,
+ python3-jinja2,

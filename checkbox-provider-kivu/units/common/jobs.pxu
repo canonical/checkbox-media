@@ -7,19 +7,26 @@ command:
   # from another snap. Checkbox data files need to be copied to the user's home
   mkdir -p ${HOME}/checkbox-test-data
   cp "${PLAINBOX_PROVIDER_DATA}"/* ${HOME}/checkbox-test-data/
+  # clean test database
+  tdb.py reset
 
-id: kivu-common/cleanup-test-data
+unit: template
+template-resource: graphics_card
+template-filter: graphics_card.driver in ['i915','amdgpu','amdgpu-pro']
+template-engine: jinja2
+template-unit: job
+id: kivu-common/cleanup-test-data-{{ driver }}
 category_id: kivu-common
 flags: simple
 _summary: Remove test data for Chromium-related tests
 command:
   rm -rf ${HOME}/checkbox-test-data
 after:
-  kivu/chromium_h264_decoding
-  kivu/chromium_h264_decoding_vaapi_disabled
-  kivu/chromium_h264_decoding_no_embed
-  kivu/chromium_h264_encoding
-  kivu/chromium_h264_encoding_vaapi_disabled
+  kivu/chromium_h264_decoding_{{ driver }}
+  kivu/chromium_h264_decoding_vaapi_disabled_{{ driver }}
+  kivu/chromium_h264_decoding_no_embed_{{ driver }}
+  kivu/chromium_h264_encoding_{{ driver }}
+  kivu/chromium_h264_encoding_vaapi_disabled_{{ driver }}
 
 id: kivu-common/disable-screensaver
 plugin: shell

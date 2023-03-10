@@ -6,67 +6,72 @@ requires: executable.name == "vainfo"
 command:
   vainfo
 
-id: kivu/gstreamer_h264_encoding
+unit: template
+template-resource: graphics_card
+template-filter: graphics_card.driver in ['i915','amdgpu','amdgpu-pro']
+template-engine: jinja2
+template-unit: job
+id: kivu/gstreamer_h264_encoding_{{ driver }}
 category_id: kivu
 plugin: shell
-user: root
 _summary: Encode H264 video with gstreamer and capture GPU usage
+_description:
+  This test uses gst-launch-1.0 in order to encode a H264 video with vaapih264enc module. The video
+  is generated with videotestsrc.
 requires:
   executable.name == "gst-launch-1.0"
+  {% if driver == "i915" %}
   executable.name == "intel_gpu_top"
+  {% else %}
+  executable.name == "radeontop"
+  {% endif %}
 environ: GST_PLUGIN
 command:
-  timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_encoding_intel_gpu_top.json &
-  timeout 10 gst-launch-1.0 --gst-plugin-path="${GST_PLUGIN}" videotestsrc ! video/x-raw,width=3840,height=2160 ! vaapih264enc ! fakesink
-  ret_code=$?
-  if [[ "$retcode" -eq 124 ]]
-  then
-      echo "Test finished"
-      exit 0
+  tdb.py reset
+  echo "{\"gpu_usage_{{ driver }}\": $(gpu-load.py --timeout=10 --gpu={{ driver }})}" | tdb.py insert &
+  if [[ "{{ driver }}" == "i915" ]]; then
+    timeout 10 gst-launch-1.0 --gst-plugin-path="${GST_PLUGIN}" videotestsrc ! video/x-raw,width=3840,height=2160 ! vaapih264enc ! fakesink
   else
+    timeout 10 gst-launch-1.0 --gst-plugin-path="${GST_PLUGIN}" videotestsrc ! vaapih264enc ! fakesink
+  fi
+  ret_code=$?
+  if [[ "$retcode" -ne 124 ]]
+  then
       echo "Error: $ret_code"
       exit 1
   fi
+  tdb.py wait
+  tdb.py check "gpu_usage_{{ driver }} > 5.0"
 
-id: kivu/gstreamer_h264_decoding
+unit: template
+template-resource: graphics_card
+template-filter: graphics_card.driver in ['i915','amdgpu','amdgpu-pro']
+template-engine: jinja2
+template-unit: job
+id: kivu/gstreamer_h264_decoding_{{ driver }}
 category_id: kivu
 plugin: shell
-user: root
 _summary: Decode H264 video with gstreamer and capture GPU usage
 requires:
   executable.name == "gst-launch-1.0"
+  {% if driver == "i915" %}
   executable.name == "intel_gpu_top"
-environ: GST_PLUGIN_PATH
+  {% else %}
+  executable.name == "radeontop"
+  {% endif %}
+environ: GST_PLUGIN
 command:
-  timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_decoding_intel_gpu_top.json &
+  tdb.py reset
+  echo "{\"gpu_usage_{{ driver }}\": $(gpu-load.py --timeout=10 --gpu={{ driver }})}" | tdb.py insert &
   timeout 10 gst-launch-1.0 --gst-plugin-path="${GST_PLUGIN}" -v playbin uri=file://"${PLAINBOX_PROVIDER_DATA}"/bbb_h264_2160p_60fps_extract.mp4
   ret_code=$?
-  if [[ "$ret_code" -eq 124 ]]
+  if [[ "$retcode" -ne 124 ]]
   then
-      echo "Test finished"
-      exit 0
-  else
       echo "Error: $ret_code"
       exit 1
   fi
-
-id: kivu/check_gstreamer_h264_encoding
-category_id: kivu
-flags: simple
-_summary: Check GPU is used when encoding a H264 video using gstreamer
-depends:
-  kivu/gstreamer_h264_encoding
-command:
-  parse_intel_gpu_top_json.py "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_encoding_intel_gpu_top.json
-
-id: kivu/check_gstreamer_h264_decoding
-category_id: kivu
-flags: simple
-_summary: Check GPU is used when decoding a H264 video using gstreamer
-depends:
-  kivu/gstreamer_h264_decoding
-command:
-  parse_intel_gpu_top_json.py "${PLAINBOX_SESSION_SHARE}"/gstreamer_h264_decoding_intel_gpu_top.json
+  tdb.py wait
+  tdb.py check "gpu_usage_{{ driver }} > 5.0"
 
 id: kivu/chromium_hardware_compositing
 category_id: kivu
@@ -79,6 +84,11 @@ requires:
   snap.name == "chromium"
 #depends:
 #  kivu-common/disable-screensaver
+environ:
+  # necessary for local mode
+  XDG_SESSION_TYPE
+  XDG_RUNTIME_DIR
+  NORMAL_USER
 command:
   # Launch the chromium browser.
   echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
@@ -113,6 +123,11 @@ requires:
   snap.name == "chromium"
 #depends:
 #  kivu-common/disable-screensaver
+environ:
+  # necessary for local mode
+  XDG_SESSION_TYPE
+  XDG_RUNTIME_DIR
+  NORMAL_USER
 command:
   echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
   # Launch the chromium browser.
@@ -150,7 +165,12 @@ command:
   fi
   exit 0
 
-id: kivu/chromium_h264_decoding
+unit: template
+template-resource: graphics_card
+template-filter: graphics_card.driver in ['i915','amdgpu','amdgpu-pro']
+template-engine: jinja2
+template-unit: job
+id: kivu/chromium_h264_decoding_{{ driver }}
 category_id: kivu
 flags: simple
 user: root
@@ -158,15 +178,24 @@ _summary: Play H264 video using Chromium (VAAPI enabled) and capture GPU usage
 depends:
   kivu-common/prepare-test-data
 requires:
-  executable.name == "intel_gpu_top"
   snap.name == "chromium"
+  {% if driver == "i915" %}
+  executable.name == "intel_gpu_top"
+  {% else %}
+  executable.name == "radeontop"
+  {% endif %}
+environ:
+  # necessary for local mode
+  XDG_SESSION_TYPE
+  XDG_RUNTIME_DIR
+  NORMAL_USER
 command:
-  # Gather GPU logs (JSON pseudo-format)
-  timeout 30 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_enabled_intel_gpu_top.json &
+  PLAY_TIMEOUT=30
+  tdb.py reset
+  echo "{\"gpu_usage_hw_enabled\": $(gpu-load.py --timeout=${PLAY_TIMEOUT} --gpu={{ driver }})}" | tdb.py insert &
   # Play fullscreen looping video in Chromium
   echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
-  echo PLAINBOX_SESSION_SHARE "${PLAINBOX_SESSION_SHARE}"
-  sudo --preserve-env -u "${NORMAL_USER}" timeout 30 \
+  sudo --preserve-env -u "${NORMAL_USER}" timeout ${PLAY_TIMEOUT} \
     chromium \
     --start-fullscreen \
     --enable-logging=stderr \
@@ -183,7 +212,12 @@ command:
       exit 1
   fi
 
-id: kivu/chromium_h264_decoding_vaapi_disabled
+unit: template
+template-resource: graphics_card
+template-filter: graphics_card.driver in ['i915','amdgpu','amdgpu-pro']
+template-engine: jinja2
+template-unit: job
+id: kivu/chromium_h264_decoding_vaapi_disabled_{{ driver }}
 category_id: kivu
 flags: simple
 user: root
@@ -191,14 +225,23 @@ _summary: Play H264 video using Chromium (VAAPI disabled) and capture GPU usage
 depends:
   kivu-common/prepare-test-data
 requires:
-  executable.name == "intel_gpu_top"
   snap.name == "chromium"
+  {% if driver == "i915" %}
+  executable.name == "intel_gpu_top"
+  {% else %}
+  executable.name == "radeontop"
+  {% endif %}
+environ:
+  # necessary for local mode
+  XDG_SESSION_TYPE
+  XDG_RUNTIME_DIR
+  NORMAL_USER
 command:
-  # Gather GPU logs (JSON pseudo-format)
-  timeout 30 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_disabled_intel_gpu_top.json &
+  PLAY_TIMEOUT=30
+  echo "{\"gpu_usage_hw_disabled\": $(gpu-load.py --timeout=${PLAY_TIMEOUT} --gpu={{ driver }})}" | tdb.py insert &
   # Play fullscreen looping video in Chromium (HW decoder feature disabled)
   echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
-  sudo --preserve-env -u "${NORMAL_USER}" timeout 30 \
+  sudo --preserve-env -u "${NORMAL_USER}" timeout ${PLAY_TIMEOUT} \
     chromium \
     --start-fullscreen \
     --disable-features=VaapiVideoDecoder \
@@ -224,7 +267,6 @@ _summary: Play non-embedded H264 video using Chromium (VAAPI enabled)
 depends:
   kivu-common/prepare-test-data
 requires:
-  executable.name == "intel_gpu_top"
   snap.name == "chromium"
 command:
   echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
@@ -246,16 +288,26 @@ command:
       exit 1
   fi
 
-id: kivu/check_chromium_hw_decoder
+unit: template
+template-resource: graphics_card
+template-filter: graphics_card.driver in ['i915','amdgpu','amdgpu-pro']
+template-engine: jinja2
+template-unit: job
+id: kivu/check_chromium_hw_decoder_{{ driver }}
 category_id: kivu
 flags: simple
 _summary: Make sure video was played in Chromium using a hardware decoder
 depends:
-  kivu/chromium_h264_decoding
+  kivu/chromium_h264_decoding_{{ driver }}
 command:
   parse_chromium_logs.py "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_enabled.log
 
-id: kivu/chromium_h264_encoding
+unit: template
+template-resource: graphics_card
+template-filter: graphics_card.driver in ['i915','amdgpu','amdgpu-pro']
+template-engine: jinja2
+template-unit: job
+id: kivu/chromium_h264_encoding_{{ driver }}
 category_id: kivu
 flags: simple
 user: root
@@ -263,13 +315,22 @@ _summary: Encode H264 stream from within Chromium (VAAPI enabled) and capture GP
 depends:
   kivu-common/prepare-test-data
 requires:
-  executable.name == "intel_gpu_top"
   snap.name == "chromium"
+  {% if driver == "i915" %}
+  executable.name == "intel_gpu_top"
+  {% else %}
+  executable.name == "radeontop"
+  {% endif %}
+environ:
+  # necessary for local mode
+  XDG_SESSION_TYPE
+  XDG_RUNTIME_DIR
+  NORMAL_USER
 command:
-  # Gather GPU logs (JSON pseudo-format)
-  timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_enabled_intel_gpu_top.json &
+  PLAY_TIMEOUT=10
+  echo "{\"gpu_usage_hw_enabled\": $(gpu-load.py --timeout=${PLAY_TIMEOUT} --gpu={{ driver }})}" | tdb.py insert --session-id=check_chromium_h264_encoding &
   # Open video encoding page in Chromium
-  sudo --preserve-env -u "${NORMAL_USER}" timeout 10 \
+  sudo --preserve-env -u "${NORMAL_USER}" timeout ${PLAY_TIMEOUT} \
     chromium \
     --start-fullscreen \
     --enable-logging=stdout \
@@ -286,7 +347,12 @@ command:
       exit 1
   fi
 
-id: kivu/chromium_h264_encoding_vaapi_disabled
+unit: template
+template-resource: graphics_card
+template-filter: graphics_card.driver in ['i915','amdgpu','amdgpu-pro']
+template-engine: jinja2
+template-unit: job
+id: kivu/chromium_h264_encoding_vaapi_disabled_{{ driver }}
 category_id: kivu
 flags: simple
 user: root
@@ -294,14 +360,23 @@ _summary: Encode H264 stream from within Chromium (VAAPI disabled) and capture G
 depends:
   kivu-common/prepare-test-data
 requires:
-  executable.name == "intel_gpu_top"
   snap.name == "chromium"
+  {% if driver == "i915" %}
+  executable.name == "intel_gpu_top"
+  {% else %}
+  executable.name == "radeontop"
+  {% endif %}
+environ:
+  # necessary for local mode
+  XDG_SESSION_TYPE
+  XDG_RUNTIME_DIR
+  NORMAL_USER
 command:
-  # Gather GPU logs (JSON pseudo-format)
-  timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_disabled_intel_gpu_top.json &
+  PLAY_TIMEOUT=10
+  echo "{\"gpu_usage_hw_disabled\": $(gpu-load.py --timeout=${PLAY_TIMEOUT} --gpu={{ driver }})}" | tdb.py insert --session-id=check_chromium_h264_encoding &
   # Open video encoding page in Chromium
   # (HW decoder feature disabled)
-  sudo --preserve-env -u "${NORMAL_USER}" timeout 10 \
+  sudo --preserve-env -u "${NORMAL_USER}" timeout ${PLAY_TIMEOUT} \
     chromium \
     --start-fullscreen \
     --disable-features=VaapiVideoEncoder \
@@ -353,47 +428,39 @@ command:
 #command:
 #  parse_pidstat_logs.py --json "${PLAINBOX_SESSION_SHARE}"/chromium_webrtc_broadcast_vaapi_disabled_pidstat.log "${PLAINBOX_SESSION_SHARE}"/chromium_webrtc_broadcast_vaapi_enabled_pidstat.log
 
-id: kivu/check_chromium_h264_decoding
+unit: template
+template-resource: graphics_card
+template-filter: graphics_card.driver in ['i915','amdgpu','amdgpu-pro']
+template-engine: jinja2
+template-unit: job
+id: kivu/check_chromium_h264_decoding_{{ driver }}
 category_id: kivu
 flags: simple
 _summary: Check average GPU usage (H264 video decoding on Chromium)
 _description: Compare average GPU usage with/without hardware acceleration (H264 video decoding on Chromium)
 depends:
-  kivu/chromium_h264_decoding
-  kivu/chromium_h264_decoding_vaapi_disabled
+  kivu/chromium_h264_decoding_{{ driver }}
+  kivu/chromium_h264_decoding_vaapi_disabled_{{ driver }}
 command:
-  compare_intel_gpu_top_json.py "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_enabled_intel_gpu_top.json "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_disabled_intel_gpu_top.json
+  tdb.py wait
+  tdb.py check "gpu_usage_hw_enabled > gpu_usage_hw_disabled"
 
-id: kivu/gpu_usage_attachment_chromium_h264_decoding.json
-category_id: kivu
-_summary: Attach GPU usage info (H264 video on Chromium)
-plugin: attachment
-depends:
-  kivu/chromium_h264_decoding
-  kivu/chromium_h264_decoding_vaapi_disabled
-command:
-  compare_intel_gpu_top_json.py --json "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_enabled_intel_gpu_top.json "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_disabled_intel_gpu_top.json
-
-id: kivu/check_chromium_h264_encoding
+unit: template
+template-resource: graphics_card
+template-filter: graphics_card.driver in ['i915','amdgpu','amdgpu-pro']
+template-engine: jinja2
+template-unit: job
+id: kivu/check_chromium_h264_encoding_{{ driver }}}
 category_id: kivu
 flags: simple
 _summary: Check GPU usage (H264 video encoding on Chromium)
 _description: Compare average GPU usage with/without hardware acceleration (H264 video encoding on Chromium)
 depends:
-  kivu/chromium_h264_encoding
-  kivu/chromium_h264_encoding_vaapi_disabled
+  kivu/chromium_h264_encoding_{{ driver }}
+  kivu/chromium_h264_encoding_vaapi_disabled_{{ driver }}
 command:
-  compare_intel_gpu_top_json.py "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_enabled_intel_gpu_top.json "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_disabled_intel_gpu_top.json
-
-id: kivu/gpu_usage_attachment_chromium_h264_encoding.json
-category_id: kivu
-_summary: Attach GPU usage info (H264 video on Chromium)
-plugin: attachment
-depends:
-  kivu/chromium_h264_encoding
-  kivu/chromium_h264_encoding_vaapi_disabled
-command:
-  compare_intel_gpu_top_json.py --json "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_enabled_intel_gpu_top.json "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_disabled_intel_gpu_top.json
+  tdb.py wait
+  tdb.py check --session-id=check_chromium_h264_encoding "gpu_usage_hw_enabled > gpu_usage_hw_disabled"
 
 id: kivu/hardware_overlay_mpv
 category_id: kivu

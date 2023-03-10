@@ -10,3 +10,4 @@ mandatory_include:
 bootstrap_include:
     com.canonical.certification::executable
     com.canonical.certification::snap
+    graphics_card
