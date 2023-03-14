@@ -100,7 +100,7 @@ if __name__ == "__main__":
 
     timeout = 1 if args.timeout is None else args.timeout
     gpu_driver = 'i915' if args.gpu is None else args.gpu
-    fname = 'gpu-load.data' if args.file is None else args.file
+    fname = '/tmp/gpu-load-5ef38178-c2c0-11ed-afa1-0242ac120002.data' if args.file is None else args.file
 
     if gpu_driver == 'amdgpu':
         gpu_average = load_radeon(fname=fname, timeout=timeout)
