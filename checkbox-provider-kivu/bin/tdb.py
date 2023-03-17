@@ -80,7 +80,12 @@ class SessionDB:
                     data = None
                     pass
             if data is not None and len(data)>0:
-                json_dict = json.loads(data)
+                try:
+                    json_dict = json.loads(data)
+                except ValueError:
+                    print(f'Fail loading json data : {data}')
+                    return 1
+
                 self.db.insert(json_dict)
 
         if method == 'get':
