@@ -28,14 +28,15 @@ requires:
 environ: GST_PLUGIN
 command:
   tdb.py reset
-  echo "{\"gpu_usage_{{ driver }}\": $(gpu-load.py --timeout=10 --gpu={{ driver }})}" | tdb.py insert &
+  GPU_LOAD_CMD=$(which gpu-load.py)
+  echo "{\"gpu_usage_{{ driver }}\": $(sudo ${GPU_LOAD_CMD} --timeout=10 --gpu={{ driver }})}" | tdb.py insert &
   if [[ "{{ driver }}" == "i915" ]]; then
     timeout 10 gst-launch-1.0 --gst-plugin-path="${GST_PLUGIN}" videotestsrc ! video/x-raw,width=3840,height=2160 ! vaapih264enc ! fakesink
   else
     timeout 10 gst-launch-1.0 --gst-plugin-path="${GST_PLUGIN}" videotestsrc ! vaapih264enc ! fakesink
   fi
   ret_code=$?
-  if [[ "$retcode" -ne 124 ]]
+  if [[ "$ret_code" -ne 124 ]]
   then
       echo "Error: $ret_code"
       exit 1
@@ -62,10 +63,11 @@ requires:
 environ: GST_PLUGIN
 command:
   tdb.py reset
-  echo "{\"gpu_usage_{{ driver }}\": $(gpu-load.py --timeout=10 --gpu={{ driver }})}" | tdb.py insert &
+  GPU_LOAD_CMD=$(which gpu-load.py)
+  echo "{\"gpu_usage_{{ driver }}\": $(sudo ${GPU_LOAD_CMD} --timeout=10 --gpu={{ driver }})}" | tdb.py insert &
   timeout 10 gst-launch-1.0 --gst-plugin-path="${GST_PLUGIN}" -v playbin uri=file://"${PLAINBOX_PROVIDER_DATA}"/bbb_h264_2160p_60fps_extract.mp4
   ret_code=$?
-  if [[ "$retcode" -ne 124 ]]
+  if [[ "$ret_code" -ne 124 ]]
   then
       echo "Error: $ret_code"
       exit 1
