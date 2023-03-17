@@ -53,6 +53,10 @@ def load_intel(fname : str, timeout : int) -> float:
         pass
 
     try:
+        # intel_gpu_top requires root privileges
+        if os.geteuid() != 0:
+            print('intel_gpu_top requires root privileges !')
+            return None
         subprocess.check_call(f'timeout {timeout} intel_gpu_top -J > {fname}', stderr=subprocess.STDOUT, stdout=subprocess.DEVNULL, shell=True)
     except subprocess.CalledProcessError as e:
         if e.returncode == 124:
