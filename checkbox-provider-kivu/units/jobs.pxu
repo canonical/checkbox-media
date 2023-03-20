@@ -452,7 +452,7 @@ template-resource: graphics_card
 template-filter: graphics_card.driver in ['i915','amdgpu','amdgpu-pro']
 template-engine: jinja2
 template-unit: job
-id: kivu/check_chromium_h264_encoding_{{ driver }}}
+id: kivu/check_chromium_h264_encoding_{{ driver }}
 category_id: kivu
 flags: simple
 _summary: Check GPU usage (H264 video encoding on Chromium)

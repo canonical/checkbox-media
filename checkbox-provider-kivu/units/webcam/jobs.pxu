@@ -79,9 +79,55 @@ depends:
   camera/detect
   kivu-common/prepare-test-data
 requires:
+  graphics_card.driver == 'i915'
   snap.name == "chromium"
 command:
   sudo --preserve-env -u "${NORMAL_USER}" timeout 10 bash -c 'chromium --start-fullscreen \
+                                                              --use-fake-ui-for-media-stream \
+                                                              --enable-logging=stderr 2>&1 \
+                                                              --video-capture-use-gpu-memory-buffer --enable-native-gpu-memory-buffers \
+                                                              --vmodule=*/video/linux/*=3,*/ui/gl/*=3,*/platform/wayland/*=3 \
+                                                              file:///home/"${NORMAL_USER}"/checkbox-test-data/camera-streaming.html?encoding=h264 \
+                                                              | tee "${PLAINBOX_SESSION_SHARE}"/chromium_camera_stream_onecopy.log'
+  if [[ "$?" -ne 124 ]]; then
+      echo "Error : ret=$?"
+      exit 1
+  fi
+  # capture two messages:
+  # - Video capture works under the one-copy mode
+  # - Video capture fallback to one-copy mode
+  grep "one-copy mode" "${PLAINBOX_SESSION_SHARE}"/chromium_camera_stream_onecopy.log
+  ret_code=$?
+  if [[ "$ret_code" -ne 0 ]] # No lines selected by grep?
+  then
+    echo "Failed: Could not detect use of V4L2CaptureDelegateGpuHelper or other errors ($ret_code)"
+    exit 1
+  fi
+_description:
+  This test checks the verbose log of chromium after playing the camera video
+  stream. If the string "one-copy mode" is present in this log,
+  we know that the onecopy strategy is active or zerocopy is not possible
+  and fallback to onecopy mode.
+
+id: kivu-webcam/chromium_h264_onecopy_energy
+category_id: kivu-webcam
+plugin: shell
+user: root
+_summary: Check power usage gain bby one copy
+depends:
+  camera/detect
+  kivu-common/prepare-test-data
+requires:
+  graphics_card.driver == 'i915'
+  snap.name == "chromium"
+command:
+  export TEST_DURATION=600
+  export MIN_SAVING_PERCENT=10
+  rapl-power-stat.py ${TEST_DURATION} > "${PLAINBOX_SESSION_SHARE}"/powersaving_stat_one_copy_disabled.txt &
+  perf_pid=$!
+  sleep 1
+  ps -p ${perf_pid} &> /dev/null || exit 1
+  sudo --preserve-env -u "${NORMAL_USER}" timeout ${TEST_DURATION} bash -c 'chromium --start-fullscreen \
                                                               --use-fake-ui-for-media-stream \
                                                               --enable-logging=stderr 2>&1 \
                                                               --vmodule=*/video/linux/*=3,*/ui/gl/*=3,*/platform/wayland/*=3 \
@@ -91,7 +137,53 @@ command:
       echo "Error : ret=$?"
       exit 1
   fi
-  grep V4L2CaptureDelegateGpuHelper "${PLAINBOX_SESSION_SHARE}"/chromium_camera_stream_onecopy.log
+  rapl-power-stat.py ${TEST_DURATION} > "${PLAINBOX_SESSION_SHARE}"/powersaving_stat_one_copy_enabled.txt &
+  perf_pid=$!
+  sleep 1
+  ps -p ${perf_pid} &> /dev/null || exit 1
+  sudo --preserve-env -u "${NORMAL_USER}" timeout ${PLAYTIME_SEC} bash -c 'chromium --start-fullscreen \
+                                                              --use-fake-ui-for-media-stream \
+                                                              --enable-logging=stderr 2>&1 \
+                                                              --video-capture-use-gpu-memory-buffer --enable-native-gpu-memory-buffers \
+                                                              --vmodule=*/video/linux/*=3,*/ui/gl/*=3,*/platform/wayland/*=3 \
+                                                              file:///home/"${NORMAL_USER}"/checkbox-test-data/camera-streaming.html?encoding=h264 \
+                                                              | tee "${PLAINBOX_SESSION_SHARE}"/chromium_camera_stream_onecopy.log'
+  if [[ "$?" -ne 124 ]]; then
+      echo "Error : ret=$?"
+      exit 1
+  fi
+  # check that we have at least 10% power saving gain
+  compare_power_consumption.py "${PLAINBOX_SESSION_SHARE}"/powersaving_stat_one_copy_enabled.txt "${PLAINBOX_SESSION_SHARE}"/powersaving_stat_one_copy_enabled.txt ${MIN_SAVING_PERCENT}
+_description:
+  This test checks the verbose log of chromium after playing the camera video
+  stream. If the string "one-copy mode" is present in this log,
+  we know that the onecopy strategy is active or zerocopy is not possible
+  and fallback to onecopy mode.
+
+
+id: kivu-webcam/chromium_h264_zerocopy
+category_id: kivu-webcam
+plugin: shell
+user: root
+_summary: Encode H264 webcam video and check zerocopy usage
+depends:
+  camera/detect
+  kivu-common/prepare-test-data
+requires:
+  snap.name == "chromium"
+command:
+  sudo --preserve-env -u "${NORMAL_USER}" timeout 10 bash -c 'chromium --start-fullscreen \
+                                                              --use-fake-ui-for-media-stream \
+                                                              --enable-logging=stderr 2>&1 \
+                                                              --video-capture-use-gpu-memory-buffer --enable-native-gpu-memory-buffers \
+                                                              --vmodule=*/video/linux/*=3,*/ui/gl/*=3,*/platform/wayland/*=3 \
+                                                              file:///home/"${NORMAL_USER}"/checkbox-test-data/camera-streaming.html?encoding=h264 \
+                                                              | tee "${PLAINBOX_SESSION_SHARE}"/chromium_camera_stream_zerocopy.log'
+  if [[ "$?" -ne 124 ]]; then
+      echo "Error : ret=$?"
+      exit 1
+  fi
+  grep "Video capture will work under the zero-copy mode" "${PLAINBOX_SESSION_SHARE}"/chromium_camera_stream_zerocopy.log
   ret_code=$?
   if [[ "$ret_code" -ne 0 ]] # No lines selected by grep?
   then
@@ -100,6 +192,7 @@ command:
   fi
 _description:
   This test checks the verbose log of chromium after playing the camera video
-  stream. If the string V4L2CaptureDelegateGpuHelper is present in this log,
-  we know that the onecopy strategy is active.
+  stream. If the string "Video capture will work under the zero-copy mode" is present in this log,
+  we know that the zerocopy strategy is active.
+
 
