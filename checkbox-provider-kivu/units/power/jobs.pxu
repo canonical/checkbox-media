@@ -30,7 +30,7 @@ command:
   sleep 1
   ps -p ${perf_pid} &> /dev/null || exit 1
   sudo --preserve-env -u "${NORMAL_USER}" timeout ${TEST_DURATION} bash -c 'chromium --start-fullscreen \
-                                                                          --disable-features=VaapiVideoDecoder \
+                                                                          --disable-features=VaapiVideoDecoder,VaapiVideoEncoder,VaapiVideoDecodeLinuxGL \
                                                                           --enable-logging=stderr 2>&1 \
                                                                           file:///home/${NORMAL_USER}/checkbox-test-data/video-loop.html \
                                                                           | tee "${PLAINBOX_SESSION_SHARE}"/powersaving_chromium_hwacc_disabled.log'
