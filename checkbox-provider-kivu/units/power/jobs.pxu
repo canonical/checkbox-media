@@ -17,25 +17,27 @@ command:
   perf_pid=$!
   sleep 1
   ps -p ${perf_pid} &> /dev/null || exit 1
-  sudo --preserve-env -u "${NORMAL_USER}" timeout ${TEST_DURATION} bash -c 'chromium --start-fullscreen \
-                                                                          --enable-logging=stderr 2>&1 \
-                                                                          file:///home/${NORMAL_USER}/checkbox-test-data/video-loop.html \
-                                                                          | tee "${PLAINBOX_SESSION_SHARE}"/powersaving_chromium_hwacc_enabled.log'
-  if [[ "$?" -ne 124 ]]; then
-      echo "Error running chromium: ret=$?"
+  echo "Play video with hardware decode"
+  sudo --preserve-env -u "${NORMAL_USER}" timeout ${TEST_DURATION} chromium --start-fullscreen \
+                                                                            --enable-logging=stderr \
+                                                                            file:///home/${NORMAL_USER}/checkbox-test-data/video-loop.html
+  RET_CODE=$?
+  if [[ "$RET_CODE" -ne 124 ]]; then
+      echo "Error running chromium: ret=$RET_CODE"
       exit 1
   fi
   rapl-power-stat.py ${TEST_DURATION} > "${PLAINBOX_SESSION_SHARE}"/powersaving_stat_hwacc_disabled.txt &
   perf_pid=$!
   sleep 1
   ps -p ${perf_pid} &> /dev/null || exit 1
-  sudo --preserve-env -u "${NORMAL_USER}" timeout ${TEST_DURATION} bash -c 'chromium --start-fullscreen \
-                                                                          --disable-features=VaapiVideoDecoder,VaapiVideoEncoder,VaapiVideoDecodeLinuxGL \
-                                                                          --enable-logging=stderr 2>&1 \
-                                                                          file:///home/${NORMAL_USER}/checkbox-test-data/video-loop.html \
-                                                                          | tee "${PLAINBOX_SESSION_SHARE}"/powersaving_chromium_hwacc_disabled.log'
-  if [[ "$?" -ne 124 ]]; then
-      echo "Error running chromium : ret=$?"
+  echo "Play video without hardware decode"
+  sudo --preserve-env -u "${NORMAL_USER}" timeout ${TEST_DURATION} chromium --start-fullscreen \
+                                                                            --disable-features=VaapiVideoDecoder,VaapiVideoEncoder,VaapiVideoDecodeLinuxGL \
+                                                                            --enable-logging=stderr \
+                                                                            file:///home/${NORMAL_USER}/checkbox-test-data/video-loop.html
+  RET_CODE=$?
+  if [[ "$RET_CODE" -ne 124 ]]; then
+      echo "Error running chromium : ret=$RET_CODE"
       exit 1
   fi
   # check that we have at least 10% power saving gain
