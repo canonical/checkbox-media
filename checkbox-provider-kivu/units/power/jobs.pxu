@@ -7,21 +7,17 @@ depends:
   kivu-common/disable-screensaver
 requires:
   snap.name == "chromium"
-  executable.name == "gnome-screenshot"
 environ:
   NORMAL_USER
 command:
-  export TEST_DURATION=10
+  export TEST_DURATION=600
   export MIN_SAVING_PERCENT=10
   rapl-power-stat.py ${TEST_DURATION} > "${PLAINBOX_SESSION_SHARE}"/powersaving_stat_hwacc_enabled.txt &
   perf_pid=$!
   sleep 1
   ps -p ${perf_pid} &> /dev/null || exit 1
-  echo "Contents of /home/${NORMAL_USER}/checkbox-test-data/"
-  ls -la /home/${NORMAL_USER}/checkbox-test-data/
-  echo "powerprofilesctl get"
-  powerprofilesctl get
   echo "Play video with hardware decode"
+  screenshot powersaving_test_chrommium_hw_enabled.jpg 10
   sudo --preserve-env -u "${NORMAL_USER}" timeout ${TEST_DURATION} chromium --start-fullscreen \
                                                                             --enable-logging=stderr \
                                                                             file:///home/${NORMAL_USER}/checkbox-test-data/video-loop.html
@@ -35,6 +31,7 @@ command:
   sleep 1
   ps -p ${perf_pid} &> /dev/null || exit 1
   echo "Play video without hardware decode"
+  screenshot powersaving_test_chrommium_hw_disabled.jpg 10
   sudo --preserve-env -u "${NORMAL_USER}" timeout ${TEST_DURATION} chromium --start-fullscreen \
                                                                             --disable-features=VaapiVideoDecoder,VaapiVideoEncoder,VaapiVideoDecodeLinuxGL \
                                                                             --enable-logging=stderr \
@@ -46,17 +43,20 @@ command:
   fi
   # check that we have at least 10% power saving gain
   compare_power_consumption.py "${PLAINBOX_SESSION_SHARE}"/powersaving_stat_hwacc_enabled.txt "${PLAINBOX_SESSION_SHARE}"/powersaving_stat_hwacc_disabled.txt ${MIN_SAVING_PERCENT}
-  sudo --preserve-env -u "${NORMAL_USER}" gnome-screenshot -f "${PLAINBOX_SESSION_SHARE}"/output.jpg
 _description:
   This test checks the power saving offered by the HW acc feature of Chromium
   The expected saving rate is more than 10%
 
-# should be at the end of the file
+# Should be at the end of the file
+# so this test will be executed after all other test units
 plugin: attachment
 category_id: kivu-powersaving
-estimated_duration: 0.5
-id: kivu-powersaving/kivu-powersaving-screenshot.zip
+estimated_duration: 1.0
+id: kivu-powersaving/kivu-powersaving-screenshot.tar.gz
 command:
- zip -r kivu-powersaving-screenshot.zip *.jpg || true
+ if [ ! -d "${PLAINBOX_SESSION_SHARE}"/screenshots ]; then
+   exit 0
+ fi
+ tar -C "${PLAINBOX_SESSION_SHARE}"/ -c screenshots | gzip -9 -f
 _description: Attaches the screenshots
 _summary: Attaches the screenshots
