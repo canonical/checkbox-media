@@ -20,7 +20,7 @@ command:
   screenshot powersaving_test_chrommium_hw_enabled.jpg 10
   sudo --preserve-env -u "${NORMAL_USER}" timeout ${TEST_DURATION} chromium --start-fullscreen \
                                                                             --enable-logging=stderr \
-                                                                            file:///home/${NORMAL_USER}/checkbox-test-data/video-loop.html
+                                                                            file:///home/${NORMAL_USER}/checkbox-test-data/video-loop-long.html
   RET_CODE=$?
   if [[ "$RET_CODE" -ne 124 ]]; then
       echo "Error running chromium: ret=$RET_CODE"
@@ -35,7 +35,7 @@ command:
   sudo --preserve-env -u "${NORMAL_USER}" timeout ${TEST_DURATION} chromium --start-fullscreen \
                                                                             --disable-features=VaapiVideoDecoder,VaapiVideoEncoder,VaapiVideoDecodeLinuxGL \
                                                                             --enable-logging=stderr \
-                                                                            file:///home/${NORMAL_USER}/checkbox-test-data/video-loop.html
+                                                                            file:///home/${NORMAL_USER}/checkbox-test-data/video-loop-long.html
   RET_CODE=$?
   if [[ "$RET_CODE" -ne 124 ]]; then
       echo "Error running chromium : ret=$RET_CODE"
