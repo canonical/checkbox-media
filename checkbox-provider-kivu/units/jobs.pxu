@@ -4,6 +4,8 @@ plugin: attachment
 _summary: Attach content of vainfo
 requires: executable.name == "vainfo"
 command:
+  export LD_LIBRARY_PATH=/snap/chromium/current/usr/lib/x86_64-linux-gnu/
+  export LIBVA_DRIVERS_PATH=/snap/chromium/current/usr/lib/x86_64-linux-gnu/dri
   vainfo
 
 unit: template
