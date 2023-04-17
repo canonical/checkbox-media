@@ -1,8 +1,3 @@
 #!/bin/sh
 
-# Work-around: when we launch session test in direct mode (not remote)
-# NORMAL_USER is not correctly passed to checkbox jobs and the tests fail
-# This is the work-around in order to inject the NORMAL_USER variable
-export NORMAL_USER=$USER
-
 exec checkbox-cli "$@"

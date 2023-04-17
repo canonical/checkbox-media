@@ -1,4 +1,4 @@
-#!/usr/bin/env checkbox-cli-wrapper
+#!/usr/bin/env -S checkbox-cli-wrapper remote 127.0.0.1
 [launcher]
 app_id = com.canonical.qa.kivu:checkbox
 launcher_version = 1
