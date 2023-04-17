@@ -79,7 +79,6 @@ depends:
   camera/detect
   kivu-common/prepare-test-data
 requires:
-  graphics_card.driver == 'i915'
   snap.name == "chromium"
 command:
   sudo --preserve-env -u "${NORMAL_USER}" timeout 10 bash -c 'chromium --start-fullscreen \
@@ -118,7 +117,6 @@ depends:
   camera/detect
   kivu-common/prepare-test-data
 requires:
-  graphics_card.driver == 'i915'
   snap.name == "chromium"
 command:
   export TEST_DURATION=600
