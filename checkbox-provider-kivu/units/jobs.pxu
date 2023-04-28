@@ -267,21 +267,17 @@ requires:
 command:
   echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
   # Play fullscreen looping video in Chromium
-  sudo --preserve-env -u "${NORMAL_USER}" timeout 30 \
-    chromium \
-    --start-fullscreen \
-    --enable-logging=stdout \
-    /home/"${NORMAL_USER}"/checkbox-test-data/bbb_h264_2160p_60fps_extract.mp4 > \
-    "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_no_embed.log
+  sudo --preserve-env -u "${NORMAL_USER}" timeout 30 bash -c 'chromium --start-fullscreen \
+                                                                       --enable-logging=stderr 2>&1 \
+                                                                       /home/"${NORMAL_USER}"/checkbox-test-data/bbb_h264_2160p_60fps_extract.mp4 \
+                                                                       | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_no_embed.log'
   sudo_result=$?
-  cat "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_no_embed.log
-  if [[ "$sudo_result" -eq 124 ]]
+  if [[ "$sudo_result" -ne 124 ]]
   then
-      exit 0
-  else
       echo "Error: $sudo_result"
       exit 1
   fi
+  parse_chromium_logs.py "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_no_embed.log
 
 unit: template
 template-resource: graphics_card
