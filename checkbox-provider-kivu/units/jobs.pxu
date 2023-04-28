@@ -110,7 +110,6 @@ command:
   grep "Compositing: Software only." "${PLAINBOX_SESSION_SHARE}"/chromium_hardware_compositing.log
   if [[ "$?" -eq 1 ]] # No lines selected by grep?
   then
-      echo "Test finished"
       exit 0
   fi
   echo "Lacks hardware compositing."
@@ -199,19 +198,13 @@ command:
   echo "{\"gpu_usage_hw_enabled\": $(gpu-load.py --timeout=${PLAY_TIMEOUT} --gpu={{ driver }})}" | tdb.py insert &
   # Play fullscreen looping video in Chromium
   echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
-  sudo --preserve-env -u "${NORMAL_USER}" timeout ${PLAY_TIMEOUT} \
-    chromium \
-    --start-fullscreen \
-    --enable-logging=stderr \
-    /home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html &> \
-    "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_enabled.log
+  sudo --preserve-env -u "${NORMAL_USER}" timeout ${PLAY_TIMEOUT} bash -c 'chromium --start-fullscreen \
+                                                                                    --enable-logging=stderr 2>&1 \
+                                                                                    file:///home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html \
+                                                                                    | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_enabled.log'
   sudo_result=$?
-  cat "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_enabled.log
-  if [[ "$sudo_result" -eq 124 ]]
+  if [[ "$sudo_result" -ne 124 ]]
   then
-      echo "Test finished to timeout."
-      exit 0
-  else
       echo "Error. The sudo-timeout-chromium command returned $sudo_result"
       exit 1
   fi
@@ -256,7 +249,6 @@ command:
   cat "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_disabled.log
   if [[ "$sudo_result" -eq 124 ]]
   then
-      echo "Test finished to timeout."
       exit 0
   else
       echo "Error. The sudo-timeout-chromium command returned $sudo_result"
@@ -285,7 +277,6 @@ command:
   cat "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_no_embed.log
   if [[ "$sudo_result" -eq 124 ]]
   then
-      echo "Test finished"
       exit 0
   else
       echo "Error: $sudo_result"
@@ -344,7 +335,6 @@ command:
   cat "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_enabled.log
   if [[ "$sudo_retval" -eq 124 ]]
   then
-      echo "Test finished"
       exit 0
   else
       echo "Error: $sudo_retval"
@@ -390,7 +380,6 @@ command:
   cat "${PLAINBOX_SESSION_SHARE}"/chromium_h264_encoding_vaapi_disabled.log
   if [[ "$sudo_retval" -eq 124 ]]
   then
-      echo "Test finished"
       exit 0
   else
       echo "Error: $sudo_retval"
