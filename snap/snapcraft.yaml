@@ -27,6 +27,9 @@ base: core22
 #     the test execution is standalone and does not depend on the remote-slave daemon
 # shell:
 #   - give shell access to the provider snap
+# test-runner-automated-hwdec:
+#   - execute hardware decoding tests
+#     the test execution is standalone and does not depend on the remote-slave daemon
 apps:
   checkbox-cli:
     command-chain: [bin/wrapper_local]
@@ -48,6 +51,11 @@ apps:
   test-runner-automated:
     command-chain: [bin/wrapper_local]
     command: bin/test-runner-automated
+  test-runner-automated-hwdec:
+    command-chain: [bin/wrapper_local]
+    command: bin/test-runner-automated-hwdec
+  run-hwdec-check:
+    command: bin/run-hwdec-check
 
 passthrough:
   hooks:
@@ -65,6 +73,7 @@ parts:
     stage-packages:
       - python3-tinydb
       - python3-filelock
+      - intel-gpu-tools
     override-build: |
       export PYTHONPATH=$SNAPCRAFT_STAGE/lib/python3.10/site-packages:$SNAPCRAFT_STAGE/usr/lib/python3/dist-packages
       for path in $(find "/snap/checkbox22/current/providers/" -mindepth 1 -maxdepth 1 -type d); do export PROVIDERPATH=$path${PROVIDERPATH:+:$PROVIDERPATH}; done

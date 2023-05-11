@@ -1,0 +1,18 @@
+#!/bin/bash
+
+PROVIDER_SYSTEMD_SERVICE=snap.checkbox-kivu-classic.remote-slave.service
+
+systemctl is-active --quiet checkbox-ng.service
+if [ $? -eq 0 ]; then
+  sudo systemctl stop checkbox-ng.service || true
+  sleep 5
+  sudo systemctl start ${PROVIDER_SYSTEMD_SERVICE} || true
+fi
+
+systemctl is-active --quiet ${PROVIDER_SYSTEMD_SERVICE}
+if [ $? -ne 0 ]; then
+    echo "The provider service ${PROVIDER_SYSTEMD_SERVICE} is not active !"
+    exit 1
+fi
+
+checkbox-kivu-classic.test-runner-automated-hwdec

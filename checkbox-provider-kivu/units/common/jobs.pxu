@@ -10,7 +10,8 @@ command:
   # clean test database
   tdb.py reset
   # generate big video from sample
-  concat_video.sh ${PLAINBOX_PROVIDER_DATA}/bbb_h264_2160p_60fps_extract.mp4 30 ${HOME}/checkbox-test-data/bbb_h264_long.mp4
+  # does not fail the test if failure
+  concat_video.sh ${PLAINBOX_PROVIDER_DATA}/bbb_h264_2160p_60fps_extract.mp4 30 ${HOME}/checkbox-test-data/bbb_h264_long.mp4 || true
 
 unit: template
 template-resource: graphics_card

@@ -194,8 +194,7 @@ environ:
   NORMAL_USER
 command:
   PLAY_TIMEOUT=30
-  tdb.py reset
-  echo "{\"gpu_usage_hw_enabled\": $(gpu-load.py --timeout=${PLAY_TIMEOUT} --gpu={{ driver }})}" | tdb.py insert &
+  echo "{\"gpu_usage_hw_enabled\": $(gpu-load.py --timeout=${PLAY_TIMEOUT} --gpu={{ driver }})}" | tdb.py insert --session-id=check_chromium_h264_decoding &
   # Play fullscreen looping video in Chromium
   echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
   sudo --preserve-env -u "${NORMAL_USER}" timeout ${PLAY_TIMEOUT} bash -c 'chromium --start-fullscreen \
@@ -235,22 +234,17 @@ environ:
   NORMAL_USER
 command:
   PLAY_TIMEOUT=30
-  echo "{\"gpu_usage_hw_disabled\": $(gpu-load.py --timeout=${PLAY_TIMEOUT} --gpu={{ driver }})}" | tdb.py insert &
+  echo "{\"gpu_usage_hw_disabled\": $(gpu-load.py --timeout=${PLAY_TIMEOUT} --gpu={{ driver }})}" | tdb.py insert --session-id=check_chromium_h264_decoding &
   # Play fullscreen looping video in Chromium (HW decoder feature disabled)
   echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
-  sudo --preserve-env -u "${NORMAL_USER}" timeout ${PLAY_TIMEOUT} \
-    chromium \
-    --start-fullscreen \
-    --disable-features=VaapiVideoDecoder \
-    --enable-logging=stderr \
-    /home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html &> \
-    "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_disabled.log
+  sudo --preserve-env -u "${NORMAL_USER}" timeout ${PLAY_TIMEOUT} bash -c 'chromium --start-fullscreen \
+                                                                                    --disable-features=VaapiVideoDecoder \
+                                                                                    --enable-logging=stderr 2>&1 \
+                                                                                    file:///home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html \
+                                                                                    | tee "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_disabled.log'
   sudo_result=$?
-  cat "${PLAINBOX_SESSION_SHARE}"/chromium_h264_decoding_vaapi_disabled.log
-  if [[ "$sudo_result" -eq 124 ]]
+  if [[ "$sudo_result" -ne 124 ]]
   then
-      exit 0
-  else
       echo "Error. The sudo-timeout-chromium command returned $sudo_result"
       exit 1
   fi
@@ -432,7 +426,7 @@ depends:
   kivu/chromium_h264_decoding_vaapi_disabled_{{ driver }}
 command:
   tdb.py wait
-  tdb.py check "gpu_usage_hw_enabled > gpu_usage_hw_disabled"
+  tdb.py check --session-id=check_chromium_h264_decoding "gpu_usage_hw_enabled > gpu_usage_hw_disabled"
 
 unit: template
 template-resource: graphics_card
