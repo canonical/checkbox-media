@@ -4,7 +4,7 @@ plugin: shell
 user: root
 _summary: Check power saving on a video playback with Chromum Hw Acc
 depends:
-  kivu-common/disable-screensaver
+  kivu-common/prepare-test-data
 requires:
   snap.name == "chromium"
 environ:

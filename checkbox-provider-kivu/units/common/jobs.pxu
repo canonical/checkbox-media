@@ -37,13 +37,16 @@ category_id: kivu-common
 flags: simple
 requires:
   executable.name == "dbus-send"
+  executable.name == "gsettings"
 _summary: Disable sreensaver (with GNOME)
 command:
-  # Note: this binary gets in the way:
-  # /snap/checkbox22/current/usr/bin/dbus-send
-  # So provide full path instead.
-  tool=/usr/bin/dbus-send
-  screen_saver_status=`$tool --session --print-reply=literal --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.GetActive`
+  # robust against reboot
+  /usr/bin/gsettings set org.gnome.desktop.lockdown disable-lock-screen 'true'
+  /usr/bin/gsettings set org.gnome.desktop.screensaver lock-enabled false
+  /usr/bin/gsettings set org.gnome.desktop.screensaver idle-activation-enabled false
+  # Disable screen-saver if it is currently enabled
+  # use system dbus-send with absolute path because /snap/checkbox22/current/usr/bin/dbus-send does not work
+  screen_saver_status=`/usr/bin/dbus-send --session --print-reply=literal --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.GetActive`
   if [[ $? -ne 0 ]]; then
     echo "The dbus-send command failed."
     exit $?

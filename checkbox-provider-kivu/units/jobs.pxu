@@ -55,6 +55,8 @@ id: kivu/gstreamer_h264_decoding_{{ driver }}
 category_id: kivu
 plugin: shell
 _summary: Decode H264 video with gstreamer and capture GPU usage
+depends:
+  kivu-common/prepare-test-data
 requires:
   executable.name == "gst-launch-1.0"
   {% if driver == "i915" %}
@@ -82,12 +84,12 @@ category_id: kivu
 flags: simple
 user: root
 _summary: Grab chrome://gpu url and inspect for HW compositor.
+depends:
+  kivu-common/prepare-test-data
 requires:
   executable.name == "ydotool"
   executable.name == "wl-paste"
   snap.name == "chromium"
-#depends:
-#  kivu-common/disable-screensaver
 environ:
   # necessary for local mode
   XDG_SESSION_TYPE
@@ -124,8 +126,8 @@ requires:
   executable.name == "ydotool"
   executable.name == "wl-paste"
   snap.name == "chromium"
-#depends:
-#  kivu-common/disable-screensaver
+depends:
+  kivu-common/prepare-test-data
 environ:
   # necessary for local mode
   XDG_SESSION_TYPE
