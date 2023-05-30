@@ -1,7 +1,27 @@
-id: kivu-common/prepare-test-data
+plugin: attachment
+id: kivu-common/attach-environ
 category_id: kivu-common
+estimated_duration: 0.11
+_summary: Attach environment variables
+command:
+ env
+
+id: kivu-common/vainfo
+category_id: kivu-common
+plugin: attachment
+_summary: Attach content of vainfo
+requires: executable.name == "vainfo"
+command:
+  export LD_LIBRARY_PATH=/snap/chromium/current/usr/lib/x86_64-linux-gnu/
+  export LIBVA_DRIVERS_PATH=/snap/chromium/current/usr/lib/x86_64-linux-gnu/dri
+  vainfo
+
+id: kivu-common/prepare-test-data
 flags: simple
 _summary: Prepare test data for Chromium-related tests
+depends:
+  kivu-common/attach-environ
+  kivu-common/vainfo
 command:
   # Chromium is a snap, and its confinment rules prevent it from accessing data
   # from another snap. Checkbox data files need to be copied to the user's home

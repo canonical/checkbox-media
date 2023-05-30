@@ -1,13 +1,3 @@
-id: kivu/vainfo
-category_id: kivu
-plugin: attachment
-_summary: Attach content of vainfo
-requires: executable.name == "vainfo"
-command:
-  export LD_LIBRARY_PATH=/snap/chromium/current/usr/lib/x86_64-linux-gnu/
-  export LIBVA_DRIVERS_PATH=/snap/chromium/current/usr/lib/x86_64-linux-gnu/dri
-  vainfo
-
 unit: template
 template-resource: graphics_card
 template-filter: graphics_card.driver in ['i915','amdgpu','amdgpu-pro']
@@ -98,19 +88,21 @@ environ:
 command:
   # Launch the chromium browser.
   echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
-  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 30 \
-    chromium \
-    --start-maximized \
-    --enable-logging=stderr \
-    /home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html &> \
-    "${PLAINBOX_SESSION_SHARE}"/chromium_hardware_compositing_browser.log &
+  PLAY_TIMEOUT=20
+  sudo --preserve-env -u "${NORMAL_USER}" timeout ${PLAY_TIMEOUT} bash -c 'chromium --start-maximized \
+                                                                                    --new-window \
+                                                                                    --enable-logging=stderr 2>&1 \
+                                                                                    file:///home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html \
+                                                                                    | tee "${PLAINBOX_SESSION_SHARE}"/chromium_hardware_compositing_browser.log' &
+  # Empty the clipboard
+  wl-copy ""
   # Grab the contents from the browser
   copy_chrome_url_v0_ydo.sh chrome://gpu
   # Paste the clipboard
   wl-paste | tee "${PLAINBOX_SESSION_SHARE}"/chromium_hardware_compositing.log
   # If it says "Software only", we should fail the test.
-  grep "Compositing: Software only." "${PLAINBOX_SESSION_SHARE}"/chromium_hardware_compositing.log
-  if [[ "$?" -eq 1 ]] # No lines selected by grep?
+  grep "Compositing: Hardware accelerated" "${PLAINBOX_SESSION_SHARE}"/chromium_hardware_compositing.log
+  if [[ "$?" -eq 0 ]] # No lines selected by grep?
   then
       exit 0
   fi
@@ -136,12 +128,13 @@ environ:
 command:
   echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
   # Launch the chromium browser.
-  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 30 \
-    chromium \
-    --start-maximized \
-    --enable-logging=stderr \
-    /home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html &> \
-    "${PLAINBOX_SESSION_SHARE}"/chromium_flags_check.log &
+  PLAY_TIMEOUT=20
+  sudo --preserve-env -u "${NORMAL_USER}" timeout ${PLAY_TIMEOUT} bash -c 'chromium --start-maximized \
+                                                                                    --enable-logging=stderr 2>&1 \
+                                                                                    file:///home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html \
+                                                                                    | tee "${PLAINBOX_SESSION_SHARE}"/chromium_flags_check.log' &
+  # Empty the clipboard
+  wl-copy ""
   # Grab the contents from the browser
   copy_chrome_url_v0_ydo.sh chrome://version
   # Paste the clipboard
