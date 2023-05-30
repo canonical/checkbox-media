@@ -529,3 +529,51 @@ _description:
   Launch a bunch of MPV with hardware decoding
   NB: use mpv of the host (it is not available inside the provider), par consequence
   use the VA-API libraries of the host (libva, intel media)
+
+unit: template
+template-resource: graphics_card
+template-filter: graphics_card.driver in ['i915']
+template-engine: jinja2
+template-unit: job
+id: kivu/stress_chromium_h264_decoding_{{ driver }}
+category_id: kivu
+flags: simple
+user: root
+_summary: Play twenty H264 videos in Chromium to check maxed out hw accel
+depends:
+  kivu-common/prepare-test-data
+requires:
+  snap.name == "chromium"
+  executable.name == "intel_gpu_top"
+environ:
+  # necessary for local mode
+  XDG_SESSION_TYPE
+  XDG_RUNTIME_DIR
+  NORMAL_USER
+estimated_duration: 1m
+command:
+  tdb.py reset
+  intel_gen=$(cpuid_tmp.py --intel_gen_number)
+  if [[ $intel_gen -ge 12 ]]
+  then
+      video_engine=VideoEnhance
+  else
+      video_engine=Video
+  fi
+  PLAY_TIMEOUT=50
+  VIDEO_ENGINE_THRESH=99
+  echo "{\"gpu_usage_over_threshold_duration_{{ driver }}\": $(gpu-thresh.py --threshold=${VIDEO_ENGINE_THRESH} --video_engine=${video_engine} --timeout=${PLAY_TIMEOUT} --gpu={{ driver }})}" | tdb.py insert --session-id=check_chromium_h264_decoding &
+  # Play looping video in Chromium
+  echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
+  instant_gpu_load=0
+  while [[ $instant_gpu_load -lt $VIDEO_ENGINE_THRESH ]]; do
+  for i in {1..10}; do
+  sudo --preserve-env -u "${NORMAL_USER}" bash -c "timeout ${PLAY_TIMEOUT} chromium --new-window --window-size=800,600\
+                                                                                    file:///home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html &"
+  done # end for loop
+  sleep 2
+  # if the load isn't high enough to stress, go back to the top of the loop
+  instant_gpu_load=$(gpu-load-instant.py)
+  done # end while loop
+  tdb.py wait
+  tdb.py check "gpu_usage_over_threshold_duration_{{ driver }} > 25000"
