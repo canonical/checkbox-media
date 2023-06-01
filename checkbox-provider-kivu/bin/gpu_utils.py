@@ -10,7 +10,9 @@ def get_num_active_engines(fname : str) -> int:
 
     return num_engines
 
-def compute_time_above_thresh_intel(fname : str, threshold : float) -> float:
+# The video engine parameter here 
+def compute_time_above_thresh_intel(fname : str, threshold : float, 
+        video_engine="Video/") -> float:
     data = read_gputop_json(fname)
 
     time_above_threshold = 0.0
@@ -20,7 +22,7 @@ def compute_time_above_thresh_intel(fname : str, threshold : float) -> float:
         # Looking at the `engines` section only
         for k, v in d["engines"].items():
             # Focus on GPU usage for video encoding/decoding only
-            if "Video/" in k and (v.get("busy") is not None) and v["busy"] > threshold:
+            if video_engine in k and (v.get("busy") is not None) and v["busy"] > threshold:
                 time_above_threshold += duration[1]
 
     return time_above_threshold

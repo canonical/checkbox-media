@@ -55,12 +55,19 @@ if __name__ == "__main__":
     parser.add_argument(
         "--threshold", type=float, help="Minimum threshold for video engine utilization"
     )
+    parser.add_argument(
+        "--video_engine", type=str, help="Manually set the video engine you" \
+                " want to monitor (Video (Default) | VideoEnhance",
+                choices=["Video", "VideoEnhance"], default="Video"
+    )
     args = parser.parse_args()
 
     timeout = 1 if args.timeout is None else args.timeout
     gpu_driver = 'i915' if args.gpu is None else args.gpu
     fname = '/tmp/gpu-thresh-5ef38178-c2c0-11ed-afa1-0242ac120002.data' if args.file is None else args.file
     threshold = 0 if args.threshold is None else args.threshold
+
+    video_engine = f'{args.video_engine}/'
 
     if gpu_driver == 'amdgpu':
         # This script does not support amd yet
