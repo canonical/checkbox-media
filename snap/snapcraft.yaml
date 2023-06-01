@@ -84,9 +84,9 @@ parts:
       checkbox-provider-tools validate
       checkbox-provider-tools build
       checkbox-provider-tools install --layout=relocatable --prefix=/providers/checkbox-provider-kivu --root="$SNAPCRAFT_PART_INSTALL"
-  launchers:
+  bin:
     plugin: dump
-    source: launchers/
+    source: bin/
     organize:
       '*': bin/
   config-variables:
