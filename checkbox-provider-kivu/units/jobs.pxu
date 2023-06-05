@@ -21,7 +21,9 @@ environ: GST_PLUGIN
 command:
   tdb.py reset
   GPU_LOAD_CMD=$(which gpu-load.py)
-  echo "{\"gpu_usage_{{ driver }}\": $(sudo ${GPU_LOAD_CMD} --timeout=10 --gpu={{ driver }})}" | tdb.py insert &
+  # NB : preserve PATH of user for the sudo (if not, intel_gpu_top will not be found)
+  # --preserve-env can be used but it will not work because of the secure_path option 
+  echo "{\"gpu_usage_{{ driver }}\": $(sudo env PATH=$PATH ${GPU_LOAD_CMD} --timeout=10 --gpu={{ driver }})}" | tdb.py insert &
   if [[ "{{ driver }}" == "i915" ]]; then
     timeout 10 gst-launch-1.0 --gst-plugin-path="${GST_PLUGIN}" videotestsrc ! video/x-raw,width=3840,height=2160 ! vaapih264enc ! fakesink
   else
@@ -58,7 +60,9 @@ environ: GST_PLUGIN
 command:
   tdb.py reset
   GPU_LOAD_CMD=$(which gpu-load.py)
-  echo "{\"gpu_usage_{{ driver }}\": $(sudo ${GPU_LOAD_CMD} --timeout=10 --gpu={{ driver }})}" | tdb.py insert &
+  # NB : preserve PATH of user for the sudo (if not, intel_gpu_top will not be found)
+  # --preserve-env can be used but it will not work because of the secure_path option 
+  echo "{\"gpu_usage_{{ driver }}\": $(sudo env PATH=$PATH ${GPU_LOAD_CMD} --timeout=10 --gpu={{ driver }})}" | tdb.py insert &
   timeout 10 gst-launch-1.0 --gst-plugin-path="${GST_PLUGIN}" -v playbin uri=file://"${PLAINBOX_PROVIDER_DATA}"/bbb_h264_2160p_60fps_extract.mp4
   ret_code=$?
   if [[ "$ret_code" -ne 124 ]]
