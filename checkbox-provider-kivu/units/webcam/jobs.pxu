@@ -47,7 +47,7 @@ command:
   timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_h264_webcam_encoding_disabled_intel_gpu_top.json &
   gpu_top_pid=$!
   sudo --preserve-env -u "${NORMAL_USER}" timeout 10 bash -c 'chromium --start-fullscreen \
-                                                              --disable-features=VaapiVideoDecoder \
+                                                              --disable-features=VaapiVideoEncoder \
                                                               --use-fake-ui-for-media-stream \
                                                               --enable-logging=stderr 2>&1 \
                                                               file:///home/"${NORMAL_USER}"/checkbox-test-data/camera-streaming.html?encoding=h264 \
