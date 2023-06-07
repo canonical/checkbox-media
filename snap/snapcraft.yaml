@@ -32,6 +32,8 @@ base: core22
 #     the test execution is standalone and does not depend on the remote-slave daemon
 # install-full-deps:
 #   - install all depedencies needed for provider jobs
+# media-stress-test
+#   - execute hardware decoding tests which max out the video engines
 apps:
   checkbox-cli:
     command-chain: [bin/wrapper_local]
@@ -39,6 +41,9 @@ apps:
   configure:
     command-chain: [bin/wrapper_local]
     command: bin/configure
+  media-stress-test:
+    command-chain: [bin/wrapper_local]
+    command: bin/media-stress-test
   remote-slave:
     command-chain: [bin/wrapper_local]
     command: bin/checkbox-cli-wrapper slave
