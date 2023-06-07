@@ -23,3 +23,15 @@ bootstrap_include:
     com.canonical.certification::executable
     com.canonical.certification::snap
     graphics_card
+
+id: kivu-media-stress
+unit: test plan
+_name: Kivu chromium hardware decoding stress check
+include:
+    kivu/stress.*
+mandatory_include:
+    com.canonical.certification::miscellanea/submission-resources
+bootstrap_include:
+    com.canonical.certification::executable
+    com.canonical.certification::snap
+    graphics_card

@@ -490,3 +490,38 @@ command:
     exit 0
   fi
 
+unit: template
+template-resource: graphics_card
+template-filter: graphics_card.driver in ['i915']
+template-engine: jinja2
+template-unit: job
+id: kivu/stress_mpv_h264_decoding_{{ driver }}
+category_id: kivu
+flags: simple
+user: root
+_summary: Play twenty H264 videos (VAAPI enabled) to check maxed out hw accel
+depends:
+  kivu-common/prepare-test-data
+requires:
+  executable.name == "mpv"
+  executable.name == "intel_gpu_top"
+environ:
+  # necessary for local mode
+  XDG_SESSION_TYPE
+  XDG_RUNTIME_DIR
+  NORMAL_USER
+command:
+  tdb.py reset
+  GPU_LOAD_CMD=$(which gpu-thresh.py)
+  # Since it's a stress test, set the threshold near 100% video engine utilization
+  echo "{\"gpu_usage_over_threshold_duration_{{ driver }}\": $(sudo ${GPU_LOAD_CMD} --timeout=30 --video_engine=Video --threshold=99.3 --gpu={{ driver }})}" | tdb.py insert &
+  PLAY_TIMEOUT=12
+  for i in {1..20}; do
+  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 30 mpv --loop -no-audio --geometry=20% "${PLAINBOX_PROVIDER_DATA}"/bbb_h264_2160p_60fps_extract.mp4 &
+  done
+  sleep ${PLAY_TIMEOUT}
+  tdb.py wait
+  # Checks the number of ms spent above the threshold for the video engine decoder
+  tdb.py check "gpu_usage_over_threshold_duration_{{ driver }} > 23000"
+  # If HW decode fails, video engine activity will not meet the threshold for
+  # long enough so no check needed
