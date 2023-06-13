@@ -84,8 +84,6 @@ command:
   sudo --preserve-env -u "${NORMAL_USER}" timeout 10 bash -c 'chromium --start-fullscreen \
                                                               --use-fake-ui-for-media-stream \
                                                               --enable-logging=stderr 2>&1 \
-                                                              --video-capture-use-gpu-memory-buffer --enable-native-gpu-memory-buffers \
-                                                              --vmodule=*/video/linux/*=3,*/ui/gl/*=3,*/platform/wayland/*=3 \
                                                               file:///home/"${NORMAL_USER}"/checkbox-test-data/camera-streaming.html?encoding=h264 \
                                                               | tee "${PLAINBOX_SESSION_SHARE}"/chromium_camera_stream_onecopy.log'
   if [[ "$?" -ne 124 ]]; then
@@ -112,7 +110,7 @@ id: kivu-webcam/chromium_h264_onecopy_energy
 category_id: kivu-webcam
 plugin: shell
 user: root
-_summary: Check power usage gain bby one copy
+_summary: Check power usage gain by one copy
 depends:
   camera/detect
   kivu-common/prepare-test-data
@@ -127,8 +125,8 @@ command:
   ps -p ${perf_pid} &> /dev/null || exit 1
   sudo --preserve-env -u "${NORMAL_USER}" timeout ${TEST_DURATION} bash -c 'chromium --start-fullscreen \
                                                               --use-fake-ui-for-media-stream \
+                                                              --disable-video-capture-use-gpu-memory-buffer \
                                                               --enable-logging=stderr 2>&1 \
-                                                              --vmodule=*/video/linux/*=3,*/ui/gl/*=3,*/platform/wayland/*=3 \
                                                               file:///home/"${NORMAL_USER}"/checkbox-test-data/camera-streaming.html?encoding=h264 \
                                                               | tee "${PLAINBOX_SESSION_SHARE}"/chromium_camera_stream_onecopy.log'
   if [[ "$?" -ne 124 ]]; then
@@ -139,11 +137,9 @@ command:
   perf_pid=$!
   sleep 1
   ps -p ${perf_pid} &> /dev/null || exit 1
-  sudo --preserve-env -u "${NORMAL_USER}" timeout ${PLAYTIME_SEC} bash -c 'chromium --start-fullscreen \
+  sudo --preserve-env -u "${NORMAL_USER}" timeout ${TEST_DURATION} bash -c 'chromium --start-fullscreen \
                                                               --use-fake-ui-for-media-stream \
                                                               --enable-logging=stderr 2>&1 \
-                                                              --video-capture-use-gpu-memory-buffer --enable-native-gpu-memory-buffers \
-                                                              --vmodule=*/video/linux/*=3,*/ui/gl/*=3,*/platform/wayland/*=3 \
                                                               file:///home/"${NORMAL_USER}"/checkbox-test-data/camera-streaming.html?encoding=h264 \
                                                               | tee "${PLAINBOX_SESSION_SHARE}"/chromium_camera_stream_onecopy.log'
   if [[ "$?" -ne 124 ]]; then
@@ -151,7 +147,7 @@ command:
       exit 1
   fi
   # check that we have at least 10% power saving gain
-  compare_power_consumption.py "${PLAINBOX_SESSION_SHARE}"/powersaving_stat_one_copy_enabled.txt "${PLAINBOX_SESSION_SHARE}"/powersaving_stat_one_copy_enabled.txt ${MIN_SAVING_PERCENT}
+  compare_power_consumption.py "${PLAINBOX_SESSION_SHARE}"/powersaving_stat_one_copy_enabled.txt "${PLAINBOX_SESSION_SHARE}"/powersaving_stat_one_copy_disabled.txt ${MIN_SAVING_PERCENT}
 _description:
   This test checks the verbose log of chromium after playing the camera video
   stream. If the string "one-copy mode" is present in this log,

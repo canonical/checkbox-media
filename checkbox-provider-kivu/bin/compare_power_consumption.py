@@ -37,8 +37,8 @@ if __name__ == "__main__":
     hwacc_energy = load_energy(hwacc_energy_file)
     no_hwacc_energy = load_energy(no_hwacc_energy_file)
     
-    print(hwacc_energy)
-    print(no_hwacc_energy)
+    print(f'Enabled: {hwacc_energy}')
+    print(f'Disabled: {no_hwacc_energy}')
 
     gain_energy = {}    
     for key, value in hwacc_energy[1].items():
