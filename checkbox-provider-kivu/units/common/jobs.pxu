@@ -60,6 +60,10 @@ requires:
   executable.name == "gsettings"
 _summary: Disable sreensaver (with GNOME)
 command:
+  echo "Disabling screensaver settings"
+  /usr/bin/gsettings get org.gnome.desktop.lockdown disable-lock-screen > /tmp/orig_disable-lock
+  /usr/bin/gsettings get org.gnome.desktop.screensaver lock-enabled > /tmp/orig_lock-enabled
+  /usr/bin/gsettings get org.gnome.desktop.screensaver idle-activation-enabled > /tmp/orig_idle-activation
   # robust against reboot
   /usr/bin/gsettings set org.gnome.desktop.lockdown disable-lock-screen 'true'
   /usr/bin/gsettings set org.gnome.desktop.screensaver lock-enabled false
@@ -103,3 +107,19 @@ command:
   source export_va_path.sh
   va-support.py
 estimated_duration: 1s
+
+unit: job
+id: kivu-common/reset-screensaver
+category_id: kivu-common
+requires:
+  executable.name == "gsettings"
+_summary: Return screensaver settings back to what they were before disable-screensaver
+plugin: shell
+command:
+  /usr/bin/gsettings set org.gnome.desktop.lockdown disable-lock-screen $(cat /tmp/orig_disable-lock)
+  /usr/bin/gsettings set org.gnome.desktop.screensaver lock-enabled $(cat /tmp/orig_lock-enabled)
+  /usr/bin/gsettings set org.gnome.desktop.screensaver idle-activation-enabled $(cat /tmp/orig_idle-activation)
+  rm /tmp/orig_disable-lock
+  rm /tmp/orig_lock-enabled
+  rm /tmp/orig_idle-activation
+  echo "Cleaned up screensaver test settings"
