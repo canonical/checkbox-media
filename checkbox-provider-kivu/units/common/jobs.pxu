@@ -78,3 +78,30 @@ command:
     exit 0
   fi
   gnome-screensaver-command -d
+
+id: kivu-common/available-codecs
+category_id: kivu-common
+_description:
+  List of codecs
+plugin: resource
+command:
+  echo "codec: h264"
+  echo
+  echo "codec: vp8"
+  echo
+  echo "codec: vp9"
+  echo
+estimated_duration: 1s
+
+id: kivu-common/va
+category_id: kivu-common
+_description:
+  List of codecs
+depends:
+  kivu-common/vainfo
+plugin: resource
+command:
+  export LD_LIBRARY_PATH=/snap/chromium/current/usr/lib/x86_64-linux-gnu/
+  export LIBVA_DRIVERS_PATH=/snap/chromium/current/usr/lib/x86_64-linux-gnu/dri
+  va-support.py
+estimated_duration: 1s

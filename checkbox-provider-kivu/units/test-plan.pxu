@@ -11,6 +11,7 @@ bootstrap_include:
     com.canonical.certification::executable
     com.canonical.certification::snap
     graphics_card
+    kivu-common/va
 
 id: kivu-hwdec
 unit: test plan
