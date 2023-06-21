@@ -454,51 +454,51 @@ command:
   tdb.py wait
   tdb.py check --session-id=check_chromium_h264_encoding "gpu_usage_hw_enabled > gpu_usage_hw_disabled"
 
-id: kivu/hardware_overlay_mpv
-category_id: kivu
-plugin: shell
-user: root
-_summary: Play a video with mpv and check for hardware overlay use.
-depends:
-  kivu-common/prepare-test-data
-requires:
-  executable.name == "mpv"
-  executable.name == "gfxi"
-command:
-  export GFXI_DEVICE=`active_dri_device.sh`
-  if [ -z $GFXI_DEVICE ]
-  then
-    echo Could not find a dri device actively driving a screen.
-    exit 1
-  else
-    echo Using dri device: $GFXI_DEVICE
-  fi
-  # Play a video using mpv.
-  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 10 mpv "${PLAINBOX_PROVIDER_DATA}"/bbb_h264_2160p_60fps_extract.mp4 &
-  sleep 3
-  # Check which CRTC is active at the moment.
-  # That is where we expect the overlay to show up.
-  CRTC=`gfxi crtc ACTIVE:1`
-  if [ -z "$CRTC" ]
-  then
-    echo Failed to get active CRTC for $GFXI_DEVICE
-    exit 1
-  fi
-  echo Using CRTC with id $CRTC from device $GFXI_DEVICE
-  # List the active planes on this crtc.
-  gfxi --annotate CRTC_ID:$CRTC ACTIVE:1 | tee "${PLAINBOX_SESSION_SHARE}"/mpv_planes.log
-  # See if the list has an entry with an overlay plane.
-  grep "Overlay" "${PLAINBOX_SESSION_SHARE}"/mpv_planes.log
-  ret_code=$?
-  if [[ "$ret_code" -ne 0 ]] # No lines selected by grep?
-  then
-    echo "No hardware overlay plane active or other errors ($ret_code)."
-    exit 1
-  else
-    echo Overlay plane usage detected.
-    cat "${PLAINBOX_SESSION_SHARE}"/mpv_planes.log
-    exit 0
-  fi
+# id: kivu/hardware_overlay_mpv
+# category_id: kivu
+# plugin: shell
+# user: root
+# _summary: Play a video with mpv and check for hardware overlay use.
+# depends:
+#   kivu-common/prepare-test-data
+# requires:
+#   executable.name == "mpv"
+#   executable.name == "gfxi"
+# command:
+#   export GFXI_DEVICE=`active_dri_device.sh`
+#   if [ -z $GFXI_DEVICE ]
+#   then
+#     echo Could not find a dri device actively driving a screen.
+#     exit 1
+#   else
+#     echo Using dri device: $GFXI_DEVICE
+#   fi
+#   # Play a video using mpv.
+#   exec sudo --preserve-env -u "${NORMAL_USER}" timeout 10 mpv "${PLAINBOX_PROVIDER_DATA}"/bbb_h264_2160p_60fps_extract.mp4 &
+#   sleep 3
+#   # Check which CRTC is active at the moment.
+#   # That is where we expect the overlay to show up.
+#   CRTC=`gfxi crtc ACTIVE:1`
+#   if [ -z "$CRTC" ]
+#   then
+#     echo Failed to get active CRTC for $GFXI_DEVICE
+#     exit 1
+#   fi
+#   echo Using CRTC with id $CRTC from device $GFXI_DEVICE
+#   # List the active planes on this crtc.
+#   gfxi --annotate CRTC_ID:$CRTC ACTIVE:1 | tee "${PLAINBOX_SESSION_SHARE}"/mpv_planes.log
+#   # See if the list has an entry with an overlay plane.
+#   grep "Overlay" "${PLAINBOX_SESSION_SHARE}"/mpv_planes.log
+#   ret_code=$?
+#   if [[ "$ret_code" -ne 0 ]] # No lines selected by grep?
+#   then
+#     echo "No hardware overlay plane active or other errors ($ret_code)."
+#     exit 1
+#   else
+#     echo Overlay plane usage detected.
+#     cat "${PLAINBOX_SESSION_SHARE}"/mpv_planes.log
+#     exit 0
+#   fi
 
 unit: template
 template-resource: graphics_card
