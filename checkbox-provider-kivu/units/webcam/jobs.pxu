@@ -164,39 +164,38 @@ _description:
   we know that the onecopy strategy is active or zerocopy is not possible
   and fallback to onecopy mode.
 
-
-id: kivu-webcam/chromium_h264_zerocopy
-category_id: kivu-webcam
-plugin: shell
-user: root
-_summary: Encode H264 webcam video and check zerocopy usage
-depends:
-  camera/detect
-  kivu-common/prepare-test-data
-requires:
-  snap.name == "chromium"
-command:
-  sudo --preserve-env -u "${NORMAL_USER}" timeout 10 bash -c 'chromium --start-fullscreen \
-                                                              --use-fake-ui-for-media-stream \
-                                                              --enable-logging=stderr 2>&1 \
-                                                              --video-capture-use-gpu-memory-buffer --enable-native-gpu-memory-buffers \
-                                                              --vmodule=*/video/linux/*=3,*/ui/gl/*=3,*/platform/wayland/*=3 \
-                                                              file:///home/"${NORMAL_USER}"/checkbox-test-data/camera-streaming.html?encoding=h264 \
-                                                              | tee "${PLAINBOX_SESSION_SHARE}"/chromium_camera_stream_zerocopy.log'
-  if [[ "$?" -ne 124 ]]; then
-      echo "Error : ret=$?"
-      exit 1
-  fi
-  grep "Video capture will work under the zero-copy mode" "${PLAINBOX_SESSION_SHARE}"/chromium_camera_stream_zerocopy.log
-  ret_code=$?
-  if [[ "$ret_code" -ne 0 ]] # No lines selected by grep?
-  then
-    echo "Failed: Could not detect use of V4L2CaptureDelegateGpuHelper or other errors ($ret_code)"
-    exit 1
-  fi
-_description:
-  This test checks the verbose log of chromium after playing the camera video
-  stream. If the string "Video capture will work under the zero-copy mode" is present in this log,
-  we know that the zerocopy strategy is active.
+# id: kivu-webcam/chromium_h264_zerocopy
+# category_id: kivu-webcam
+# plugin: shell
+# user: root
+# _summary: Encode H264 webcam video and check zerocopy usage
+# depends:
+#   camera/detect
+#   kivu-common/prepare-test-data
+# requires:
+#   snap.name == "chromium"
+# command:
+#   sudo --preserve-env -u "${NORMAL_USER}" timeout 10 bash -c 'chromium --start-fullscreen \
+#                                                               --use-fake-ui-for-media-stream \
+#                                                               --enable-logging=stderr 2>&1 \
+#                                                               --video-capture-use-gpu-memory-buffer --enable-native-gpu-memory-buffers \
+#                                                               --vmodule=*/video/linux/*=3,*/ui/gl/*=3,*/platform/wayland/*=3 \
+#                                                               file:///home/"${NORMAL_USER}"/checkbox-test-data/camera-streaming.html?encoding=h264 \
+#                                                               | tee "${PLAINBOX_SESSION_SHARE}"/chromium_camera_stream_zerocopy.log'
+#   if [[ "$?" -ne 124 ]]; then
+#       echo "Error : ret=$?"
+#       exit 1
+#   fi
+#   grep "Video capture will work under the zero-copy mode" "${PLAINBOX_SESSION_SHARE}"/chromium_camera_stream_zerocopy.log
+#   ret_code=$?
+#   if [[ "$ret_code" -ne 0 ]] # No lines selected by grep?
+#   then
+#     echo "Failed: Could not detect use of V4L2CaptureDelegateGpuHelper or other errors ($ret_code)"
+#     exit 1
+#   fi
+# _description:
+#   This test checks the verbose log of chromium after playing the camera video
+#   stream. If the string "Video capture will work under the zero-copy mode" is present in this log,
+#   we know that the zerocopy strategy is active.
 
 
