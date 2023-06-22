@@ -20,11 +20,7 @@ requires:
 environ: GST_PLUGIN
 command:
   tdb.py reset
-  # We want the validate VA-API features of chromium, so use VA drivers from chromium, not the host
-  # For libva
-  export LD_LIBRARY_PATH=/snap/chromium/current/usr/lib/x86_64-linux-gnu/:$LD_LIBRARY_PATH
-  # For VA backend driver (iHD, radeonsi, ..)
-  export LIBVA_DRIVERS_PATH=/snap/chromium/current/usr/lib/x86_64-linux-gnu/dri/
+  source export_va_path.sh
   GPU_LOAD_CMD=$(which gpu-load.py)
   # NB : preserve PATH of user for the sudo (if not, intel_gpu_top will not be found)
   # --preserve-env can be used but it will not work because of the secure_path option 
@@ -64,11 +60,7 @@ requires:
 environ: GST_PLUGIN
 command:
   tdb.py reset
-  # We want the validate VA-API features of chromium, so use VA drivers from chromium, not the host
-  # For libva
-  export LD_LIBRARY_PATH=/snap/chromium/current/usr/lib/x86_64-linux-gnu/:$LD_LIBRARY_PATH
-  # For VA backend driver (iHD, radeonsi, ..)
-  export LIBVA_DRIVERS_PATH=/snap/chromium/current/usr/lib/x86_64-linux-gnu/dri/
+  source export_va_path.sh
   GPU_LOAD_CMD=$(which gpu-load.py)
   # NB : preserve PATH of user for the sudo (if not, intel_gpu_top will not be found)
   # --preserve-env can be used but it will not work because of the secure_path option 
@@ -522,11 +514,7 @@ environ:
   NORMAL_USER
 command:
   tdb.py reset
-  # We want the validate VA-API features of chromium, so use VA drivers from chromium, not the host
-  # For libva
-  export LD_LIBRARY_PATH=/snap/chromium/current/usr/lib/x86_64-linux-gnu/:$LD_LIBRARY_PATH
-  # For VA backend driver (iHD, radeonsi, ..)
-  export LIBVA_DRIVERS_PATH=/snap/chromium/current/usr/lib/x86_64-linux-gnu/dri/
+  source export_va_path.sh
   GPU_LOAD_CMD=$(which gpu-thresh.py)
   # Since it's a stress test, set the threshold near 100% video engine utilization
   echo "{\"gpu_usage_over_threshold_duration_{{ driver }}\": $(sudo ${GPU_LOAD_CMD} --timeout=30 --video_engine=Video --threshold=99.3 --gpu={{ driver }})}" | tdb.py insert &

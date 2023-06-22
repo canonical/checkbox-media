@@ -12,8 +12,7 @@ plugin: attachment
 _summary: Attach content of vainfo
 requires: executable.name == "vainfo"
 command:
-  export LD_LIBRARY_PATH=/snap/chromium/current/usr/lib/x86_64-linux-gnu/
-  export LIBVA_DRIVERS_PATH=/snap/chromium/current/usr/lib/x86_64-linux-gnu/dri
+  source export_va_path.sh
   vainfo
 
 id: kivu-common/prepare-test-data
@@ -101,7 +100,6 @@ depends:
   kivu-common/vainfo
 plugin: resource
 command:
-  export LD_LIBRARY_PATH=/snap/chromium/current/usr/lib/x86_64-linux-gnu/
-  export LIBVA_DRIVERS_PATH=/snap/chromium/current/usr/lib/x86_64-linux-gnu/dri
+  source export_va_path.sh
   va-support.py
 estimated_duration: 1s
