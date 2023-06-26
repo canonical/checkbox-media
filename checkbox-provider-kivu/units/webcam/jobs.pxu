@@ -34,10 +34,10 @@ _description:
   can be set in the [manifest] section of the checkbox configuration (checkbox-launcher)
 
 unit: template
-template-resource: kivu-common/available-codecs
+template-resource: kivu-common/va
 template-engine: jinja2
 template-unit: job
-id: kivu-webcam/chromium_webcam_encoding_{{ codec }}
+id: kivu-webcam/chromium_webcam_encoding_{{ Enc }}
 category_id: kivu-webcam
 plugin: shell
 user: root
@@ -47,7 +47,6 @@ depends:
   kivu-common/prepare-test-data
 requires:
   snap.name == "chromium"
-  executable.name == "intel_gpu_top"
 command:
   timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_{{ Enc }}_webcam_encoding_disabled_intel_gpu_top.json &
   gpu_top_pid=$!
