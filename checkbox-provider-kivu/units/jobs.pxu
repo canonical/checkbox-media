@@ -506,7 +506,6 @@ depends:
   kivu-common/prepare-test-data
 requires:
   executable.name == "mpv"
-  executable.name == "intel_gpu_top"
 environ:
   # necessary for local mode
   XDG_SESSION_TYPE
@@ -514,13 +513,11 @@ environ:
   NORMAL_USER
 command:
   tdb.py reset
-  source export_va_path.sh
-  GPU_LOAD_CMD=$(which gpu-thresh.py)
+  PLAY_TIMEOUT=30
   # Since it's a stress test, set the threshold near 100% video engine utilization
-  echo "{\"gpu_usage_over_threshold_duration_{{ driver }}\": $(sudo ${GPU_LOAD_CMD} --timeout=30 --video_engine=Video --threshold=99.3 --gpu={{ driver }})}" | tdb.py insert &
-  PLAY_TIMEOUT=12
+  echo "{\"gpu_usage_over_threshold_duration_{{ driver }}\": $(gpu-thresh.py --timeout=${PLAY_TIMEOUT} --video_engine=Video --threshold=99.3 --gpu={{ driver }})}" | tdb.py insert &
   for i in {1..20}; do
-  exec sudo --preserve-env -u "${NORMAL_USER}" timeout 30 mpv --loop -no-audio --geometry=20% "${PLAINBOX_PROVIDER_DATA}"/bbb_h264_2160p_60fps_extract.mp4 &
+  exec sudo --preserve-env -u "${NORMAL_USER}" timeout ${PLAY_TIMEOUT} mpv --loop -no-audio --geometry=20% "${PLAINBOX_PROVIDER_DATA}"/bbb_h264_2160p_60fps_extract.mp4 &
   done
   sleep ${PLAY_TIMEOUT}
   tdb.py wait
@@ -528,3 +525,7 @@ command:
   tdb.py check "gpu_usage_over_threshold_duration_{{ driver }} > 23000"
   # If HW decode fails, video engine activity will not meet the threshold for
   # long enough so no check needed
+_description:
+  Launch a bunch of MPV with hardware decoding
+  NB: use mpv of the host (it is not available inside the provider), par consequence
+  use the VA-API libraries of the host (libva, intel media)
