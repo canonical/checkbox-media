@@ -17,6 +17,7 @@ import argparse
 import subprocess
 import json
 import re
+import time
 from gpu_utils import compute_avg_intel
 
 
@@ -42,8 +43,48 @@ def load_intel(fname : str, timeout : int) -> float:
 
     return compute_avg_intel(fname)
 
+def get_amd_vcn():
+    """
+    Open /sys/kernel/debug/dri/0/amdgpu_pm_info
+    and check for VCN (Video Core Next) activity
+    Return:
+      - -1 : if VCN is not present or error
+      -  0 : if VCN is disabled
+      - 100: if VCN is used
+    """
+    load = -1
+    try:
+        with open('/sys/kernel/debug/dri/0/amdgpu_pm_info', 'r') as f:
+            file_content = f.read()
+            if 'VCN: Enabled' in file_content:
+                load = 100
+            elif 'VCN: Disabled' in file_content:
+                load = 0
+            else:
+                load = -1
+    except OSError:
+        print('Error reading /sys/kernel/debug/dri/0/amdgpu_pm_info')
+        pass
+    return load
+
+def load_amd_vcn(timeout: int):
+    total = 0
+    remaining_time = timeout
+    while True:
+        total = total + get_amd_vcn()
+        remaining_time = remaining_time - 1
+        if remaining_time <= 0:
+            return (total / timeout)
+        time.sleep(1)
+
+def load_amd(fname : str, timeout : int) -> float:
+    # if VCN is available, use VCN
+    if get_amd_vcn() != -1:
+        return load_amd_vcn(timeout)
+    return load_amd_radeontop(fname, timeout)
+
 # 1678281421.757137: bus 03, gpu 36.67%, ee 0.00%, vgt 0.83%, ta 32.50%, sx 32.50%, sh 0.83%, spi 36.67%, sc 36.67%, pa 0.00%, db 36.67%, cb 33.33%, vram 49.66% 973.19mb, gtt 1.34% 93.38mb, mclk 78.96% 0.947ghz, sclk 14.29% 0.200ghz
-def load_radeon(fname : str, timeout : int) -> float:
+def load_amd_radeontop(fname : str, timeout : int) -> float:
     try:
         os.remove(fname)
     except OSError:
@@ -81,7 +122,7 @@ if __name__ == "__main__":
     fname = '/tmp/gpu-load-5ef38178-c2c0-11ed-afa1-0242ac120002.data' if args.file is None else args.file
 
     if gpu_driver == 'amdgpu':
-        gpu_average = load_radeon(fname=fname, timeout=timeout)
+        gpu_average = load_amd(fname=fname, timeout=timeout)
     if gpu_driver == 'i915':
         gpu_average = load_intel(fname=fname, timeout=timeout)
 
