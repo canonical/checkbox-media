@@ -11,34 +11,62 @@ Located in the `checkbox-provider-kivu` directory, it contains:
 - the data (sample video, HTML pages) required by some of the test cases (in the `data` directory)
 - unit tests for the scripts (in the `tests` directory)
 
+# Requirements
+
+- Ubuntu Jammy (22.04)
+- Chromium browser
+- Supported hardware platforms:
+  - Intel platforms with recent GPU (>= Broadwell)
+  - AMD platform with Radeon GPU
+- At least 1 active display (typically, a laptop with closed lid will not work)
+
 # Installation
 
-Two devices are needed:
-
-- a host to control the testing (any computer running Ubuntu)
-- a device to test (aka DUT for "Device Under Test")
-
-On the host, install the Checkbox snaps:
-
-```shell
-sudo snap install checkbox22
-sudo snap install checkbox --classic
-```
-
-On the DUT, install the Checkbox runtime and the Checkbox Kivu snaps:
+Install the Checkbox runtime and the Kivu provider snaps:
 
 ```shell
 sudo snap install checkbox22
 sudo snap install checkbox-kivu-classic --classic
 ```
 
-Then, from the host, run:
+Make sure that the provider service is running and active:
 
 ```shell
-checkbox.checkbox-cli remote <IP of the DUT>
+systemctl status snap.checkbox-kivu-classic.remote-slave.service
 ```
 
-You will be presented with a long list of available test plans. You can filter this out using the `/` key to search for `Kivu`. Select the Kivu test plan, and follow the instructions on screen to start the test run.
+# Install dependencies
+
+Some test need dependencies, so in order to run all tests, you might way to install those dependencies.
+A helper script is available to install them:
+
+```shell
+checkbox-kivu-classic.install-full-deps
+```
+
+# Automated Run
+
+To run the full test plan:
+
+```shell
+checkbox-kivu-classic.test-runner-automated
+```
+To run the hardware decoding tests:
+
+```shell
+checkbox-kivu-classic.test-runner-automated-hwdec
+```
+
+# Interactive Run
+
+Interactive run allows you to select test plan and specific tests to run.
+
+```shell
+checkbox.checkbox-cli remote 127.0.0.1
+```
+
+You will be presented with a long list of available test plans. You can filter this out using the `/` key to search for `Kivu`. Select the Kivu test plan, and follow the instructions on \
+screen to start the test run.
 
 # Develop the Checkbox Kivu provider
 
@@ -53,7 +81,7 @@ mkdir /var/tmp/checkbox-providers
 cp -r $HOME/checkbox-kivu/checkbox-provider-kivu /var/tmp/checkbox-providers/
 ```
 
-You can then modify the content of the provider in `/var/tmp/checkbox-providers/checkbox-provider-kivu/`, and it's this version that will be used when you run `checkbox.checkbox-cli remote <IP of the DUT>` on the host.
+You can then modify the content of the provider in `/var/tmp/checkbox-providers/checkbox-provider-kivu/`, and it's this version that will be used when you run the tests.
 
 Please refer to the [Checkbox documentation] on side-loading providers for more information.
 
