@@ -5,6 +5,8 @@ on:
     branches: [ "main" ]
     paths-ignore:
       - '**.md' # Don't trigger if doc updated
+    tags:
+      - "v*"
   workflow_dispatch: # Allow manual trigger
 
 jobs:
@@ -21,7 +23,7 @@ jobs:
         env:
           SNAPSTORE_KEY: ${{ secrets.STORE_LOGIN }}
 
-  publish:
+  build-and-publish:
     runs-on: ubuntu-22.04
     needs: [check-secret]
     steps:
@@ -62,4 +64,13 @@ jobs:
         with:
           snap: ${{ steps.build.outputs.snap }}
           release: edge
+
+      - if: needs.check-secret.outputs.snap-key == 'true' && startsWith(github.event.ref, 'refs/tags/v')
+        name: Publish snap beta release
+        uses: snapcore/action-publish@v1.1.1
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
+        with:
+          snap: ${{ steps.build.outputs.snap }}
+          release: beta
 
