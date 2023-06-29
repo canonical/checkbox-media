@@ -47,6 +47,7 @@ depends:
   kivu-common/prepare-test-data
 requires:
   snap.name == "chromium"
+  graphics_card.driver == 'i915'
 command:
   timeout 10 intel_gpu_top -J > "${PLAINBOX_SESSION_SHARE}"/chromium_{{ Enc }}_webcam_encoding_disabled_intel_gpu_top.json &
   gpu_top_pid=$!
