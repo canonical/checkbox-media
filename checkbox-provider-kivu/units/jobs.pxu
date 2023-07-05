@@ -50,6 +50,7 @@ plugin: shell
 _summary: Decode H264 video with gstreamer and capture GPU usage
 depends:
   kivu-common/prepare-test-data
+after: kivu-common/reset-screensaver
 requires:
   executable.name == "gst-launch-1.0"
   {% if driver == "i915" %}
@@ -82,6 +83,7 @@ user: root
 _summary: Grab chrome://gpu url and inspect for HW compositor.
 depends:
   kivu-common/prepare-test-data
+after: kivu-common/reset-screensaver
 requires:
   executable.name == "ydotool"
   executable.name == "wl-paste"
@@ -126,6 +128,7 @@ requires:
   snap.name == "chromium"
 depends:
   kivu-common/prepare-test-data
+after: kivu-common/reset-screensaver
 environ:
   # necessary for local mode
   XDG_SESSION_TYPE
@@ -181,6 +184,7 @@ user: root
 _summary: Play H264 video using Chromium (VAAPI enabled) and capture GPU usage
 depends:
   kivu-common/prepare-test-data
+after: kivu-common/reset-screensaver
 requires:
   snap.name == "chromium"
   {% if driver == "i915" %}
@@ -221,6 +225,7 @@ user: root
 _summary: Play H264 video using Chromium (VAAPI disabled) and capture GPU usage
 depends:
   kivu-common/prepare-test-data
+after: kivu-common/reset-screensaver
 requires:
   snap.name == "chromium"
   {% if driver == "i915" %}
@@ -257,6 +262,7 @@ user: root
 _summary: Play non-embedded H264 video using Chromium (VAAPI enabled)
 depends:
   kivu-common/prepare-test-data
+after: kivu-common/reset-screensaver
 requires:
   snap.name == "chromium"
 command:
@@ -300,6 +306,7 @@ user: root
 _summary: Encode H264 stream from within Chromium (VAAPI enabled) and capture GPU usage
 depends:
   kivu-common/prepare-test-data
+after: kivu-common/reset-screensaver
 requires:
   snap.name == "chromium"
   {% if driver == "i915" %}
@@ -344,6 +351,7 @@ user: root
 _summary: Encode H264 stream from within Chromium (VAAPI disabled) and capture GPU usage
 depends:
   kivu-common/prepare-test-data
+after: kivu-common/reset-screensaver
 requires:
   snap.name == "chromium"
   {% if driver == "i915" %}
@@ -504,6 +512,7 @@ user: root
 _summary: Play twenty H264 videos (VAAPI enabled) to check maxed out hw accel
 depends:
   kivu-common/prepare-test-data
+after: kivu-common/reset-screensaver
 requires:
   executable.name == "mpv"
 environ:
@@ -542,6 +551,7 @@ user: root
 _summary: Play twenty H264 videos in Chromium to check maxed out hw accel
 depends:
   kivu-common/prepare-test-data
+after: kivu-common/reset-screensaver
 requires:
   snap.name == "chromium"
   executable.name == "intel_gpu_top"

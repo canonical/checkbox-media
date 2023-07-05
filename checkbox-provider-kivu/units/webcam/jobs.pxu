@@ -45,6 +45,7 @@ _summary: Encode {{ Enc }} webcam video with chromium and capture GPU usage
 depends:
   camera/detect
   kivu-common/prepare-test-data
+after: kivu-common/reset-screensaver
 requires:
   snap.name == "chromium"
   graphics_card.driver == 'i915'
@@ -84,6 +85,7 @@ _summary: Encode H264 webcam video and check onecopy usage
 depends:
   camera/detect
   kivu-common/prepare-test-data
+after: kivu-common/reset-screensaver
 requires:
   snap.name == "chromium"
 command:
@@ -120,6 +122,7 @@ _summary: Check power usage gain by one copy
 depends:
   camera/detect
   kivu-common/prepare-test-data
+after: kivu-common/reset-screensaver
 requires:
   snap.name == "chromium"
 command:
