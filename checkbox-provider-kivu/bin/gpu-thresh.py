@@ -71,11 +71,12 @@ if __name__ == "__main__":
 
     if gpu_driver == 'amdgpu':
         # This script does not support amd yet
-        print(-1)
+        time_above_threshold = -1
     if gpu_driver == 'i915':
         time_above_threshold = load_intel(fname=fname, timeout=timeout)
 
     # Divide that time by the number of active video engines
-    time_above_threshold = time_above_threshold/get_num_active_engines(fname=fname)
+    time_above_threshold = time_above_threshold/get_num_active_engines(fname=fname,
+            engine=video_engine)
 
     print(time_above_threshold)

@@ -1,16 +1,25 @@
 import json
 
-def get_num_active_engines(fname : str) -> int:
+def get_num_active_engines(fname : str, engine='Video/') -> int:
     data = read_gputop_json(fname)
 
     num_engines = 0
     for k, v in data[0]["engines"].items():
-        if "Video/" in k and (v.get("busy") is not None):
+        if engine in k and (v.get("busy") is not None):
             num_engines += 1
 
     return num_engines
 
-# The video engine parameter here 
+def get_instant_video_engine_level(fname : str, video_engine="Video/") -> int:
+    data = read_gputop_json(fname)
+
+    for d in data:
+        # Looking at the `engines` section only
+        for k, v in d["engines"].items():
+            # Focus on GPU usage for video encoding/decoding only
+            if video_engine in k and (v.get("busy") is not None):
+                return int(v["busy"])
+
 def compute_time_above_thresh_intel(fname : str, threshold : float, 
         video_engine="Video/") -> float:
     data = read_gputop_json(fname)
