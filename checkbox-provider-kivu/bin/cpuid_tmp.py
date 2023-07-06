@@ -269,7 +269,7 @@ CPUDICT = {
                             },
         "Alder Lake":       {
                                 "cpuids": ['0x906a4', '0x906A3', '0x90675',
-                                           '0x90672'],
+                                           '0x90672', '0x906a2'],
                                 "generation":   12,
                                 "chiptype":     ChipType.DESKTOP
                             },
