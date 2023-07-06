@@ -564,24 +564,36 @@ estimated_duration: 1m
 command:
   tdb.py reset
   intel_gen=$(cpuid_tmp.py --intel_gen_number)
+  # Newer generations max out the VideoEnhance engine before the Video engine
   if [[ $intel_gen -ge 12 ]]
   then
       video_engine=VideoEnhance
   else
       video_engine=Video
   fi
-  PLAY_TIMEOUT=50
+  # Newer generations need faster scaling to get the proper amount of stress
+  if [[ $intel_gen -ge 12 ]]
+  then
+      num_windows_per_loop=5
+  else
+      num_windows_per_loop=2
+  fi
+  PLAY_TIMEOUT=70
   VIDEO_ENGINE_THRESH=99
   echo "{\"gpu_usage_over_threshold_duration_{{ driver }}\": $(gpu-thresh.py --threshold=${VIDEO_ENGINE_THRESH} --video_engine=${video_engine} --timeout=${PLAY_TIMEOUT} --gpu={{ driver }})}" | tdb.py insert --session-id=check_chromium_h264_decoding &
   # Play looping video in Chromium
   echo XDG_SESSION_TYPE "${XDG_SESSION_TYPE}"
   instant_gpu_load=0
-  while [[ $instant_gpu_load -lt $VIDEO_ENGINE_THRESH ]]; do
-  for i in {1..10}; do
-  sudo --preserve-env -u "${NORMAL_USER}" bash -c "timeout ${PLAY_TIMEOUT} chromium --new-window --window-size=800,600\
+  # Set up the end point for a timed while loop. SECONDS gets automatically incremented
+  end=$((SECONDS+${PLAY_TIMEOUT}))
+  while [ $SECONDS -lt $end ]; do
+  if [[ $instant_gpu_load -lt $VIDEO_ENGINE_THRESH ]]; then
+  for i in $(seq 1 $num_windows_per_loop); do
+  sudo --preserve-env -u "${NORMAL_USER}" bash -c "timeout $((end-SECONDS)) chromium --new-window --window-size=800,600\
                                                                                     file:///home/"${NORMAL_USER}"/checkbox-test-data/h264-video.html &"
   done # end for loop
-  sleep 2
+  fi
+  sleep 1
   # if the load isn't high enough to stress, go back to the top of the loop
   instant_gpu_load=$(gpu-load-instant.py)
   done # end while loop
