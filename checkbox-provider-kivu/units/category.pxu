@@ -1,4 +1,4 @@
 unit: category
-id: kivu
-_name: Intel Kivu HW Accel tests
+id: opencl-regress
+_name: OpenCL regression tests
 

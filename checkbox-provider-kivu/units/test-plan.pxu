@@ -1,35 +1,8 @@
-id: kivu-full
-unit: test plan
-_name: Kivu (Full Tests)
-include:
-    kivu-powersaving/.*
-    kivu/.*
-    kivu-webcam/.*
-mandatory_include:
-    com.canonical.certification::miscellanea/submission-resources
-bootstrap_include:
-    com.canonical.certification::executable
-    com.canonical.certification::snap
-    graphics_card
-    kivu-common/va
-
-id: kivu-hwdec
-unit: test plan
-_name: Kivu chromium hardware decoding check
-include:
-    kivu/check_chromium_h264_decoding_.*
-mandatory_include:
-    com.canonical.certification::miscellanea/submission-resources
-bootstrap_include:
-    com.canonical.certification::executable
-    com.canonical.certification::snap
-    graphics_card
-
 id: kivu-media-stress
 unit: test plan
 _name: Kivu chromium hardware decoding stress check
 include:
-    kivu/stress.*
+  opencl/ocl.*
 mandatory_include:
     com.canonical.certification::miscellanea/submission-resources
 bootstrap_include:
