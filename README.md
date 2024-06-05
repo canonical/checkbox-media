@@ -1,24 +1,24 @@
-# Welcome to the Checkbox Kivu project!
+# Welcome to the Checkbox OpenCL project!
 
-This repository contains the Checkbox Kivu Provider (Kivu-specific test cases and test plans for [Checkbox]) as well as everything that is required to build the [checkbox-kivu-classic] snap in the snapstore.
+This repository contains the Checkbox OpenCL Provider (OpenCL-specific test cases and test plans for [Checkbox]) as well as everything that is required to build the [checkbox-opencl-regression] snap in the snapstore.
 
-# Checkbox Kivu Provider
+# Checkbox OpenCL Provider
 
-Located in the `checkbox-provider-kivu` directory, it contains:
+Located in the `checkbox-provider-opencl` directory, it contains:
 
 - the test cases (also called "jobs" in the Checkbox jargon) and test plans to be run by Checkbox (in the `units` directory)
+
+## PENDING
+The following will be updated later but currently still contain data from the checkbox-kivu project
 - the scripts required by some of the test cases (in the `bin` directory)
 - the data (sample video, HTML pages) required by some of the test cases (in the `data` directory)
 - unit tests for the scripts (in the `tests` directory)
 
 # Requirements
 
-- Ubuntu Jammy (22.04)
-- Chromium browser
+- Ubuntu Jammy or Noble (22.04/24.04)
 - Supported hardware platforms:
   - Intel platforms with recent GPU (>= Broadwell)
-  - AMD platform with Radeon GPU
-- At least 1 active display (typically, a laptop with closed lid will not work)
 
 # Installation
 
@@ -26,13 +26,16 @@ Install the Checkbox runtime and the Kivu provider snaps:
 
 ```shell
 sudo snap install checkbox22
-sudo snap install checkbox-kivu-classic --classic
+git clone https://github.com/mckees/checkbox-opencl-regression
+cd checkbox-opencl-regression
+snapcraft
+sudo snap install --dangerous --classic ./checkbox-opencl-regression_2.0_amd64.snap
+checkbox-opencl-regression.regression-testing
 ```
 
 Make sure that the provider service is running and active:
 
 ```shell
-systemctl status snap.checkbox-kivu-classic.remote-slave.service
 ```
 
 # Install dependencies
@@ -41,7 +44,7 @@ Some test need dependencies, so in order to run all tests, you might way to inst
 A helper script is available to install them:
 
 ```shell
-checkbox-kivu-classic.install-full-deps
+checkbox-opencl-regression.install-full-deps
 ```
 
 # Automated Run
@@ -49,26 +52,10 @@ checkbox-kivu-classic.install-full-deps
 To run the full test plan:
 
 ```shell
-checkbox-kivu-classic.test-runner-automated
+checkbox-opencl-regression.regression-testing
+
 ```
-To run the hardware decoding tests:
-
-```shell
-checkbox-kivu-classic.test-runner-automated-hwdec
-```
-
-# Interactive Run
-
-Interactive run allows you to select test plan and specific tests to run.
-
-```shell
-checkbox.checkbox-cli remote 127.0.0.1
-```
-
-You will be presented with a long list of available test plans. You can filter this out using the `/` key to search for `Kivu`. Select the Kivu test plan, and follow the instructions on \
-screen to start the test run.
-
-# Develop the Checkbox Kivu provider
+# Develop the Checkbox OpenCL provider
 
 Since snaps are immutable, it is not possible to modify the content of the scripts or the test cases. Fortunately, Checkbox provides a functionality to side-load a provider on the DUT.
 
@@ -76,12 +63,12 @@ Therefore, if you want to edit a job definition, a script or a test plan, run th
 
 ```shell
 cd $HOME
-git clone git@github.com:canonical/checkbox-kivu.git
+git clone https://github.com/mckees/checkbox-opencl-regression
 mkdir /var/tmp/checkbox-providers
-cp -r $HOME/checkbox-kivu/checkbox-provider-kivu /var/tmp/checkbox-providers/
+cp -r $HOME/checkbox-opencl-regression/checkbox-provider-opencl /var/tmp/checkbox-providers/
 ```
 
-You can then modify the content of the provider in `/var/tmp/checkbox-providers/checkbox-provider-kivu/`, and it's this version that will be used when you run the tests.
+You can then modify the content of the provider in `/var/tmp/checkbox-providers/checkbox-provider-opencl/`, and it's this version that will be used when you run the tests.
 
 Please refer to the [Checkbox documentation] on side-loading providers for more information.
 
