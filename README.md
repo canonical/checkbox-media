@@ -25,7 +25,9 @@ The following will be updated later but currently still contain data from the ch
 Install the Checkbox runtime and the Kivu provider snaps:
 
 ```shell
+sudo snap --classic install snapcraft
 sudo snap install checkbox22
+lxd init --auto
 git clone https://github.com/mckees/checkbox-opencl-regression
 cd checkbox-opencl-regression
 snapcraft
