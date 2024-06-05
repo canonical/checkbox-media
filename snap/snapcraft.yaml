@@ -55,9 +55,9 @@ passthrough:
       command-chain: [bin/wrapper_local]
 
 parts:
-  checkbox-provider-kivu:
+  checkbox-provider-opencl:
     plugin: dump
-    source: ./checkbox-provider-kivu
+    source: ./checkbox-provider-opencl
     source-type: local
     build-snaps:
       - checkbox-provider-tools
@@ -71,7 +71,7 @@ parts:
       for path in $(find "/snap/checkbox22/current/providers/" -mindepth 1 -maxdepth 1 -type d); do export PROVIDERPATH=$path${PROVIDERPATH:+:$PROVIDERPATH}; done
       checkbox-provider-tools validate
       checkbox-provider-tools build
-      checkbox-provider-tools install --layout=relocatable --prefix=/providers/checkbox-provider-kivu --root="$SNAPCRAFT_PART_INSTALL"
+      checkbox-provider-tools install --layout=relocatable --prefix=/providers/checkbox-provider-opencl --root="$SNAPCRAFT_PART_INSTALL"
   bin:
     plugin: dump
     source: bin/
