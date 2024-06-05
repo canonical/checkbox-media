@@ -31,3 +31,24 @@ command:
           fi
       fi
   done
+
+unit: template
+template-resource: graphics_card
+template-filter: graphics_card.driver in ['i915']
+template-engine: jinja2
+template-unit: job
+id: opencl/ocl_regression_tests_{{ driver }}
+category_id: opencl-regress
+flags: simple
+user: root
+_summary: Run OpenCL regression tests
+requires:
+  executable.name == "clinfo"
+environ:
+  # necessary for local mode
+  XDG_SESSION_TYPE
+  XDG_RUNTIME_DIR
+  NORMAL_USER
+estimated_duration: 1m
+command:
+  cd /home/ubuntu/checkbox-opencl-regression/compute-samples/build && ctest -E .*hw
