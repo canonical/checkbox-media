@@ -3,8 +3,6 @@ unit: test plan
 _name: Kivu chromium hardware decoding stress check
 include:
   opencl/ocl.*
-mandatory_include:
-    com.canonical.certification::miscellanea/submission-resources
 bootstrap_include:
     com.canonical.certification::executable
     com.canonical.certification::snap
