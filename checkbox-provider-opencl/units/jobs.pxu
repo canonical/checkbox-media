@@ -7,7 +7,9 @@ id: opencl/ocl_device_check_{{ driver }}
 category_id: opencl-regress
 flags: simple
 user: root
-_summary: Play twenty H264 videos in Chromium to check maxed out hw accel
+_summary: Check to see if there are any CL devices found
+requires:
+  executable.name == "clinfo"
 environ:
   # necessary for local mode
   XDG_SESSION_TYPE
