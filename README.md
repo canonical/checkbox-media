@@ -9,7 +9,7 @@ Located in the `checkbox-provider-opencl` directory, it contains:
 - the test cases (also called "jobs" in the Checkbox jargon) and test plans to be run by Checkbox (in the `units` directory)
 
 ## PENDING
-The following will be updated later but currently still contain data from the checkbox-kivu project
+The following will be updated later but currently still contain data from the checkbox-opencl-regression project
 - the scripts required by some of the test cases (in the `bin` directory)
 - the data (sample video, HTML pages) required by some of the test cases (in the `data` directory)
 - unit tests for the scripts (in the `tests` directory)
@@ -22,7 +22,7 @@ The following will be updated later but currently still contain data from the ch
 
 # Installation
 
-Install the Checkbox runtime and the Kivu provider snaps:
+Install the Checkbox runtime and build/install the opencl-regression provider snaps:
 
 ```shell
 sudo snap install --classic snapcraft
@@ -75,5 +75,4 @@ You can then modify the content of the provider in `/var/tmp/checkbox-providers/
 Please refer to the [Checkbox documentation] on side-loading providers for more information.
 
 [Checkbox]: https://checkbox.readthedocs.io/
-[checkbox-kivu-classic]: https://snapcraft.io/checkbox-kivu-classic
 [Checkbox documentation]: https://checkbox.readthedocs.io/en/latest/side-loading.html

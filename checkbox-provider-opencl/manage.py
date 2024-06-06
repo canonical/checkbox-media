@@ -14,8 +14,8 @@ from plainbox.provider_manager import setup, N_
 # (optional)
 
 setup(
-    name='com.canonical.certification:kivu',
+    name='com.canonical.certification:opencl-regression',
     version="1.0",
-    description=N_("The com.canonical.certification:kivu provider"),
-    gettext_domain="com_canonical_certification_kivu",
+    description=N_("The com.canonical.certification:opencl-regression provider"),
+    gettext_domain="com_canonical_certification_opencl_regression",
 )

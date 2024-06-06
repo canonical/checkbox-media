@@ -1,5 +1,5 @@
 name: checkbox-opencl-regression
-summary: Checkbox tests for the kivu classic project
+summary: Checkbox tests for the OpenCL Regression project
 description: |
   Collection of tests to be run on devices that are part of the opencl-regression project
 version: '2.0'
@@ -8,8 +8,8 @@ grade: stable
 
 base: core22
 
-# Here are the available applications of the kivu checkbox provider snap
-# To run : snap run checkbox-kivu-classic.<app>
+# Here are the available applications of the opencl-regression checkbox provider snap
+# To run : snap run checkbox-opencl-regression.<app>
 #
 # checkbox-cli:
 #   - checkbox client, can be used to talk to the checkbox daemon
