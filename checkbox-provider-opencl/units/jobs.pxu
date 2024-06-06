@@ -51,4 +51,5 @@ environ:
   NORMAL_USER
 estimated_duration: 1m
 command:
-  cd /home/ubuntu/checkbox-opencl-regression/compute-samples/build && ctest -E .*hw
+  COMPUTE_SAMPLES_DIR=/tmp/compute-samples
+  cd $COMPUTE_SAMPLES_DIR/build && ctest -E .*hw

@@ -42,8 +42,9 @@ wget ${CHECKSUM_URL}
 sha256sum -c *.sum
 sudo DEBIAN_FRONTEND=noninteractive dpkg -i *.deb *.ddeb
 
-git clone https://github.com/mckees/compute-samples
-cd compute-samples && ./scripts/install/install_ubuntu_20_04.sh
+COMPUTE_SAMPLES_DIR=/tmp/compute-samples
+git clone https://github.com/mckees/compute-samples $COMPUTE_SAMPLES_DIR
+cd $COMPUTE_SAMPLES_DIR && ./scripts/install/install_ubuntu_20_04.sh
 mkdir build
 cd build && cmake ..
 cmake --build .
