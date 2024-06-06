@@ -32,8 +32,6 @@ git clone https://github.com/mckees/checkbox-opencl-regression
 cd checkbox-opencl-regression
 snapcraft
 sudo snap install --dangerous --classic ./checkbox-opencl-regression_2.0_amd64.snap
-systemctl restart snap.checkbox-opencl-regression.remote-slave.service
-checkbox-opencl-regression.regression-testing
 ```
 
 Make sure that the provider service is running and active:
