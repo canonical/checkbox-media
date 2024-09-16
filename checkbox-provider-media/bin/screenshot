@@ -1,0 +1,32 @@
+#!/bin/bash
+
+if [ $# -lt 2 ]; then
+    exit 1
+fi
+
+OUTPUT_FILE=$1
+AFTER=$2
+
+if [ -z "${OUTPUT_FILE}" ]; then
+  exit 0
+fi
+SCREENSHOT_FOLDER="${PLAINBOX_SESSION_SHARE}"/screenshots
+mkdir -p "${SCREENSHOT_FOLDER}"
+chmod 777 "${SCREENSHOT_FOLDER}"
+
+# look for gnome-screenshot
+if [ ! -x "$(which gnome-screenshot)" ]; then
+  echo "Missing gnome-screenshot"
+  exit 0
+fi
+
+SCREENSHOT_CMD="gnome-screenshot -f ${SCREENSHOT_FOLDER}/${OUTPUT_FILE}"
+if [ $EUID -eq 0 ]; then
+    SCREENSHOT_CMD="sudo --preserve-env -u ${NORMAL_USER} gnome-screenshot -f ${SCREENSHOT_FOLDER}/${OUTPUT_FILE}"
+fi
+
+if [ "${AFTER}" == "now" ]; then
+  ${SCREENSHOT_CMD}
+else
+  (sleep $AFTER && echo "Take screenshot now !" && ${SCREENSHOT_CMD}) &
+fi

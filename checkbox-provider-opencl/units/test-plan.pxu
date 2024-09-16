@@ -1,9 +1,0 @@
-id: opencl-regression
-unit: test plan
-_name: OpenCL regression testing plan
-include:
-  opencl/ocl.*
-bootstrap_include:
-    com.canonical.certification::executable
-    com.canonical.certification::snap
-    graphics_card

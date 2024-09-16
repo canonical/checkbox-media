@@ -1,15 +1,15 @@
-name: checkbox-opencl-regression
-summary: Checkbox tests for the OpenCL Regression project
+name: checkbox-media
+summary: Checkbox tests for testing media
 description: |
-  Collection of tests to be run on devices that are part of the opencl-regression project
-version: '2.0'
+  Collection of tests to be run on devices to test media functionality
+version: '1.0'
 confinement: classic
 grade: stable
 
 base: core24
 
-# Here are the available applications of the opencl-regression checkbox provider snap
-# To run : snap run checkbox-opencl-regression.<app>
+# Here are the available applications of the media checkbox provider snap
+# To run : snap run checkbox-media.<app>
 #
 # checkbox-cli:
 #   - checkbox client, can be used to talk to the checkbox daemon
@@ -26,8 +26,8 @@ base: core24
 #   - give shell access to the provider snap
 # install-full-deps:
 #   - install all depedencies needed for provider jobs
-# regression-testing:
-#   - Run the OpenCL regression test suite
+# test:
+#   - Run the regression test suite
 apps:
   checkbox-cli:
     command-chain: [bin/wrapper_local]
@@ -35,7 +35,7 @@ apps:
   configure:
     command-chain: [bin/wrapper_local]
     command: bin/configure
-  regression-testing:
+  test:
     command-chain: [bin/wrapper_local]
     command: bin/regression-testing
   remote-slave:
@@ -55,9 +55,9 @@ passthrough:
       command-chain: [bin/wrapper_local]
 
 parts:
-  checkbox-provider-opencl:
+  checkbox-provider-media:
     plugin: dump
-    source: ./checkbox-provider-opencl
+    source: ./checkbox-provider-media
     source-type: local
     build-snaps:
       - checkbox-provider-tools
@@ -71,7 +71,7 @@ parts:
       for path in $(find "/snap/checkbox24/current/providers/" -mindepth 1 -maxdepth 1 -type d); do export PROVIDERPATH=$path${PROVIDERPATH:+:$PROVIDERPATH}; done
       checkbox-provider-tools validate
       checkbox-provider-tools build
-      checkbox-provider-tools install --layout=relocatable --prefix=/providers/checkbox-provider-opencl --root="$SNAPCRAFT_PART_INSTALL"
+      checkbox-provider-tools install --layout=relocatable --prefix=/providers/checkbox-provider-media --root="$SNAPCRAFT_PART_INSTALL"
   bin:
     plugin: dump
     source: bin/

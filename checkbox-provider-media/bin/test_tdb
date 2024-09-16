@@ -1,0 +1,91 @@
+#!/usr/bin/env python3
+
+import unittest
+import unittest.mock
+
+import io
+import os
+import sys
+import json
+
+import tdb
+
+ffolder = '/tmp/tdb-0c72d5e0-be86-11ed-afa1-0242ac120002/'
+
+class TestTDB(unittest.TestCase):
+    def test_tdb_folder(self):
+        self.assertEqual(tdb.tdb_run(['reset']), 0)
+        self.assertFalse(os.path.isdir(ffolder))
+        self.assertEqual(tdb.tdb_run(['new-session', '--session-id=test_tdb_name']), 0)
+        self.assertTrue(os.path.isdir(ffolder))
+
+    @unittest.mock.patch('sys.stdout', new_callable=io.StringIO)
+    def test_tdb_new_session(self, mock_stdout):
+        self.assertEqual(tdb.tdb_run(['reset']), 0)
+        tdb.tdb_run(['new-session', '--session-id=test'])
+        self.assertEqual(mock_stdout.getvalue(), 'test\n')
+
+    @unittest.mock.patch('sys.stdout', new_callable=io.StringIO)
+    def test_tdb_insert_data_default_session_simple(self, mock_stdout):
+        self.assertEqual(tdb.tdb_run(['reset']), 0)
+        self.assertEqual(tdb.tdb_run(['insert', '{"data1": {"data2":3.0}}']), 0)
+        tdb.tdb_run(['get', 'data1.data2'])
+        self.assertEqual(mock_stdout.getvalue(), '3.0\n')
+
+    def test_tdb_check_data_default_session_simple(self):
+        self.assertEqual(tdb.tdb_run(['reset']), 0)
+        self.assertEqual(tdb.tdb_run(['insert', '{"data1": {"data2":3.0}}']), 0)
+        self.assertEqual(tdb.tdb_run(['check', 'data1.data2 == 3.0']), 0)
+        self.assertEqual(tdb.tdb_run(['check', 'data1.data2 != 3.0']), 1)
+        self.assertEqual(tdb.tdb_run(['insert', '{"data2": {"data2":2.0}}']), 0)
+        self.assertEqual(tdb.tdb_run(['check', 'data1.data2 > data2.data2 ']), 0)
+        self.assertEqual(tdb.tdb_run(['check', 'data1.data2 <= data2.data2 ']), 1)
+
+    @unittest.mock.patch('sys.stdout', new_callable=io.StringIO)
+    def test_tdb_create_session_if_missing(self, mock_stdout):
+        self.assertEqual(tdb.tdb_run(['reset']), 0)
+        self.assertEqual(tdb.tdb_run(['insert', '--session-id=session1', '{"data1": {"data2":3.0}}']), 0)
+        self.assertEqual(tdb.tdb_run(['list-sessions']), 0)
+        output = mock_stdout.getvalue()
+        self.assertEqual(output.strip(), '[\'session1\']')
+
+    def test_tdb_multiple_session(self):
+        self.assertEqual(tdb.tdb_run(['reset']), 0)
+        self.assertEqual(tdb.tdb_run(['insert', '--session-id=session1', '{"data1": {"data2":3.0}}']), 0)
+        self.assertEqual(tdb.tdb_run(['insert', '--session-id=session2', '{"data2": {"data1":3.0}}']), 0)
+        self.assertEqual(tdb.tdb_run(['check', '--session-id=session1', 'data1.data2 == 3.0']), 0)
+        self.assertEqual(tdb.tdb_run(['check', '--session-id=session1', 'data2.data1 == 3.0']), 1)
+        self.assertEqual(tdb.tdb_run(['check', '--session-id=session2', 'data2.data1 == 3.0']), 0)
+
+    # if no session id is specified, latest created session is used
+    def test_tdb_default_session(self):
+        self.assertEqual(tdb.tdb_run(['reset']), 0)
+        self.assertEqual(tdb.tdb_run(['insert', '--session-id=session1', '{"data1": {"data2":3.0}}']), 0)
+        self.assertEqual(tdb.tdb_run(['insert', '--session-id=session2', '{"data2": {"data1":3.0}}']), 0)
+        self.assertEqual(tdb.tdb_run(['insert', '{"data3": {"data1":3.0}}']), 0)
+        self.assertEqual(tdb.tdb_run(['check', '--session-id=session2', 'data3.data1 == 3.0']), 0)
+
+    @unittest.mock.patch('sys.stdout', new_callable=io.StringIO)
+    def test_tdb_insert_data_default_session(self, mock_stdout):
+        self.assertEqual(tdb.tdb_run(['reset']), 0)
+        self.assertEqual(tdb.tdb_run(['insert', '{"data1": [1.0, 3.0]}']), 0)
+        tdb.tdb_run(['get', 'data1[0]'])
+        self.assertEqual(mock_stdout.getvalue(), '1.0\n')
+
+    @unittest.mock.patch('sys.stdout', new_callable=io.StringIO)
+    def test_tdb_insert_data_default_session(self, mock_stdout):
+        self.assertEqual(tdb.tdb_run(['reset']), 0)
+        self.assertEqual(tdb.tdb_run(['insert', '{"data1": {"val": [1.0, 3.0]}}']), 0)
+        tdb.tdb_run(['get', 'data1.val[0]'])
+        self.assertEqual(mock_stdout.getvalue(), '1.0\n')
+
+    @unittest.mock.patch('sys.stdout', new_callable=io.StringIO)
+    def test_tdb_insert_data_default_session(self, mock_stdout):
+        self.assertEqual(tdb.tdb_run(['reset']), 0)
+        self.assertEqual(tdb.tdb_run(['insert', '{"data1": [{"val": [1.0, 3.0]}]}']), 0)
+        tdb.tdb_run(['get', 'data1[0]["val"][0]'])
+        self.assertEqual(mock_stdout.getvalue(), '1.0\n')
+
+if __name__ == '__main__':
+    unittest.main()
+

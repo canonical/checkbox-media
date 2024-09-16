@@ -1,0 +1,10 @@
+id: media
+unit: test plan
+_name: Media test plan for hardware encode and decode
+include:
+  media_kobuk.*
+bootstrap_include:
+    com.canonical.certification::executable
+    com.canonical.certification::snap
+    graphics_card
+    va
