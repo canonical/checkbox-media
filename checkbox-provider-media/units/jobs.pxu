@@ -17,6 +17,18 @@ command:
     echo
     echo 'profile: VAProfileAV1Profile0'
 
+id: mediasource
+plugin: resource
+command:
+    echo 'video_url: https://people.canonical.com/~mckeesh/media_testing_videos/BBB/bbb_sunflower_2160p_30fps_normal_AV1.mkv'
+    echo 'codec: AV1'
+    echo 'operation: decode'
+    echo 'resolution: 4K'
+    echo 'ffmpeg_output_codec: h264_vaapi'
+    echo 'libva_profile: 32'
+    echo 'libva_entrypoint: 1'
+    echo 'output_container: mp4'
+
 unit: template
 template-resource: va
 template-filter: va.profile != ''
@@ -72,3 +84,47 @@ command:
       echo "[FAIL] Codec $entrypoint not available for HW Encode"
       exit 1
   fi
+
+unit: template
+template-resource: mediasource
+template-filter: mediasource.codec != ''
+template-engine: jinja2
+template-unit: job
+id: media_kobuk_smoke_{{ codec }}_{{ resolution }}_{{ operation }}
+category_id: media-kobuk
+flags: simple
+user: root
+_summary: Check {{ codec }} hardware {{ operation }} in {{ resolution }}
+requires:
+  executable.name == "ffmpeg"
+environ:
+  # necessary for local mode
+  XDG_SESSION_TYPE
+  XDG_RUNTIME_DIR
+  NORMAL_USER
+estimated_duration: 1m
+command:
+  wget -q {{ video_url }}
+  local_filename=$(basename {{ video_url }})
+  LD_LIBRARY_PATH=/lib/x86_64-linux-gnu/ LIBVA_TRACE=/tmp/libva.trace ffmpeg -hwaccel vaapi -vaapi_device /dev/dri/renderD128 -t 5 -hide_banner -loglevel info -hwaccel_output_format vaapi -i $local_filename -rc_mode CQP -low_power 1 -c:v {{ ffmpeg_output_codec }} -b:v 50M output.{{ output_container }}
+  ffmpeg_return_status=$?
+  # check libva trace logs for HW acceleration
+  if grep "profile = {{ libva_profile }},.*entrypoint = {{ libva_entrypoint }}" /tmp/libva.trace*
+  then
+      echo "---- [PASS] using HW {{ operation }}"
+  else
+      echo "---- [FAIL] not using HW type"
+      exit 1
+  fi
+  # check ffmpeg for successful exit
+  if [ $ffmpeg_return_status -ne 0 ];
+  then
+      echo "---- [FAIL] FFMPEG returned an error"
+      exit 1
+  else
+      echo "---- [PASS] FFMPEG command completed successfully"
+  fi
+  # cleanup files
+  rm $local_filename
+  rm /tmp/libva.trace*
+  rm output.{{ output_container }}
