@@ -1,0 +1,74 @@
+id: va
+plugin: resource
+command:
+    echo 'profile: VAProfileMPEG2Main'
+    echo
+    echo 'profile: VAProfileH264Main'
+    echo
+    echo 'profile: VAProfileJPEGBaseline'
+    echo
+    echo 'profile: VAProfileVP8Version0_3'
+    echo
+    echo 'profile: VAProfileHEVCMain'
+    echo
+    echo 'profile: VAProfileHEVCMain10'
+    echo
+    echo 'profile: VAProfileVP9Profile0'
+    echo
+    echo 'profile: VAProfileAV1Profile0'
+
+unit: template
+template-resource: va
+template-filter: va.profile != ''
+template-engine: jinja2
+template-unit: job
+id: media_kobuk_decode_va_entrypoint_{{ profile }}
+category_id: media-kobuk
+flags: simple
+user: root
+_summary: Check for the {{ profile }} VA profile availability for hardware decode in vainfo
+requires:
+  executable.name == "vainfo"
+environ:
+  # necessary for local mode
+  XDG_SESSION_TYPE
+  XDG_RUNTIME_DIR
+  NORMAL_USER
+estimated_duration: 1m
+command:
+  entrypoint={{ profile }}
+  if sudo vainfo --display drm | grep $entrypoint | grep "VAEntrypointVLD"
+  then
+      echo "[PASS] Codec $entrypoint available for HW Decode"
+  else
+      echo "[FAIL] Codec $entrypoint not available for HW Decode"
+      exit 1
+  fi
+
+unit: template
+template-resource: va
+template-filter: va.profile != ''
+template-engine: jinja2
+template-unit: job
+id: media_kobuk_encode_va_entrypoint_{{ profile }}
+category_id: media-kobuk
+flags: simple
+user: root
+_summary: Check for the {{ profile }} VA profile availability for hardware encode in vainfo
+requires:
+  executable.name == "vainfo"
+environ:
+  # necessary for local mode
+  XDG_SESSION_TYPE
+  XDG_RUNTIME_DIR
+  NORMAL_USER
+estimated_duration: 1m
+command:
+  entrypoint={{ profile }}
+  if sudo vainfo --display drm | grep $entrypoint | grep "VAEntrypointEnc"
+  then
+      echo "[PASS] Codec $entrypoint available for HW Encode"
+  else
+      echo "[FAIL] Codec $entrypoint not available for HW Encode"
+      exit 1
+  fi

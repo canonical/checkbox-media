@@ -1,9 +1,10 @@
-id: opencl-regression
+id: media
 unit: test plan
-_name: OpenCL regression testing plan
+_name: Media test plan for hardware encode and decode
 include:
-  opencl/ocl.*
+  media_kobuk.*
 bootstrap_include:
     com.canonical.certification::executable
     com.canonical.certification::snap
     graphics_card
+    va

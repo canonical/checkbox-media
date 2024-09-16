@@ -1,43 +1,37 @@
-# Welcome to the Checkbox OpenCL project!
+# Welcome to the Checkbox Media project!
 
-This repository contains the Checkbox OpenCL Provider (OpenCL-specific test cases and test plans for [Checkbox]) as well as everything that is required to build the [checkbox-opencl-regression] snap in the snapstore.
+This repository contains the Checkbox Media Provider (OpenCL-specific test cases and test plans for [Checkbox]) as well as everything that is required to build the [checkbox-media] snap in the snapstore.
 
 # Checkbox OpenCL Provider
 
-Located in the `checkbox-provider-opencl` directory, it contains:
+Located in the `checkbox-provider-media` directory, it contains:
 
 - the test cases (also called "jobs" in the Checkbox jargon) and test plans to be run by Checkbox (in the `units` directory)
 
-## PENDING
-The following will be updated later but currently still contain data from the checkbox-opencl-regression project
-- the scripts required by some of the test cases (in the `bin` directory)
-- the data (sample video, HTML pages) required by some of the test cases (in the `data` directory)
-- unit tests for the scripts (in the `tests` directory)
-
 # Requirements
 
-- Ubuntu Jammy or Noble (22.04/24.04)
+- Ubuntu Noble (24.04)
 - Supported hardware platforms:
   - Intel platforms with recent GPU (>= Broadwell)
 
 # Installation
 
-Install the Checkbox runtime and build/install the opencl-regression provider snaps:
+Install the Checkbox runtime and build/install the media provider snaps:
 
 ```shell
 sudo snap install --classic snapcraft
-sudo snap install checkbox22
+sudo snap install checkbox24
 lxd init --auto
-git clone https://github.com/mckees/checkbox-opencl-regression
-cd checkbox-opencl-regression
+git clone https://github.com/mckees/checkbox-media
+cd checkbox-media
 snapcraft
-sudo snap install --dangerous --classic ./checkbox-opencl-regression_2.0_amd64.snap
+sudo snap install --dangerous --classic ./checkbox-media_1.0_amd64.snap
 ```
 
 Make sure that the provider service is running and active:
 
 ```shell
-systemctl status snap.checkbox-opencl-regression.remote-slave.service
+systemctl status snap.checkbox-media.remote-slave.service
 ```
 
 # Install dependencies
@@ -46,7 +40,7 @@ Some test need dependencies, so in order to run all tests, you might way to inst
 A helper script is available to install them:
 
 ```shell
-checkbox-opencl-regression.install-full-deps
+checkbox-media.install-full-deps
 ```
 
 # Automated Run
@@ -54,7 +48,7 @@ checkbox-opencl-regression.install-full-deps
 To run the full test plan:
 
 ```shell
-checkbox-opencl-regression.regression-testing
+checkbox-media.regression-testing
 
 ```
 # Develop the Checkbox OpenCL provider
@@ -65,9 +59,9 @@ Therefore, if you want to edit a job definition, a script or a test plan, run th
 
 ```shell
 cd $HOME
-git clone https://github.com/mckees/checkbox-opencl-regression
+git clone https://github.com/mckees/checkbox-media
 mkdir /var/tmp/checkbox-providers
-cp -r $HOME/checkbox-opencl-regression/checkbox-provider-opencl /var/tmp/checkbox-providers/
+cp -r $HOME/checkbox-media/checkbox-provider-opencl /var/tmp/checkbox-providers/
 ```
 
 You can then modify the content of the provider in `/var/tmp/checkbox-providers/checkbox-provider-opencl/`, and it's this version that will be used when you run the tests.
