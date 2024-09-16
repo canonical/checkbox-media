@@ -1,49 +1,34 @@
-unit: template
-template-resource: graphics_card
-template-filter: graphics_card.driver in ['i915']
-template-engine: jinja2
-template-unit: job
-id: opencl/ocl_device_check_{{ driver }}
-category_id: opencl-regress
-flags: simple
-user: root
-_summary: Check to see if there are any CL devices found
-requires:
-  executable.name == "clinfo"
-environ:
-  # necessary for local mode
-  XDG_SESSION_TYPE
-  XDG_RUNTIME_DIR
-  NORMAL_USER
-estimated_duration: 1m
+id: va_profiles
+plugin: resource
 command:
-  get_int() {
-      [[ $1 == ?(-)+([0-9]) ]] && echo $1
-  }
-  OUTPUT=$(sudo clinfo | grep "Number of platforms")
-  IFS=' ' read -ra ADDR <<< "$OUTPUT"
-  for i in "${ADDR[@]}"; do
-      CL_NUM_DEVICES=$(get_int $i)
-      if [ ! -z "$CL_NUM_DEVICES" ]; then
-          if [[ $CL_NUM_DEVICES == 0 ]]; then
-              echo "No OpenCL devices found"
-              exit 1
-          fi
-      fi
-  done
+    echo 'va_profile: VAProfileMPEG2Main'
+    echo
+    echo 'va_profile: VAProfileH264Main'
+    echo
+    echo 'va_profile: VAProfileJPEGBaseline'
+    echo
+    echo 'va_profile: VAProfileVP8Version0_3'
+    echo
+    echo 'va_profile: VAProfileHEVCMain'
+    echo
+    echo 'va_profile: VAProfileHEVCMain10'
+    echo
+    echo 'va_profile: VAProfileVP9Profile0'
+    echo
+    echo 'va_profile: VAProfileAV1Profile0'
 
 unit: template
-template-resource: graphics_card
+template-resource: va_profiles
 template-filter: graphics_card.driver in ['i915']
-template-engine: jinja2
 template-unit: job
-id: opencl/ocl_regression_tests_{{ driver }}
+id: opencl/ocl_device_check_{va_profile }
 category_id: opencl-regress
 flags: simple
 user: root
-_summary: Run OpenCL regression tests
+_summary: Do a basic vainfo check
 requires:
-  executable.name == "clinfo"
+  executable.name == "ffmpeg"
+  executable.name == "vainfo"
 environ:
   # necessary for local mode
   XDG_SESSION_TYPE
@@ -51,5 +36,18 @@ environ:
   NORMAL_USER
 estimated_duration: 1m
 command:
-  COMPUTE_SAMPLES_DIR=/tmp/compute-samples
-  cd $COMPUTE_SAMPLES_DIR/build && ctest -E .*hw
+  entrypoint={va_profile}
+  if sudo vainfo --display drm | grep $entrypoint | grep "VAEntrypointVLD"
+  then
+      echo "[PASS] Codec $entrypoint available for HW Decode"
+  else
+      echo "[FAIL] Codec $entrypoint not available for HW Decode"
+      exit 1
+  fi
+  if sudo vainfo --display drm | grep $entrypoint | grep "VAEntrypointEnc"
+  then
+      echo "[PASS] Codec $entrypoint available for HW Encode"
+  else
+      echo "[FAIL] Codec $entrypoint not available for HW Encode"
+      exit 1
+  fi
