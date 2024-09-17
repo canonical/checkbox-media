@@ -1,8 +1,8 @@
 # Welcome to the Checkbox Media project!
 
-This repository contains the Checkbox Media Provider (OpenCL-specific test cases and test plans for [Checkbox]) as well as everything that is required to build the [checkbox-media] snap in the snapstore.
+This repository contains the Checkbox Media Provider (Media-specific test cases and test plans for [Checkbox]) as well as everything that is required to build the [checkbox-media] snap in the snapstore.
 
-# Checkbox OpenCL Provider
+# Checkbox Media Provider
 
 Located in the `checkbox-provider-media` directory, it contains:
 
@@ -22,7 +22,7 @@ Install the Checkbox runtime and build/install the media provider snaps:
 sudo snap install --classic snapcraft
 sudo snap install checkbox24
 lxd init --auto
-git clone https://github.com/mckees/checkbox-media
+git clone https://github.com/canonical/checkbox-media
 cd checkbox-media
 snapcraft
 sudo snap install --dangerous --classic ./checkbox-media_1.0_amd64.snap
@@ -40,7 +40,7 @@ Some test need dependencies, so in order to run all tests, you might way to inst
 A helper script is available to install them:
 
 ```shell
-checkbox-media.install-full-deps
+checkbox-media.install
 ```
 
 # Automated Run
@@ -48,10 +48,10 @@ checkbox-media.install-full-deps
 To run the full test plan:
 
 ```shell
-checkbox-media.regression-testing
+checkbox-media.test
 
 ```
-# Develop the Checkbox OpenCL provider
+# Develop the Checkbox Media provider
 
 Since snaps are immutable, it is not possible to modify the content of the scripts or the test cases. Fortunately, Checkbox provides a functionality to side-load a provider on the DUT.
 
@@ -59,12 +59,12 @@ Therefore, if you want to edit a job definition, a script or a test plan, run th
 
 ```shell
 cd $HOME
-git clone https://github.com/mckees/checkbox-media
+git clone https://github.com/canonical/checkbox-media
 mkdir /var/tmp/checkbox-providers
-cp -r $HOME/checkbox-media/checkbox-provider-opencl /var/tmp/checkbox-providers/
+cp -r $HOME/checkbox-media/checkbox-provider-media /var/tmp/checkbox-providers/
 ```
 
-You can then modify the content of the provider in `/var/tmp/checkbox-providers/checkbox-provider-opencl/`, and it's this version that will be used when you run the tests.
+You can then modify the content of the provider in `/var/tmp/checkbox-providers/checkbox-provider-media/`, and it's this version that will be used when you run the tests.
 
 Please refer to the [Checkbox documentation] on side-loading providers for more information.
 
