@@ -24,7 +24,7 @@ base: core24
 #     in the remote fashion (through checkbox-cli)
 # shell:
 #   - give shell access to the provider snap
-# install-full-deps:
+# install:
 #   - install all depedencies needed for provider jobs
 # test:
 #   - Run the regression test suite
@@ -37,7 +37,7 @@ apps:
     command: bin/configure
   test:
     command-chain: [bin/wrapper_local]
-    command: bin/regression-testing
+    command: bin/test
   remote-slave:
     command-chain: [bin/wrapper_local]
     command: bin/checkbox-cli-wrapper slave
@@ -47,7 +47,7 @@ apps:
     command-chain: [bin/wrapper_local]
     command: bin/shell-wrapper
   install-full-deps:
-    command: bin/install-full-deps
+    command: bin/install
 
 passthrough:
   hooks:
