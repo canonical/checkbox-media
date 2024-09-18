@@ -46,7 +46,7 @@ apps:
   shell:
     command-chain: [bin/wrapper_local]
     command: bin/shell-wrapper
-  install-full-deps:
+  install:
     command: bin/install
 
 passthrough:

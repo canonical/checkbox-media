@@ -1,4 +1,4 @@
-id: media
+id: media-kobuk-plan
 unit: test plan
 _name: Media test plan for hardware encode and decode
 include:
