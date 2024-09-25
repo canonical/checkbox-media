@@ -12,7 +12,7 @@ on:
 jobs:
 
   check-secret:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     outputs:
       snap-key: ${{ steps.snap-key.outputs.defined }}
     steps:
@@ -24,7 +24,7 @@ jobs:
           SNAPSTORE_KEY: ${{ secrets.STORE_LOGIN }}
 
   build-and-publish:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: [check-secret]
     steps:
       - if: needs.check-secret.outputs.snap-key == 'true'
@@ -36,7 +36,7 @@ jobs:
           sudo iptables -P FORWARD ACCEPT
 
       - if: needs.check-secret.outputs.snap-key == 'true'
-        name: Checkout checkbox-kivu
+        name: Checkout checkbox-media
         uses: actions/checkout@v3
         with:
           # Fetch all of history so DM can determine its own version from git.
@@ -44,13 +44,13 @@ jobs:
 
       - if: needs.check-secret.outputs.snap-key == 'true'
         uses: snapcore/action-build@v1.0.9
-        name: Build checkbox-kivu-classic snap
+        name: Build checkbox-media snap
         id: build
         with:
           snapcraft-channel: latest/stable
 
       - if: needs.check-secret.outputs.snap-key == 'true'
-        name: Verify checkbox-kivu-classic snap
+        name: Verify checkbox-media snap
         run: |
           # Make sure it is installable.
           sudo snap install checkbox24

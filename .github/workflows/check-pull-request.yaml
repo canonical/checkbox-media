@@ -7,7 +7,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name : Remove Docker
@@ -23,7 +23,7 @@ jobs:
           fetch-depth: 0
 
       - uses: snapcore/action-build@v1.0.9
-        name: Build checkbox-kivu-classic snap
+        name: Build checkbox-media snap
         id: build
         with:
           snapcraft-channel: latest/stable
