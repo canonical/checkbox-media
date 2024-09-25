@@ -178,18 +178,18 @@ command:
   LD_LIBRARY_PATH=/lib/x86_64-linux-gnu/ LIBVA_TRACE=/tmp/libva.trace ffmpeg -hwaccel vaapi -vaapi_device /dev/dri/renderD128 -hide_banner -loglevel info -i $local_filename -t 5 -pix_fmt yuv420p -f rawvideo -vsync 1 -y out.yuv
   ffmpeg_return_status=$?
   # check libva trace logs for HW acceleration
+  hw_used=false
   if grep "profile = {{ libva_profile }},.*entrypoint = {{ libva_entrypoint }}" /tmp/libva.trace*
   then
       echo "---- [PASS] using HW {{ operation }}"
+      hw_used=true
   else
       echo "---- [FAIL] not using HW {{ operation }}"
-      exit 1
   fi
   # check ffmpeg for successful exit
   if [ $ffmpeg_return_status -ne 0 ];
   then
       echo "---- [FAIL] FFMPEG returned an error"
-      exit 1
   else
       echo "---- [PASS] FFMPEG command completed successfully"
   fi
@@ -197,6 +197,11 @@ command:
   rm $local_filename
   rm /tmp/libva.trace*
   rm out.yuv
+  if [[ $hw_used -ne 0 ]] || [[ $ffmpeg_return_status -ne 0 ]];
+  then
+    exit 1
+  fi
+
 
 unit: template
 template-resource: mediasource
