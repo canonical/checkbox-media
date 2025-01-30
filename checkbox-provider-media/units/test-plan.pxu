@@ -4,9 +4,11 @@ _name: Media test plan for hardware encode and decode
 include:
   media_kobuk.*
   media_kobuk_smoke.*
+  media_kobuk_libvpl.*
 bootstrap_include:
     com.canonical.certification::executable
     com.canonical.certification::snap
     graphics_card
     va
+    libvpl
     mediasource
