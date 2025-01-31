@@ -287,6 +287,8 @@ category_id: media-kobuk
 flags: simple
 user: root
 _summary: Run the {{ binname }} test from libvpl
+requires:
+  executable.name == "{{binname}}"
 environ:
   # necessary for local mode
   XDG_SESSION_TYPE
