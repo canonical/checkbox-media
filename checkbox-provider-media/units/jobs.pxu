@@ -1,3 +1,28 @@
+id: libvpl
+plugin: resource
+command:
+    echo 'binname: hello-decode'
+    echo 'command: sudo hello-decode -i /usr/share/vpl/examples/content/cars_320x240.h265'
+    echo
+    echo 'binname: hello-encode'
+    echo 'command: sudo hello-encode -i /usr/share/vpl/examples/content/cars_320x240.i420 -w 320 -h 240'
+    echo
+    echo 'binname: 01_transition_vpl'
+    echo 'command: 01_transition_vpl'
+    echo
+    echo 'binname: hello-sharing-vaapi-export'
+    echo 'command: sudo hello-sharing-vaapi-export -i /usr/share/vpl/examples/content/cars_320x240.h265'
+    echo
+    echo 'binname: hello-sharing-vaapi-import'
+    echo 'command: sudo hello-sharing-vaapi-import -i /usr/share/vpl/examples/content/cars_320x240.i420 -w 320 -h 240'
+    echo
+    echo 'binname: hello-vpp'
+    echo 'command: sudo hello-vpp -i /usr/share/vpl/examples/content/cars_320x240.i420 -w 320 -h 240'
+    echo
+    echo 'binname: hello-encode-jpeg'
+    echo 'command: sudo hello-encode-jpeg -i /usr/share/vpl/examples/content/cars_320x240.nv12 -w 320 -h 240 -nv12'
+    echo
+
 id: va
 plugin: resource
 command:
@@ -251,3 +276,25 @@ command:
   then
     exit 1
   fi
+
+unit: template
+template-resource: libvpl
+template-filter: libvpl.binname != ''
+template-engine: jinja2
+template-unit: job
+id: media_kobuk_libvpl_{{ binname }}
+category_id: media-kobuk
+flags: simple
+user: root
+_summary: Run the {{ binname }} test from libvpl
+requires:
+  executable.name == "{{binname}}"
+environ:
+  # necessary for local mode
+  XDG_SESSION_TYPE
+  XDG_RUNTIME_DIR
+  NORMAL_USER
+estimated_duration: 1m
+command:
+  echo "{{ command }}"
+  {{ command }}
