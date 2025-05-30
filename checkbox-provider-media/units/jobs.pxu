@@ -142,6 +142,7 @@ environ:
   NORMAL_USER
 estimated_duration: 1m
 command:
+  LD_LIBRARY_PATH=/lib/x86_64-linux-gnu/:/usr/lib/x86_64-linux-gnu/
   entrypoint={{ profile }}
   if sudo vainfo --display drm | grep $entrypoint | grep "VAEntrypointVLD"
   then
@@ -249,8 +250,8 @@ estimated_duration: 1m
 command:
   wget -q {{ video_url }}
   local_filename=$(basename {{ video_url }})
-  echo "LD_LIBRARY_PATH=/lib/x86_64-linux-gnu/ LIBVA_TRACE=/tmp/libva.trace ffmpeg -hwaccel vaapi -vaapi_device /dev/dri/renderD128 -t 5 -hide_banner -loglevel info -hwaccel_output_format vaapi -i $local_filename -rc_mode CQP -low_power 1 -c:v {{ ffmpeg_output_codec }} output.{{ output_container }}"
-  LD_LIBRARY_PATH=/lib/x86_64-linux-gnu/ LIBVA_TRACE=/tmp/libva.trace ffmpeg -hwaccel vaapi -vaapi_device /dev/dri/renderD128 -t 5 -hide_banner -loglevel info -hwaccel_output_format vaapi -i $local_filename -rc_mode CQP -low_power 1 -c:v {{ ffmpeg_output_codec }} output.{{ output_container }}
+  echo "LD_LIBRARY_PATH=/lib/x86_64-linux-gnu/:/usr/lib/x86_64-linux-gnu/ LIBVA_TRACE=/tmp/libva.trace ffmpeg -hwaccel vaapi -vaapi_device /dev/dri/renderD128 -t 5 -hide_banner -loglevel info -hwaccel_output_format vaapi -i $local_filename -rc_mode CQP -low_power 1 -c:v {{ ffmpeg_output_codec }} output.{{ output_container }}"
+  LD_LIBRARY_PATH=/lib/x86_64-linux-gnu/:/usr/lib/x86_64-linux-gnu/ LIBVA_TRACE=/tmp/libva.trace ffmpeg -hwaccel vaapi -vaapi_device /dev/dri/renderD128 -t 5 -hide_banner -loglevel info -hwaccel_output_format vaapi -i $local_filename -rc_mode CQP -low_power 1 -c:v {{ ffmpeg_output_codec }} output.{{ output_container }}
   ffmpeg_return_status=$?
   # check libva trace logs for HW acceleration
   hw_used=false

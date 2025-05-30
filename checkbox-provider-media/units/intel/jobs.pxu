@@ -1,0 +1,19 @@
+plugin: resource
+id: intel_huc_active
+category_id: intel
+user: root
+_summary: Checks if HuC is active
+environ:
+  # necessary for local mode
+  XDG_SESSION_TYPE
+  XDG_RUNTIME_DIR
+estimated_duration: 1
+command:
+  HUC_RUNNING=$(sudo cat $(sudo find /sys/kernel/ -name huc_info) | grep "status: RUNNING")
+  if [ -z "$HUC_RUNNING" ]; then
+    echo "FAIL: HuC is not running"
+    exit 1
+  fi
+  echo "PASS: HuC is running"
+  exit 0
+

@@ -1,14 +1,24 @@
 id: media-kobuk-plan
 unit: test plan
-_name: Media test plan for hardware encode and decode
+_name: Media test plan for FFmpeg hardware encode and decode
 include:
   media_kobuk.*
   media_kobuk_smoke.*
-  media_kobuk_libvpl.*
 bootstrap_include:
     com.canonical.certification::executable
     com.canonical.certification::snap
     graphics_card
     va
-    libvpl
     mediasource
+
+id: intel-test-plan
+unit: test plan
+_name: Media test plan for hardware encode and decode
+include:
+  intel.*
+  media_kobuk_libvpl.*
+bootstrap_include:
+    com.canonical.certification::executable
+    com.canonical.certification::snap
+    graphics_card
+    libvpl
