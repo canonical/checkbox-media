@@ -24,10 +24,6 @@ base: core24
 #     in the remote fashion (through checkbox-cli)
 # shell:
 #   - give shell access to the provider snap
-# install:
-#   - install all depedencies needed for provider jobs
-# test:
-#   - Run the regression test suite
 apps:
   checkbox-cli:
     command-chain: [bin/wrapper_local]
@@ -38,6 +34,9 @@ apps:
   test:
     command-chain: [bin/wrapper_local]
     command: bin/test
+  test-intel:
+    command-chain: [bin/wrapper_local]
+    command: bin/test-intel
   remote-slave:
     command-chain: [bin/wrapper_local]
     command: bin/checkbox-cli-wrapper slave
