@@ -11,12 +11,22 @@ bootstrap_include:
     va
     mediasource
 
+id: gstreamer-test-plan
+unit: test plan
+_name: Media test plan for gstreamer
+include:
+  gstreamer.*
+bootstrap_include:
+    com.canonical.certification::executable
+    com.canonical.certification::snap
+    graphics_card
+    mediasource
+
 id: intel-test-plan
 unit: test plan
 _name: Media test plan for hardware encode and decode
 include:
   intel.*
-  media_kobuk_libvpl.*
 bootstrap_include:
     com.canonical.certification::executable
     com.canonical.certification::snap

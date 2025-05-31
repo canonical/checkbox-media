@@ -1,0 +1,14 @@
+#!/bin/bash
+
+sudo usermod -aG video $USER
+newgrp video
+
+sudo apt update
+sudo apt install -y \
+  gstreamer1.0-vaapi \
+  gstreamer1.0-libav \
+  gstreamer1.0-plugins-good \
+  gstreamer1.0-plugins-bad \
+  gstreamer1.0-plugins-ugly \
+  libva2 libva-drm2 libva-x11-2 \
+  intel-media-va-driver-non-free
