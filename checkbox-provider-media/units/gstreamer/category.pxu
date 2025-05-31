@@ -1,0 +1,4 @@
+unit: category
+id: gstreamer
+_name: Category for gstreamer tests
+

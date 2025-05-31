@@ -37,6 +37,9 @@ apps:
   test-intel:
     command-chain: [bin/wrapper_local]
     command: bin/test-intel
+  test-gstreamer:
+    command-chain: [bin/wrapper_local]
+    command: bin/test-gstreamer
   remote-slave:
     command-chain: [bin/wrapper_local]
     command: bin/checkbox-cli-wrapper slave
@@ -47,6 +50,8 @@ apps:
     command: bin/shell-wrapper
   install:
     command: bin/install
+  install-gstreamer:
+    command: bin/install-gstreamer
 
 passthrough:
   hooks:
