@@ -40,6 +40,9 @@ apps:
   test-gstreamer:
     command-chain: [bin/wrapper_local]
     command: bin/test-gstreamer
+  test-browsers:
+    command-chain: [bin/wrapper_local]
+    command: bin/test-browsers
   remote-slave:
     command-chain: [bin/wrapper_local]
     command: bin/checkbox-cli-wrapper slave

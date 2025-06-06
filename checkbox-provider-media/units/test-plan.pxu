@@ -11,6 +11,18 @@ bootstrap_include:
     va
     mediasource
 
+id: browser-test-plan
+unit: test plan
+_name: Media test plan for browsers
+include:
+  firefox.*
+bootstrap_include:
+    com.canonical.certification::executable
+    com.canonical.certification::snap
+    graphics_card
+    youtubevideos
+    mediasource
+
 id: gstreamer-test-plan
 unit: test plan
 _name: Media test plan for gstreamer
