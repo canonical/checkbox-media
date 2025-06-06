@@ -3,7 +3,7 @@ template-resource: mediasource
 template-filter: mediasource.operation == 'decode'
 template-engine: jinja2
 template-unit: job
-id: gstreamer_{{ codec }}_{{ resolution }}_{{ operation }}
+id: gstreamer_{{ codec }}_{{ resolution }}_{{ operation }}_{{ container }}
 category_id: gstreamer
 flags: simple
 _summary: Check {{ codec }} hardware {{ operation }} in {{ resolution }}

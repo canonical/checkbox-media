@@ -1,0 +1,122 @@
+unit: template
+template-resource: youtubevideos
+template-engine: jinja2
+template-unit: job
+id: firefox_youtube_{{ id }}
+category_id: firefox
+flags: simple
+_summary: Check that hardware decode is working on Youtube
+requires:
+  executable.name == "firefox"
+estimated_duration: 1m
+run-as-user: true
+environ:
+  # necessary for local mode
+  XDG_SESSION_TYPE
+  XDG_RUNTIME_DIR
+  NORMAL_USER
+command:
+  WORKING_DIR=$HOME/snap/firefox/common/
+  # Removes extra traces from manual testing
+  rm -f $WORKING_DIR/libva.trace*
+  # Remove metadata files that might hold broken state from timeout
+  rm -rf $HOME/snap/firefox/
+  firefox -CreateProfile "autoplay_profile $HOME/snap/firefox/common/.mozilla/firefox/autoplay_profile"
+  mkdir -p $WORKING_DIR
+  cat > $HOME/snap/firefox/common/.mozilla/firefox/autoplay_profile/user.js <<EOF
+  user_pref("media.autoplay.default", 0);
+  user_pref("media.autoplay.allow-muted", true);
+  EOF
+  chown -R "$USER":"$USER" "$HOME/snap/firefox/common/.mozilla/firefox/autoplay_profile"
+  chmod -R u+rw "$HOME/snap/firefox/common/.mozilla/firefox/autoplay_profile"
+  LIBVA_TRACE=$WORKING_DIR/libva.trace timeout 20s firefox --profile $HOME/snap/firefox/common/.mozilla/firefox/autoplay_profile https://www.youtube.com/watch?v=aqz-KE-bpKQ
+  return_status=$?
+  # The timeout command results in exit code 124
+  if [ "$return_status" -eq 124 ]; then
+    echo "Firefox exited due to timeout (expected)."
+    return_status=0
+  fi
+  # check libva trace logs for HW acceleration
+  hw_used=1
+  if grep "entrypoint = 1" $WORKING_DIR/libva.trace*
+  then
+      echo "---- [PASS] using HW {{ operation }}"
+      hw_used=0
+  else
+      echo "---- [FAIL] not using HW {{ operation }}"
+  fi
+  # check for successful exit
+  if [ $return_status -ne 0 ];
+  then
+      echo "---- [FAIL] firefox returned an error not related to timing out"
+  else
+      echo "---- [PASS] firefox command completed successfully"
+  fi
+  # cleanup files
+  rm -rf $WORKING_DIR
+  if [[ $hw_used -ne 0 ]] || [[ $return_status -ne 0 ]];
+  then
+    exit 1
+  fi
+
+unit: template
+template-resource: mediasource
+template-engine: jinja2
+template-unit: job
+template-filter: mediasource.operation == 'decode' and mediasource.browser_compatible == 'true' 
+id: firefox_{{ codec }}_{{ resolution }}
+category_id: firefox
+flags: simple
+_summary: Check that hardware decode is working in Firefox
+requires:
+  executable.name == "firefox"
+estimated_duration: 1m
+run-as-user: true
+environ:
+  # necessary for local mode
+  XDG_SESSION_TYPE
+  XDG_RUNTIME_DIR
+  NORMAL_USER
+command:
+  WORKING_DIR=$HOME/snap/firefox/common/
+  # Removes extra traces from manual testing
+  rm -f $WORKING_DIR/libva.trace*
+  filename=$(basename {{ video_url }})
+  extension="${filename##*.}"
+  echo Extension: $extension
+  mkdir -p ${HOME}/checkbox-test-data/
+  cp -r "${PLAINBOX_PROVIDER_DATA}"/* ${HOME}/checkbox-test-data/
+  cp ${HOME}/checkbox-test-data/play_video.html_template ${HOME}/checkbox-test-data/play_video_{{ codec }}.html
+  sed -i -e "s/\[CODEC\]/{{ codec }}/g" ${HOME}/checkbox-test-data/play_video_{{ codec }}.html
+  sed -i -e "s|\[VIDEO_URL\]|{{ video_url }}|g" ${HOME}/checkbox-test-data/play_video_{{ codec }}.html
+  sed -i -e "s/\[CONTAINER\]/$extension/g" ${HOME}/checkbox-test-data/play_video_{{ codec }}.html
+  LIBVA_TRACE=$WORKING_DIR/libva.trace timeout 20s firefox ${HOME}/checkbox-test-data/play_video_{{ codec }}.html --new-instance
+  return_status=$?
+  # The timeout command results in exit code 124
+  if [ "$return_status" -eq 124 ]; then
+    echo "Firefox exited due to timeout (expected)."
+    return_status=0
+  fi
+  # check libva trace logs for HW acceleration
+  hw_used=1
+  if grep "entrypoint = 1" $WORKING_DIR/libva.trace*
+  then
+      echo "---- [PASS] using HW {{ operation }}"
+      hw_used=0
+  else
+      echo "---- [FAIL] not using HW {{ operation }}"
+  fi
+  # check for successful exit
+  if [ $return_status -ne 0 ];
+  then
+      echo "---- [FAIL] firefox returned an error not related to timing out"
+  else
+      echo "---- [PASS] firefox command completed successfully"
+  fi
+  # cleanup files
+  rm -rf $WORKING_DIR
+  if [[ $hw_used -ne 0 ]] || [[ $return_status -ne 0 ]];
+  then
+    exit 1
+  fi
+  #rm -f ${HOME}/checkbox-test-data/play_video_{{ codec }}.html
