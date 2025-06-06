@@ -1,0 +1,55 @@
+unit: template
+template-resource: youtubevideos
+template-engine: jinja2
+template-unit: job
+id: firefox_youtube_{{ id }}
+category_id: firefox
+flags: simple
+_summary: Check that hardware decode is working on Youtube
+requires:
+  executable.name == "firefox"
+estimated_duration: 1m
+run-as-user: true
+environ:
+  # necessary for local mode
+  XDG_SESSION_TYPE
+  XDG_RUNTIME_DIR
+  NORMAL_USER
+command:
+  # Removes extra traces from manual testing
+  WORKING_DIR=$HOME/.checkbox-media/
+  rm -f $WORKING_DIR/libva.trace*
+  # Create the autoplay profile
+  mkdir -p $WORKING_DIR/
+  # Clean up extra files that might hold broken state from timeout
+  rm -rf $HOME/snap/firefox/
+  firefox -CreateProfile "autoplay_profile $HOME/snap/firefox/common/.mozilla/firefox/autoplay_profile"
+  cat > $HOME/snap/firefox/common/.mozilla/firefox/autoplay_profile/user.js <<EOF
+  user_pref("media.autoplay.default", 0);
+  user_pref("media.autoplay.allow-muted", true);
+  EOF
+  LIBVA_TRACE=$WORKING_DIR/libva.trace timeout 20s firefox --profile $HOME/snap/firefox/common/.mozilla/firefox/autoplay_profile https://www.youtube.com/watch?v=aqz-KE-bpKQ
+  return_status=$?
+  # check libva trace logs for HW acceleration
+  hw_used=1
+  if grep "entrypoint = 1" $WORKING_DIR/libva.trace*
+  then
+      echo "---- [PASS] using HW {{ operation }}"
+      hw_used=0
+  else
+      echo "---- [FAIL] not using HW {{ operation }}"
+  fi
+  # check for successful exit
+  if [ $return_status -ne 0 ];
+  then
+      echo "---- [FAIL] firefox returned an error"
+  else
+      echo "---- [PASS] firefox command completed successfully"
+  fi
+  # cleanup files
+  rm -f /tmp/libva.trace*
+  rm -rf $WORKING_DIR
+  if [[ $hw_used -ne 0 ]] || [[ $return_status -ne 0 ]];
+  then
+    exit 1
+  fi

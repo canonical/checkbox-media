@@ -1,3 +1,10 @@
+id: youtubevideos
+plugin: resource
+command: 
+    echo 'video_url: https://www.youtube.com/watch?v=aqz-KE-bpKQ'
+    echo 'id: bigbuckbunny'
+    echo
+
 id: mediasource
 plugin: resource
 command:
