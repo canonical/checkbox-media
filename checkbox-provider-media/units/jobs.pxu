@@ -174,7 +174,7 @@ command:
   ffmpeg_return_status=$?
   # check libva trace logs for HW acceleration
   hw_used=false
-  if grep "profile = {{ libva_profile }},.*entrypoint = {{ libva_entrypoint }}" /tmp/libva.trace*
+  if awk '/profile *= *{{ libva_profile }}/ { p=1; next } p && /entrypoint *= *{{ libva_entrypoint }}/ { print prev "\n" $0; p=0 } { prev=$0 }' /tmp/libva.trace*
   then
       echo "---- [PASS] using HW {{ operation }}"
       hw_used=true

@@ -54,3 +54,62 @@ command:
   then
     exit 1
   fi
+
+unit: template
+template-resource: mediasource
+template-filter: mediasource.operation == 'encode'
+template-engine: jinja2
+template-unit: job
+id: gstreamer_{{ codec }}_{{ resolution }}_{{ operation }}
+category_id: gstreamer
+flags: simple
+_summary: Check {{ codec }} hardware {{ operation }} in {{ resolution }}
+requires:
+  executable.name == "gst-launch-1.0"
+estimated_duration: 1m
+run-as-user: true
+environ:
+  # necessary for local mode
+  XDG_SESSION_TYPE
+  XDG_RUNTIME_DIR
+  NORMAL_USER
+command:
+  # Removes extra traces from manual testing
+  rm -f /tmp/libva.trace*
+  local_filename=$(basename {{ video_url }})
+  if [ ! -f "/tmp/$local_filename" ]
+  then
+    wget {{ video_url }} -P /tmp/
+  fi
+  export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
+  export LIBVA_DRIVER_NAME=iHD
+  export LIBVA_DRI3_ENABLE=1
+  export LIBVA_TRACE=/tmp/libva.trace
+  export GST_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/gstreamer-1.0
+  gst-launch-1.0 -v filesrc location=/tmp/$local_filename ! decodebin ! {{ gstreamer_encoder }} ! {{ gstreamer_parser }} ! {{ gstreamer_muxer }} ! filesink location=/tmp/output.{{ output_container }}
+  return_status=$?
+  # check libva trace logs for HW acceleration
+  hw_used=1
+  if awk '/profile *= *{{ libva_profile }}/ { p=1; next } p && /entrypoint *= *{{ libva_entrypoint }}/ { print prev "\n" $0; p=0 } { prev=$0 }' /tmp/libva.trace*
+  then
+      echo "---- [PASS] using HW {{ operation }}"
+      hw_used=0
+  else
+      cat /tmp/libva.trace* > /tmp/gstreamer_{{ codec }}_{{ resolution }}_{{ operation }}.trace
+      echo "---- [FAIL] not using HW {{ operation }}"
+  fi
+  # check gstreamer for successful exit
+  if [ $return_status -ne 0 ];
+  then
+      echo "---- [FAIL] gstreamer returned an error"
+  else
+      echo "---- [PASS] gstreamer command completed successfully"
+  fi
+  # cleanup files
+  rm -f /tmp/$local_filename
+  rm /tmp/output.{{ output_container }}
+  rm -f /tmp/libva.trace*
+  if [[ $hw_used -ne 0 ]] || [[ $return_status -ne 0 ]];
+  then
+    exit 1
+  fi
