@@ -108,7 +108,7 @@ id: media_kobuk_smoke_{{ codec }}_{{ resolution }}_{{ operation }}
 category_id: media-kobuk
 flags: simple
 user: root
-_summary: Check {{ codec }} hardware {{ operation }} in {{ resolution }}
+_summary: Check {{ codec }} hardware {{ operation }} in {{ resolution }} for ffmpeg
 requires:
   executable.name == "ffmpeg"
 environ:
@@ -157,7 +157,7 @@ id: media_kobuk_smoke_{{ codec }}_{{ resolution }}_{{ operation }}
 category_id: media-kobuk
 flags: simple
 user: root
-_summary: Check {{ codec }} hardware {{ operation }} in {{ resolution }}
+_summary: Check {{ codec }} hardware {{ operation }} in {{ resolution }} for ffmpeg
 requires:
   executable.name == "ffmpeg"
 environ:
