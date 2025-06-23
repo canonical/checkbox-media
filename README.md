@@ -51,6 +51,8 @@ To run the full test plan:
 ```shell
 checkbox-media.test
 checkbox-media.test-gstreamer
+checkbox-media.test-browsers
+checkbox-media.test-intel
 ```
 # Develop the Checkbox Media provider
 
