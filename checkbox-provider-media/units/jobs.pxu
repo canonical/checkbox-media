@@ -202,7 +202,7 @@ template-resource: libvpl
 template-filter: libvpl.binname != ''
 template-engine: jinja2
 template-unit: job
-id: media_kobuk_libvpl_{{ binname }}
+id: intel_libvpl_{{ binname }}
 category_id: media-kobuk
 flags: simple
 user: root
