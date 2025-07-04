@@ -1,0 +1,53 @@
+unit: template
+template-resource: mediasource
+template-filter: mediasource.operation == 'decode'
+template-engine: jinja2
+template-unit: job
+id: totem_{{ codec }}_{{ resolution }}_{{ operation }}_{{ container }}
+category_id: totem
+flags: simple
+user: root
+_summary: Check {{ codec }} hardware accel in {{ resolution }} for totem
+requires:
+  executable.name == "totem"
+environ:
+  # necessary for local mode
+  XDG_SESSION_TYPE
+  XDG_RUNTIME_DIR
+  NORMAL_USER
+estimated_duration: 1m
+command:
+  eval $(dbus-launch)
+  export DBUS_SESSION_BUS_ADDRESS
+  wget -q {{ video_url }}
+  local_filename=$(basename {{ video_url }})
+  LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/ GST_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/gstreamer-1.0/ LIBVA_TRACE=/tmp/libva.trace timeout 10s totem $local_filename
+  return_status=$?
+  # The timeout command results in exit code 124
+  if [ "$return_status" -eq 124 ]; then
+    echo "Totem exited due to timeout (expected)."
+    return_status=0
+  fi
+  # check libva trace logs for HW acceleration
+  hw_used=1
+  if grep "profile = {{ libva_profile }},.*entrypoint = {{ libva_entrypoint }}" /tmp/libva.trace*
+  then
+      echo "---- [PASS] using HW {{ operation }}"
+      hw_used=0
+  else
+      echo "---- [FAIL] not using HW {{ operation }}"
+  fi
+  # check totem for successful exit
+  if [ $return_status -ne 0 ];
+  then
+      echo "---- [FAIL] Totem returned an error"
+  else
+      echo "---- [PASS] Totem command completed successfully"
+  fi
+  # cleanup files
+  rm $local_filename
+  rm -f /tmp/libva.trace*
+  if [[ $hw_used -ne 0 ]] || [[ $return_status -ne 0 ]];
+  then
+    exit 1
+  fi

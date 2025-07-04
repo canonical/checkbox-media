@@ -43,6 +43,9 @@ apps:
   test-browsers:
     command-chain: [bin/wrapper_local]
     command: bin/test-browsers
+  test-video-players:
+    command-chain: [bin/wrapper_local]
+    command: bin/test-video-players
   remote-slave:
     command-chain: [bin/wrapper_local]
     command: bin/checkbox-cli-wrapper slave

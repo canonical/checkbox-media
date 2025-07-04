@@ -44,3 +44,14 @@ bootstrap_include:
     com.canonical.certification::snap
     graphics_card
     libvpl
+
+id: video-player-test-plan
+unit: test plan
+_name: Media test plan for video player apps
+include:
+  totem.*
+bootstrap_include:
+    com.canonical.certification::executable
+    com.canonical.certification::snap
+    graphics_card
+    mediasource
