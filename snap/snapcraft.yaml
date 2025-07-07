@@ -58,6 +58,8 @@ apps:
     command: bin/install
   install-gstreamer:
     command: bin/install-gstreamer
+  install-video-players:
+    command: bin/install-video-players
 
 passthrough:
   hooks:
