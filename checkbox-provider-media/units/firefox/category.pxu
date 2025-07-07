@@ -1,0 +1,4 @@
+unit: category
+id: firefox
+_name: Category for firefox tests
+

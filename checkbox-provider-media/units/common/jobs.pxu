@@ -1,3 +1,10 @@
+id: youtubevideos
+plugin: resource
+command: 
+    echo 'video_url: https://www.youtube.com/watch?v=aqz-KE-bpKQ'
+    echo 'id: bigbuckbunny'
+    echo
+
 id: mediasource
 plugin: resource
 command:
@@ -7,6 +14,8 @@ command:
     echo 'resolution: 4K'
     echo 'libva_profile: 32'
     echo 'libva_entrypoint: 1'
+    echo 'browser_compatible: false'
+    echo 'container: mkv'
     echo
     echo 'video_url: https://people.canonical.com/~mckeesh/media_testing_videos/BBB/bbb_sunflower_1080p_30fps_normal_AV1.mkv'
     echo 'codec: AV1'
@@ -14,6 +23,8 @@ command:
     echo 'resolution: 1080p'
     echo 'libva_profile: 32'
     echo 'libva_entrypoint: 1'
+    echo 'browser_compatible: false'
+    echo 'container: mkv'
     echo
     echo 'video_url: https://people.canonical.com/~mckeesh/media_testing_videos/BBB/bbb_sunflower_2160p_60fps_normal_VP9.mkv'
     echo 'codec: VP9'
@@ -21,6 +32,8 @@ command:
     echo 'resolution: 4K'
     echo 'libva_profile: 19'
     echo 'libva_entrypoint: 1'
+    echo 'browser_compatible: false'
+    echo 'container: mkv'
     echo
     echo 'video_url: https://people.canonical.com/~mckeesh/media_testing_videos/BBB/bbb_sunflower_1080p_30fps_normal_VP9.mkv'
     echo 'codec: VP9'
@@ -28,6 +41,8 @@ command:
     echo 'resolution: 1080p'
     echo 'libva_profile: 19'
     echo 'libva_entrypoint: 1'
+    echo 'browser_compatible: false'
+    echo 'container: mkv'
     echo
     echo 'video_url: https://people.canonical.com/~mckeesh/media_testing_videos/BBB/bbb_sunflower_2160p_30fps_normal_h264.mp4'
     echo 'codec: H264'
@@ -35,6 +50,8 @@ command:
     echo 'resolution: 4K'
     echo 'libva_profile: 7'
     echo 'libva_entrypoint: 1'
+    echo 'browser_compatible: true'
+    echo 'container: mp4'
     echo
     echo 'video_url: https://people.canonical.com/~mckeesh/media_testing_videos/BBB/bbb_sunflower_1080p_30fps_normal_h264.mp4'
     echo 'codec: H264'
@@ -42,6 +59,8 @@ command:
     echo 'resolution: 1080p'
     echo 'libva_profile: 7'
     echo 'libva_entrypoint: 1'
+    echo 'browser_compatible: true'
+    echo 'container: mp4'
     echo
     echo 'video_url: https://people.canonical.com/~mckeesh/media_testing_videos/BBB/bbb_sunflower_2160p_30fps_normal_h264.mp4'
     echo 'codec: VP9'
@@ -54,6 +73,8 @@ command:
     echo 'libva_profile: (19|20|21|22)'
     echo 'libva_entrypoint: 8'
     echo 'output_container: mkv'
+    echo 'browser_compatible: true'
+    echo 'container: mp4'
     echo
     echo 'video_url: https://people.canonical.com/~mckeesh/media_testing_videos/BBB/bbb_sunflower_1080p_30fps_normal_h264.mp4'
     echo 'codec: VP9'
@@ -66,6 +87,8 @@ command:
     echo 'libva_profile: (19|20|21|22)'
     echo 'libva_entrypoint: 8'
     echo 'output_container: mkv'
+    echo 'browser_compatible: true'
+    echo 'container: mp4'
     echo
     echo 'video_url: https://people.canonical.com/~mckeesh/media_testing_videos/BBB/bbb_sunflower_2160p_60fps_normal_VP9.mkv'
     echo 'codec: H264'
@@ -78,6 +101,8 @@ command:
     echo 'libva_profile: (6|7|13)'
     echo 'libva_entrypoint: (6|8)'
     echo 'output_container: mp4'
+    echo 'browser_compatible: false'
+    echo 'container: mkv'
     echo
     echo 'video_url: https://people.canonical.com/~mckeesh/media_testing_videos/BBB/bbb_sunflower_1080p_30fps_normal_AV1.mkv'
     echo 'codec: H264'
@@ -90,3 +115,41 @@ command:
     echo 'libva_profile: (6|7|13)'
     echo 'libva_entrypoint: (6|8)'
     echo 'output_container: mp4'
+    echo 'browser_compatible: false'
+    echo 'container: mkv'
+    echo
+    echo 'video_url: https://people.canonical.com/~mckeesh/media_testing_videos/BBB/bbb_sunflower_1080p_30fps_normal_AV1.webm'
+    echo 'codec: AV1'
+    echo 'operation: decode'
+    echo 'resolution: 1080p'
+    echo 'libva_profile: 32'
+    echo 'libva_entrypoint: 1'
+    echo 'browser_compatible: true'
+    echo 'container: webm'
+    echo
+    echo 'video_url: https://people.canonical.com/~mckeesh/media_testing_videos/BBB/bbb_sunflower_2160p_30fps_normal_AV1.webm'
+    echo 'codec: AV1'
+    echo 'operation: decode'
+    echo 'resolution: 4K'
+    echo 'libva_profile: 32'
+    echo 'libva_entrypoint: 1'
+    echo 'browser_compatible: true'
+    echo 'container: webm'
+    echo
+    echo 'video_url: https://people.canonical.com/~mckeesh/media_testing_videos/BBB/bbb_sunflower_1080p_30fps_normal_VP9.webm'
+    echo 'codec: VP9'
+    echo 'operation: decode'
+    echo 'resolution: 1080p'
+    echo 'libva_profile: 19'
+    echo 'libva_entrypoint: 1'
+    echo 'browser_compatible: true'
+    echo 'container: webm'
+    echo
+    echo 'video_url: https://people.canonical.com/~mckeesh/media_testing_videos/BBB/bbb_sunflower_2160p_60fps_normal_VP9.webm'
+    echo 'codec: VP9'
+    echo 'operation: decode'
+    echo 'resolution: 4K'
+    echo 'libva_profile: 19'
+    echo 'libva_entrypoint: 1'
+    echo 'browser_compatible: true'
+    echo 'container: webm'

@@ -41,6 +41,7 @@ A helper script is available to install them:
 
 ```shell
 checkbox-media.install
+checkbox-media.install-gstreamer
 ```
 
 # Automated Run
@@ -49,7 +50,9 @@ To run the full test plan:
 
 ```shell
 checkbox-media.test
-
+checkbox-media.test-gstreamer
+checkbox-media.test-browsers
+checkbox-media.test-intel
 ```
 # Develop the Checkbox Media provider
 

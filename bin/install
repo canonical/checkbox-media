@@ -1,41 +1,49 @@
 #!/bin/bash
 
-sudo apt install -y vainfo libvpl-dev libvpl-examples ffmpeg libflite1 liboss4-salsa2
-
-
-###############################################################################
-# This section is a workaround for the fact that libvpl-examples does not
-# contain all needed samples for running the libvpl tests
-
 DOWNLOAD_DIR=/tmp/
 INSTALL_DIR=/usr/share/vpl/examples/content/
 URL='https://people.canonical.com/~mckeesh/libvpl_examples/'
 files=('cars_320x240.bgra' 'cars_320x240.h264' 'cars_320x240.h265' 'cars_320x240.i420' 'cars_320x240.mjpeg' 'cars_320x240.nv12' 'cars_320x240.y8')
 
-pushd $DOWNLOAD_DIR
-for f in "${files[@]}";
-do
-    if [ ! -f ${DOWNLOAD_DIR}$f ];
-    then
-        echo "Downloading from ${URL}${f}"
-        wget ${URL}${f}
-        mv ${DOWNLOAD_DIR}${f} ${INSTALL_DIR}
-    else
-        echo "Using cached download from: ${DOWNLOAD_DIR}$f"
-    fi
-done
-popd
+HAS_SUFFICIENT_LIBVPL_SUPPORT=$(apt-cache show libvpl-examples > /dev/null 2>&1 && echo true || echo false)
 
-for f in "${files[@]}";
-do
-    if [ ! -f ${INSTALL_DIR}$f ];
-    then
-        echo "Installing ${f} to ${INSTALL_DIR}"
-        sudo mv ${DOWNLOAD_DIR}${f} ${INSTALL_DIR}
-    else
-        echo "File already installed: ${INSTALL_DIR}$f"
-    fi
-done
+if $HAS_SUFFICIENT_LIBVPL_SUPPORT; then
+    sudo apt install -y libvpl-dev libvpl-examples
+else
+    echo "NOTE: Your Ubuntu version does not have sufficient libvpl support. Skipping libvpl install steps"
+fi
 
-# End libvpl-examples workaround
-###############################################################################
+sudo apt install -y vainfo ffmpeg libflite1 liboss4-salsa2
+if $HAS_SUFFICIENT_LIBVPL_SUPPORT; then
+    ###############################################################################
+    # This section is a workaround for the fact that libvpl-examples does not
+    # contain all needed samples for running the libvpl tests and may not be 
+    # available on older versions of Ubuntu
+    pushd $DOWNLOAD_DIR
+    for f in "${files[@]}";
+    do
+        if [ ! -f ${DOWNLOAD_DIR}$f ];
+        then
+            echo "Downloading from ${URL}${f}"
+            wget ${URL}${f}
+            mv ${DOWNLOAD_DIR}${f} ${INSTALL_DIR}
+        else
+            echo "Using cached download from: ${DOWNLOAD_DIR}$f"
+        fi
+    done
+    popd
+
+    for f in "${files[@]}";
+    do
+        if [ ! -f ${INSTALL_DIR}$f ];
+        then
+            echo "Installing ${f} to ${INSTALL_DIR}"
+            sudo mv ${DOWNLOAD_DIR}${f} ${INSTALL_DIR}
+        else
+            echo "File already installed: ${INSTALL_DIR}$f"
+        fi
+    done
+
+    # End libvpl-examples workaround
+    ###############################################################################
+fi

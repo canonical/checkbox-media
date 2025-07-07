@@ -104,7 +104,7 @@ template-resource: mediasource
 template-filter: mediasource.operation == 'decode'
 template-engine: jinja2
 template-unit: job
-id: media_kobuk_smoke_{{ codec }}_{{ resolution }}_{{ operation }}
+id: media_kobuk_smoke_{{ codec }}_{{ resolution }}_{{ operation }}_{{ container }}
 category_id: media-kobuk
 flags: simple
 user: root
@@ -153,7 +153,7 @@ template-resource: mediasource
 template-filter: mediasource.operation == 'encode'
 template-engine: jinja2
 template-unit: job
-id: media_kobuk_smoke_{{ codec }}_{{ resolution }}_{{ operation }}
+id: media_kobuk_smoke_{{ codec }}_{{ resolution }}_{{ operation }}_{{ container }}
 category_id: media-kobuk
 flags: simple
 user: root
@@ -202,7 +202,7 @@ template-resource: libvpl
 template-filter: libvpl.binname != ''
 template-engine: jinja2
 template-unit: job
-id: media_kobuk_libvpl_{{ binname }}
+id: intel_libvpl_{{ binname }}
 category_id: media-kobuk
 flags: simple
 user: root
