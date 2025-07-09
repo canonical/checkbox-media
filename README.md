@@ -42,6 +42,7 @@ A helper script is available to install them:
 ```shell
 checkbox-media.install
 checkbox-media.install-gstreamer
+checkbox-media.install-video-players
 ```
 
 # Automated Run
@@ -53,6 +54,7 @@ checkbox-media.test
 checkbox-media.test-gstreamer
 checkbox-media.test-browsers
 checkbox-media.test-intel
+checkbox-media.test-video-players
 ```
 # Develop the Checkbox Media provider
 
