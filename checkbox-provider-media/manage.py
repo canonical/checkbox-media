@@ -14,7 +14,7 @@ from plainbox.provider_manager import setup, N_
 # (optional)
 
 setup(
-    name='com.canonical.certification:media',
+    name="com.canonical.certification:media",
     version="1.0",
     description=N_("The com.canonical.certification:media provider"),
     gettext_domain="com_canonical_certification_media",
