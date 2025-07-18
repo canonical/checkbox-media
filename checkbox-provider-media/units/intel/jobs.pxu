@@ -17,3 +17,11 @@ command:
   echo "PASS: HuC is running"
   exit 0
 
+id: intel_check_vainfo_for_generational_capabilities
+category_id: intel
+flags: simple
+imports: from com.canonical.certification import executable
+requires: executable.name == 'vainfo'
+_summary: Check that vainfo is reporting the same caps as the media driver docs
+estimated_duration: 5
+command: silicon_compat.py
