@@ -79,5 +79,8 @@ def get_media_driver_category():
         return "BMG"
     elif gen_name == "PTL":
         return "PTL"
-    
-    
+    else:
+        print("Cannot infer an Intel media driver category for your silicon", file=sys.stderr)
+        print("Please check Intel Media Driver's supported platform list:", file=sys.stderr)
+        print("https://github.com/intel/media-driver?tab=readme-ov-file#supported-platforms", file=sys.stderr)
+        print("If you're running newly-released hardware, please file a bug", file=sys.stderr)

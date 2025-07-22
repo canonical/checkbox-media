@@ -34,11 +34,12 @@ def init_codec_support_dict():
 def run_vainfo():
     # Run vainfo command and get output
     try:
-        result = subprocess.run(["vainfo"], capture_output=True, text=True, check=True)
+        result = subprocess.run(["sudo", "vainfo"], capture_output=True, text=True, check=True)
         output = result.stdout + result.stderr  # vainfo sometimes prints to stderr
         return output
     except subprocess.CalledProcessError as e:
         print("Error running vainfo:", e)
+        print("Stderr:", e.stderr)
         exit(1)
 
 def get_codec_support_dict():
