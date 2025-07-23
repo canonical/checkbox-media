@@ -4,8 +4,9 @@ import sys
 
 from parse_vainfo import get_codec_support_dict
 from intel_gen import get_media_driver_category, get_media_driver_category
+from huc_check import is_huc_running
 
-def get_platform_support_dict():
+def get_platform_support_dict(is_huc_active=True):
     # Defined in the table at
     # https://github.com/intel/media-driver?tab=readme-ov-file#decodingencoding-features
     return {
@@ -31,27 +32,27 @@ def get_platform_support_dict():
                 "decode" : True
                 },
             "HEVC 8-bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 8bit 422" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 8bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit 422" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 12bit" : {
@@ -129,27 +130,27 @@ def get_platform_support_dict():
                 "decode" : True
                 },
             "HEVC 8-bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 8bit 422" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 8bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit 422" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 12bit" : {
@@ -227,27 +228,27 @@ def get_platform_support_dict():
                 "decode" : True
                 },
             "HEVC 8-bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 8bit 422" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 8bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit 422" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 12bit" : {
@@ -325,7 +326,7 @@ def get_platform_support_dict():
                 "decode" : True
                 },
             "HEVC 8-bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 8bit 422" : {
@@ -333,19 +334,19 @@ def get_platform_support_dict():
                 "decode" : True
                 },
             "HEVC 8bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit 422" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 12bit" : {
@@ -361,35 +362,35 @@ def get_platform_support_dict():
                 "decode" : True
                 },
             "VP9 8bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 8bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 10bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 10bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 12bit" : {
-                "encode" : False,
+                "encode" : False and is_huc_active,
                 "decode" : True
                 },
             "VP9 12bit 444" : {
-                "encode" : False,
+                "encode" : False and is_huc_active,
                 "decode" : True
                 },
             "AV1 8bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "AV1 10bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VVC 8bit" : {
@@ -423,7 +424,7 @@ def get_platform_support_dict():
                 "decode" : False
                 },
             "HEVC 8-bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 8bit 422" : {
@@ -431,19 +432,19 @@ def get_platform_support_dict():
                 "decode" : True
                 },
             "HEVC 8bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit 422" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 12bit" : {
@@ -459,35 +460,35 @@ def get_platform_support_dict():
                 "decode" : True
                 },
             "VP9 8bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 8bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 10bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 10bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 12bit" : {
-                "encode" : False,
+                "encode" : False and is_huc_active,
                 "decode" : True
                 },
             "VP9 12bit 444" : {
-                "encode" : False,
+                "encode" : False and is_huc_active,
                 "decode" : True
                 },
             "AV1 8bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "AV1 10bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VVC 8bit" : {
@@ -521,7 +522,7 @@ def get_platform_support_dict():
                 "decode" : False
                 },
             "HEVC 8-bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 8bit 422" : {
@@ -529,23 +530,23 @@ def get_platform_support_dict():
                 "decode" : True
                 },
             "HEVC 8bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit 422" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 12bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 12bit 422" : {
@@ -557,19 +558,19 @@ def get_platform_support_dict():
                 "decode" : True
                 },
             "VP9 8bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 8bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 10bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 10bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 12bit" : {
@@ -619,31 +620,31 @@ def get_platform_support_dict():
                 "decode" : True
                 },
             "HEVC 8-bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 8bit 422" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 8bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit 422" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 12bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 12bit 422" : {
@@ -655,19 +656,19 @@ def get_platform_support_dict():
                 "decode" : True
                 },
             "VP9 8bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 8bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 10bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 10bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 12bit" : {
@@ -717,7 +718,7 @@ def get_platform_support_dict():
                 "decode" : True
                 },
             "HEVC 8-bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 8bit 422" : {
@@ -725,11 +726,11 @@ def get_platform_support_dict():
                 "decode" : True
                 },
             "HEVC 8bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit 422" : {
@@ -737,7 +738,7 @@ def get_platform_support_dict():
                 "decode" : True
                 },
             "HEVC 10bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 12bit" : {
@@ -753,19 +754,19 @@ def get_platform_support_dict():
                 "decode" : False
                 },
             "VP9 8bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 8bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 10bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 10bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 12bit" : {
@@ -815,27 +816,27 @@ def get_platform_support_dict():
                 "decode" : True
                 },
             "HEVC 8-bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 8bit 422" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 8bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit 422" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 12bit" : {
@@ -851,19 +852,19 @@ def get_platform_support_dict():
                 "decode" : False
                 },
             "VP9 8bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 8bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 10bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 10bit 444" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "VP9 12bit" : {
@@ -913,7 +914,7 @@ def get_platform_support_dict():
                 "decode" : True
                 },
             "HEVC 8-bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 8bit 422" : {
@@ -925,7 +926,7 @@ def get_platform_support_dict():
                 "decode" : False
                 },
             "HEVC 10bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit 422" : {
@@ -1011,7 +1012,7 @@ def get_platform_support_dict():
                 "decode" : True
                 },
             "HEVC 8-bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 8bit 422" : {
@@ -1023,7 +1024,7 @@ def get_platform_support_dict():
                 "decode" : False
                 },
             "HEVC 10bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 10bit 422" : {
@@ -1109,7 +1110,7 @@ def get_platform_support_dict():
                 "decode" : True
                 },
             "HEVC 8-bit" : {
-                "encode" : True,
+                "encode" : True and is_huc_active,
                 "decode" : True
                 },
             "HEVC 8bit 422" : {
@@ -1279,7 +1280,8 @@ def get_platform_support_dict():
         }
 
 def diff_vainfo_vs_support_table():
-    platform_support = get_platform_support_dict()
+    huc_running = is_huc_running()
+    platform_support = get_platform_support_dict(huc_running)
     media_driver_gpu_category = get_media_driver_category()
     platform_support_for_gpu = platform_support[media_driver_gpu_category]
 

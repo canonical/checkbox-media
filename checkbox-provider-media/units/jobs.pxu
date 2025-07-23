@@ -150,7 +150,7 @@ command:
 
 unit: template
 template-resource: mediasource
-template-filter: mediasource.operation == 'encode'
+template-filter: mediasource.operation == 'encode' and mediasource.requires_huc == 'true'
 template-engine: jinja2
 template-unit: job
 id: media_kobuk_smoke_{{ codec }}_{{ resolution }}_{{ operation }}_{{ container }}
@@ -158,6 +158,7 @@ category_id: media-kobuk
 flags: simple
 user: root
 _summary: Check {{ codec }} hardware {{ operation }} in {{ resolution }} for ffmpeg
+depends: intel_huc_active
 requires:
   executable.name == "ffmpeg"
 environ:
