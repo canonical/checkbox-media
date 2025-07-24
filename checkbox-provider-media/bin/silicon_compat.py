@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+import subprocess
 
 from parse_vainfo import get_codec_support_dict
 from intel_gen import get_media_driver_category, get_media_driver_category
@@ -1279,6 +1280,12 @@ def get_platform_support_dict(is_huc_active=True):
             }
         }
 
+def get_cpu_model():
+    result = subprocess.run(['lscpu'], capture_output=True, text=True)
+    for line in result.stdout.split("\n"):
+        if "Model name:" in line:
+            return line.split("Model name:")[1].strip()
+
 def diff_vainfo_vs_support_table():
     huc_running = is_huc_running()
     platform_support = get_platform_support_dict(huc_running)
@@ -1305,6 +1312,7 @@ def diff_vainfo_vs_support_table():
         print("Failed: Support in the Intel media driver table does not match vainfo", file=sys.stderr)
         print("Please check your support for your platform (%s) here:" % get_media_driver_category(), file=sys.stderr)
         print("\thttps://github.com/intel/media-driver?tab=readme-ov-file#decodingencoding-features", file=sys.stderr)
+        print("CPU model: %s" % get_cpu_model(), file=sys.stderr)
         exit(1)
 
 if __name__ == "__main__":
