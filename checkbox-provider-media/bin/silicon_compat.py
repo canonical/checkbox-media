@@ -1292,12 +1292,17 @@ def diff_vainfo_vs_support_table():
         if codec in codec_support_dict:
             for operation in ["encode", "decode"]:
                 if codec_support_dict[codec][operation] != platform_support_for_gpu[codec][operation]:
+                    codec_operation_supported = platform_support_for_gpu[codec][operation]
+                    if codec_operation_supported:
+                        print("vainfo shows support for %s %s when it should not" % (codec, operation), file=sys.stderr)
+                        if not huc_running:
+                            print("HuC is not running, which impacts what this test expects for some codecs and operations", file=sys.stderr)
+                    else:
+                        print("vainfo does not support for %s %s when it should" % (codec, operation), file=sys.stderr)
                     failed_checks[codec] = operation
 
     if(len(failed_checks.keys()) != 0):
         print("Failed: Support in the Intel media driver table does not match vainfo", file=sys.stderr)
-        for codec in failed_checks:
-            print("A mismatch has occured for %s for the %s operation" % (codec, failed_checks[codec]))
         print("Please check your support for your platform (%s) here:" % get_media_driver_category(), file=sys.stderr)
         print("\thttps://github.com/intel/media-driver?tab=readme-ov-file#decodingencoding-features", file=sys.stderr)
         exit(1)
