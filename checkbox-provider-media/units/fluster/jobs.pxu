@@ -1,0 +1,21 @@
+plugin: shell
+id: fluster_h264_vaapi
+category_id: fluster
+user: root
+_summary: fluster framework h264 tests for VA-API
+environ:
+  # necessary for local mode
+  XDG_SESSION_TYPE
+  XDG_RUNTIME_DIR
+estimated_duration: 15m
+command:
+  apt update
+  apt install vainfo ffmpeg
+  vainfo
+  git clone https://github.com/fluendo/fluster.git
+  cd fluster
+  ./fluster.py download -c H.264
+  ./fluster.py run -d FFmpeg-H.264-VAAPI
+  echo "fluster is running"
+  exit 0
+
