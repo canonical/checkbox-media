@@ -59,6 +59,8 @@ apps:
     command: bin/shell-wrapper
   install:
     command: bin/install
+  install-fluster:
+    command: bin/install-fluster
   install-gstreamer:
     command: bin/install-gstreamer
   install-video-players:
