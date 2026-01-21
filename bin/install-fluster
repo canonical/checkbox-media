@@ -1,5 +1,7 @@
 #!/bin/bash
 
+FLUSTER_VERSION=v0.6.0
+
 sudo apt update
 sudo apt install -y \
   gstreamer1.0-vaapi \
@@ -14,5 +16,6 @@ sudo apt install -y \
   vainfo
 
 cd /usr/local/src
-git clone https://github.com/fluendo/fluster.git
+git clone -b ${FLUSTER_VERSION} --single-branch --depth 1 https://github.com/fluendo/fluster.git /tmp/fluster
+sudo mv /tmp/fluster/ /usr/local/src/
 sudo ln -s $(pwd)/fluster/fluster.py /usr/local/bin/fluster
