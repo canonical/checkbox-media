@@ -117,3 +117,6 @@ dmypy.json
 
 # Test data
 checkbox-provider-media/data
+
+# Snap
+*.snap
