@@ -34,6 +34,9 @@ apps:
   test:
     command-chain: [bin/wrapper_local]
     command: bin/test
+  test-fluster:
+    command-chain: [bin/wrapper_local]
+    command: bin/test-fluster
   test-intel:
     command-chain: [bin/wrapper_local]
     command: bin/test-intel
@@ -56,6 +59,8 @@ apps:
     command: bin/shell-wrapper
   install:
     command: bin/install
+  install-fluster:
+    command: bin/install-fluster
   install-gstreamer:
     command: bin/install-gstreamer
   install-video-players:

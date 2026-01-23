@@ -24,7 +24,7 @@ sudo snap install checkbox24
 lxd init --auto
 git clone https://github.com/canonical/checkbox-media
 cd checkbox-media
-snapcraft
+snapcraft pack
 sudo snap install --dangerous --classic ./checkbox-media_1.0_amd64.snap
 ```
 

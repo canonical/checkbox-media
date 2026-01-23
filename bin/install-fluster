@@ -1,0 +1,21 @@
+#!/bin/bash
+
+FLUSTER_VERSION=v0.6.0
+
+sudo apt update
+sudo apt install -y \
+  gstreamer1.0-vaapi \
+  gstreamer1.0-tools \
+  gstreamer1.0-libav \
+  gstreamer1.0-plugins-good \
+  gstreamer1.0-plugins-bad \
+  gstreamer1.0-plugins-ugly \
+  libva2 libva-drm2 libva-x11-2 \
+  intel-media-va-driver-non-free \
+  ffmpeg \
+  vainfo
+
+cd /usr/local/src
+git clone -b ${FLUSTER_VERSION} --single-branch --depth 1 https://github.com/fluendo/fluster.git /tmp/fluster
+sudo mv /tmp/fluster/ /usr/local/src/
+sudo ln -s $(pwd)/fluster/fluster.py /usr/local/bin/fluster
