@@ -12,5 +12,4 @@ command:
   vainfo #logging va-api status
   fluster download -c H.264
   fluster run -d FFmpeg-H.264-VAAPI
-  echo "fluster test-suit finished"
 
