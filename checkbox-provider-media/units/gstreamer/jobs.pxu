@@ -113,3 +113,58 @@ command:
   then
     exit 1
   fi
+
+unit: template
+template-resource: mediasource
+template-filter: mediasource.operation == 'encode_ssim'
+template-engine: jinja2
+template-unit: job
+id: gstreamer_{{ codec }}_{{ resolution }}_{{ operation }}_ssim
+category_id: gstreamer
+flags: simple
+_summary: Check {{ codec }} hardware {{ operation }} SSIM in {{ resolution }} for gstreamer
+requires:
+  executable.name == "gst-launch-1.0"
+estimated_duration: 1m
+run-as-user: true
+environ:
+  # necessary for local mode
+  XDG_SESSION_TYPE
+  XDG_RUNTIME_DIR
+  NORMAL_USER
+command:
+  if [ ! -f "/tmp/akiyo_cif.y4m" ]
+  then
+    https://media.xiph.org/video/derf/y4m/akiyo_cif.y4m -P /tmp/
+  fi
+
+  export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
+  export LIBVA_DRIVER_NAME=iHD
+  export LIBVA_DRI3_ENABLE=1
+  export GST_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/gstreamer-1.0
+  
+  gst-launch-1.0 filesrc location=/tmp/akiyo_cif.y4m ! y4mdec ! videoconvert ! tee name=t t. ! queue ! video_compare.sink_1 t. ! queue ! videoconvert ! {{ gstreamer_encoder }} ! decodebin ! video_compare.sink_2 avvideocompare method=ssim stats-file=/tmp/akiyo_cif.ssim name=video_compare ! fakesink
+
+  return_status=$?
+
+  # check gstreamer for successful exit
+  if [ $return_status -ne 0 ];
+  then
+      echo "---- [FAIL] gstreamer returned an error"
+  else
+      echo "---- [PASS] gstreamer command completed successfully"
+  fi
+
+  min_ssim=$(grep -oP 'All:\K[0-9.]+' /tmp/akiyo_cif.ssim | sort -n | head -n 1)
+  if (( $(echo "$min_ssim >= 0.9" | bc -l) )); then
+      echo "---- [PASS] Minimum SSIM ($min_ssim) is above 0.9"
+  else
+      echo "---- [FAIL] Minimum SSIM ($min_ssim) dropped below 0.9"
+  fi
+
+  # cleanup files
+  rm -f /tmp/akiyo_cif.ssim
+  if [[ $return_status -ne 0 ]];
+  then
+    exit 1
+  fi
