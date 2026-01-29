@@ -86,7 +86,7 @@ command:
   export LIBVA_DRI3_ENABLE=1
   export LIBVA_TRACE=/tmp/libva.trace
   export GST_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/gstreamer-1.0
-  gst-launch-1.0 -v filesrc location=/tmp/$local_filename ! decodebin ! {{ gstreamer_encoder }} ! {{ gstreamer_parser }} ! {{ gstreamer_muxer }} ! filesink location=/tmp/output.{{ output_container }}
+  gst-launch-1.0 -q filesrc location=/tmp/$local_filename ! decodebin ! videoconvert ! {{ gstreamer_encoder }} ! {{ gstreamer_parser }} ! {{ gstreamer_muxer }} ! filesink location=/tmp/output.{{ output_container }}
   return_status=$?
   # check libva trace logs for HW acceleration
   hw_used=1
