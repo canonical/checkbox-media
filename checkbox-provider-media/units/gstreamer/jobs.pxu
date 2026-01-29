@@ -22,7 +22,7 @@ command:
   local_filename=$(basename {{ video_url }})
   if [ ! -f "/tmp/$local_filename" ]
   then
-    wget {{ video_url }} -P /tmp/
+    wget -nv {{ video_url }} -P /tmp/
   fi
   export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
   export LIBVA_DRIVER_NAME=iHD
@@ -79,7 +79,7 @@ command:
   local_filename=$(basename {{ video_url }})
   if [ ! -f "/tmp/$local_filename" ]
   then
-    wget {{ video_url }} -P /tmp/
+    wget -nv {{ video_url }} -P /tmp/
   fi
   export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
   export LIBVA_DRIVER_NAME=iHD
