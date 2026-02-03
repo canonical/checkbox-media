@@ -22,14 +22,14 @@ command:
   local_filename=$(basename {{ video_url }})
   if [ ! -f "/tmp/$local_filename" ]
   then
-    wget {{ video_url }} -P /tmp/
+    wget -nv {{ video_url }} -P /tmp/
   fi
   export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
   export LIBVA_DRIVER_NAME=iHD
   export LIBVA_DRI3_ENABLE=1
   export LIBVA_TRACE=/tmp/libva.trace
   export GST_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/gstreamer-1.0
-  /usr/bin/gst-launch-1.0 filesrc location=/tmp/$local_filename ! decodebin ! autovideosink
+  /usr/bin/gst-launch-1.0 -q filesrc location=/tmp/$local_filename ! decodebin ! fakevideosink sync=false
   return_status=$?
   # check libva trace logs for HW acceleration
   hw_used=1
@@ -79,14 +79,14 @@ command:
   local_filename=$(basename {{ video_url }})
   if [ ! -f "/tmp/$local_filename" ]
   then
-    wget {{ video_url }} -P /tmp/
+    wget -nv {{ video_url }} -P /tmp/
   fi
   export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
   export LIBVA_DRIVER_NAME=iHD
   export LIBVA_DRI3_ENABLE=1
   export LIBVA_TRACE=/tmp/libva.trace
   export GST_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/gstreamer-1.0
-  gst-launch-1.0 -v filesrc location=/tmp/$local_filename ! decodebin ! {{ gstreamer_encoder }} ! {{ gstreamer_parser }} ! {{ gstreamer_muxer }} ! filesink location=/tmp/output.{{ output_container }}
+  gst-launch-1.0 -q filesrc location=/tmp/$local_filename ! decodebin ! videoconvert ! {{ gstreamer_encoder }} ! {{ gstreamer_parser }} ! {{ gstreamer_muxer }} ! filesink location=/tmp/output.{{ output_container }}
   return_status=$?
   # check libva trace logs for HW acceleration
   hw_used=1
@@ -103,13 +103,36 @@ command:
   then
       echo "---- [FAIL] gstreamer returned an error"
   else
-      echo "---- [PASS] gstreamer command completed successfully"
+    echo "---- [PASS] gstreamer command completed successfully"
+    # check SSIM between input and output video
+    metric_status=1
+    if [ -f "/tmp/output.{{ output_container }}" ] && [ -f "/tmp/$local_filename" ]
+    then
+      gst-launch-1.0 -q \
+        filesrc location=/tmp/$local_filename ! queue ! decodebin ! videoconvert ! queue ! video_compare.sink_1 \
+        filesrc location=/tmp/output.{{ output_container }} ! queue ! decodebin ! videoconvert ! video_compare.sink_2 \
+        avvideocompare method=ssim stats-file=/tmp/ssim.log name=video_compare ! fakesink
+    fi
+    # extract minimum SSIM value
+    if [ -f "/tmp/ssim.log" ]
+    then
+      min_ssim=$(grep -oP 'All:\K[0-9.]+' /tmp/ssim.log | sort -n | head -n 1)
+      if (( $(echo "$min_ssim >= 0.9" | bc -l) )); then
+          echo "---- [PASS] Minimum SSIM ($min_ssim) is above 0.9"
+          metric_status=0
+      else
+          echo "---- [FAIL] Minimum SSIM ($min_ssim) dropped below 0.9"
+      fi
+    else
+      echo "---- [FAIL] SSIM log file not found"
+    fi
   fi
   # cleanup files
+  rm /tmp/ssim.log
   rm -f /tmp/$local_filename
   rm /tmp/output.{{ output_container }}
   rm -f /tmp/libva.trace*
-  if [[ $hw_used -ne 0 ]] || [[ $return_status -ne 0 ]];
+  if [[ $hw_used -ne 0 ]] || [[ $return_status -ne 0 ]] || [[ $metric_status -ne 0 ]];
   then
     exit 1
   fi
