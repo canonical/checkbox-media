@@ -109,8 +109,8 @@ command:
     if [ -f "/tmp/output.{{ output_container }}" ] && [ -f "/tmp/$local_filename" ]
     then
       gst-launch-1.0 -q \
-        filesrc location=/tmp/$local_filename ! queue ! decodebin ! videoconvert ! queue ! video_compare.sink_1 \
-        filesrc location=/tmp/output.{{ output_container }} ! queue ! decodebin ! videoconvert ! video_compare.sink_2 \
+        filesrc location=/tmp/$local_filename ! queue ! decodebin ! videoconvert ! video/x-raw, format=I420 ! queue ! video_compare.sink_1 \
+        filesrc location=/tmp/output.{{ output_container }} ! queue ! decodebin ! videoconvert ! video/x-raw, format=I420 ! queue ! video_compare.sink_2 \
         avvideocompare method=ssim stats-file=/tmp/ssim.log name=video_compare ! fakesink
     fi
     # extract minimum SSIM value
