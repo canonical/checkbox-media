@@ -13,3 +13,16 @@ command:
   fluster download -c H.264
   fluster run -d FFmpeg-H.264-VAAPI
 
+plugin: shell
+id: fluster_all
+category_id: fluster
+user: root
+_summary: fluster framework all test suites
+environ:
+  # necessary for local mode
+  XDG_SESSION_TYPE
+  XDG_RUNTIME_DIR
+estimated_duration: 45m
+command:
+  fluster download
+  fluster run
