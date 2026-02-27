@@ -1,30 +1,39 @@
 #!/usr/bin/env python3
 import argparse
 import json
+import logging
 import sys
 from pathlib import Path
-from typing import Dict, Iterable, List, Tuple
+from typing import Dict, Iterable, List, Tuple, Optional
 
-INTEL_VENDOR_ID = "0x8086"
-
+logger = logging.getLogger(__name__)
 
 def normalize_pci_id(value: str) -> str:
+    """Normalize PCI ID to lowercase 0x-prefixed format."""
     normalized = value.strip().lower()
     if not normalized.startswith("0x"):
         normalized = f"0x{normalized}"
     return normalized
 
 
-def load_media_db(db_path: Path) -> Tuple[Dict[str, List[dict]], Dict[str, dict]]:
-    with db_path.open("r", encoding="utf-8") as handle:
-        data = json.load(handle)
+def load_media_db(db_path: Path) -> Tuple[Dict[Tuple[str, str], List[dict]], Dict[str, dict]]:
+    logger.info(f"Loading media database from {db_path}")
+    try:
+        with db_path.open("r", encoding="utf-8") as handle:
+            data = json.load(handle)
+    except (OSError, json.JSONDecodeError) as e:
+        logger.error(f"Failed to load database: {e}")
+        raise SystemExit(2)
 
-    platforms = data.get("intel_gpu_database", {}).get("platforms", [])
-    media_features = data.get("intel_gpu_database", {}).get("media_features", [])
-    pci_map: Dict[str, List[dict]] = {}
+    platforms = data.get("gpu_database", {}).get("platforms", [])
+    media_features = data.get("gpu_database", {}).get("media_features", [])
+    logger.debug(f"Loaded {len(platforms)} platforms and {len(media_features)} media feature definitions")
+    pci_map: Dict[Tuple[str, str], List[dict]] = {}
     for platform in platforms:
+        vendor_id = normalize_pci_id(platform.get("vendor_id", "0x8086"))
         for pci_id in platform.get("pci_ids", []):
-            key = normalize_pci_id(pci_id)
+            device_id = normalize_pci_id(pci_id)
+            key = (vendor_id, device_id)
             pci_map.setdefault(key, []).append(
                 {
                     "name": platform.get("name"),
@@ -32,6 +41,7 @@ def load_media_db(db_path: Path) -> Tuple[Dict[str, List[dict]], Dict[str, dict]
                     "codename": platform.get("codename"),
                     "release_year": platform.get("release_year"),
                     "media_feature": platform.get("media_feature"),
+                    "vendor_id": vendor_id,
                 }
             )
     feature_map = {
@@ -39,45 +49,65 @@ def load_media_db(db_path: Path) -> Tuple[Dict[str, List[dict]], Dict[str, dict]
         for entry in media_features
         if entry.get("name")
     }
+    logger.debug(f"Built PCI map with {len(pci_map)} device IDs")
     return pci_map, feature_map
 
 
-def iter_intel_pci_devices(sysfs_root: Path) -> Iterable[dict]:
+def iter_pci_devices(sysfs_root: Path, vendor_filter: Optional[str] = None) -> Iterable[dict]:
+    if not sysfs_root.exists():
+        logger.warning(f"PCI sysfs root not found: {sysfs_root}")
+        return
+
+    logger.info(f"Scanning PCI devices in {sysfs_root}")
+    if vendor_filter:
+        logger.info(f"Filtering by vendor ID: {vendor_filter}")
+
+    device_count = 0
     for device_path in sysfs_root.iterdir():
         vendor_file = device_path / "vendor"
         device_file = device_path / "device"
         try:
             vendor_id = normalize_pci_id(vendor_file.read_text().strip())
             device_id = normalize_pci_id(device_file.read_text().strip())
-        except OSError:
+        except OSError as e:
+            logger.debug(f"Skipping {device_path.name}: {e}")
             continue
 
-        if vendor_id != INTEL_VENDOR_ID:
+        if vendor_filter and vendor_id != normalize_pci_id(vendor_filter):
+            logger.debug(f"Skipping {device_path.name} - vendor {vendor_id} != {vendor_filter}")
             continue
 
+        device_count += 1
+        logger.debug(f"Found device: {device_path.name} (vendor={vendor_id}, device={device_id})")
         yield {
             "pci_address": device_path.name,
             "vendor_id": vendor_id,
             "device_id": device_id,
         }
 
+    logger.info(f"Found {device_count} PCI device(s)")
+
 
 def build_results(
-    pci_map: Dict[str, List[dict]],
+    pci_map: Dict[Tuple[str, str], List[dict]],
     feature_map: Dict[str, dict],
     devices: Iterable[dict],
 ) -> List[dict]:
+    logger.info("Building results from detected devices")
     results: List[dict] = []
     for device in devices:
-        matches = pci_map.get(device["device_id"], [])
+        key = (device["vendor_id"], device["device_id"])
+        matches = pci_map.get(key, [])
         if not matches:
+            logger.debug(f"No database match for device {device['vendor_id']}:{device['device_id']} at {device['pci_address']}")
             continue
-        media_feature_names = sorted(
+        media_feature_names = (
             {match.get("media_feature") for match in matches if match.get("media_feature")}
         )
         media_feature_details = [
             feature_map[name] for name in media_feature_names if name in feature_map
         ]
+        logger.info(f"Matched device {device['pci_address']}: {', '.join(media_feature_names)}")
         results.append(
             {
                 **device,
@@ -85,12 +115,13 @@ def build_results(
                 "matches": matches,
             }
         )
+    logger.info(f"Built {len(results)} result(s)")
     return results
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Report Intel PCI device media features from media_features.json"
+        description="Report PCI device media features from media_features.json"
     )
     default_db = Path(__file__).resolve().parents[1] / "data" / "media_features.json"
     parser.add_argument("--db", type=Path, default=default_db, help="Path to media_features.json")
@@ -100,18 +131,37 @@ def parse_args() -> argparse.Namespace:
         default=Path("/sys/bus/pci/devices"),
         help="Path to PCI sysfs root",
     )
+    parser.add_argument(
+        "--vendor-id",
+        type=str,
+        default="",
+        help=f"PCI vendor ID to filter (default: none - include all vendors)",
+    )
     parser.add_argument("--pretty", action="store_true", help="Pretty-print JSON output")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose logging")
+    parser.add_argument('--version', action='version', version='%(prog)s 1.0')
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
+
+    # Configure logging
+    log_level = logging.DEBUG if args.verbose else logging.INFO
+    logging.basicConfig(
+        level=log_level,
+        format='%(levelname)s: %(message)s',
+        stream=sys.stderr
+    )
+
+    logger.debug(f"Starting with args: db={args.db}, sysfs_root={args.sysfs_root}, vendor_id={args.vendor_id}")
+
     if not args.db.exists():
-        print(f"media_features.json not found at {args.db}", file=sys.stderr)
+        logger.error(f"media_features.json not found at {args.db}")
         return 2
 
     pci_map, feature_map = load_media_db(args.db)
-    devices = iter_intel_pci_devices(args.sysfs_root)
+    devices = iter_pci_devices(args.sysfs_root, args.vendor_id)
     results = build_results(pci_map, feature_map, devices)
 
     dump_args = {"ensure_ascii": True}
