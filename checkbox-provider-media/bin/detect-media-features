@@ -1,0 +1,126 @@
+#!/usr/bin/env python3
+import argparse
+import json
+import sys
+from pathlib import Path
+from typing import Dict, Iterable, List, Tuple
+
+INTEL_VENDOR_ID = "0x8086"
+
+
+def normalize_pci_id(value: str) -> str:
+    normalized = value.strip().lower()
+    if not normalized.startswith("0x"):
+        normalized = f"0x{normalized}"
+    return normalized
+
+
+def load_media_db(db_path: Path) -> Tuple[Dict[str, List[dict]], Dict[str, dict]]:
+    with db_path.open("r", encoding="utf-8") as handle:
+        data = json.load(handle)
+
+    platforms = data.get("intel_gpu_database", {}).get("platforms", [])
+    media_features = data.get("intel_gpu_database", {}).get("media_features", [])
+    pci_map: Dict[str, List[dict]] = {}
+    for platform in platforms:
+        for pci_id in platform.get("pci_ids", []):
+            key = normalize_pci_id(pci_id)
+            pci_map.setdefault(key, []).append(
+                {
+                    "name": platform.get("name"),
+                    "architecture": platform.get("architecture"),
+                    "codename": platform.get("codename"),
+                    "release_year": platform.get("release_year"),
+                    "media_feature": platform.get("media_feature"),
+                }
+            )
+    feature_map = {
+        entry.get("name"): entry
+        for entry in media_features
+        if entry.get("name")
+    }
+    return pci_map, feature_map
+
+
+def iter_intel_pci_devices(sysfs_root: Path) -> Iterable[dict]:
+    for device_path in sysfs_root.iterdir():
+        vendor_file = device_path / "vendor"
+        device_file = device_path / "device"
+        try:
+            vendor_id = normalize_pci_id(vendor_file.read_text().strip())
+            device_id = normalize_pci_id(device_file.read_text().strip())
+        except OSError:
+            continue
+
+        if vendor_id != INTEL_VENDOR_ID:
+            continue
+
+        yield {
+            "pci_address": device_path.name,
+            "vendor_id": vendor_id,
+            "device_id": device_id,
+        }
+
+
+def build_results(
+    pci_map: Dict[str, List[dict]],
+    feature_map: Dict[str, dict],
+    devices: Iterable[dict],
+) -> List[dict]:
+    results: List[dict] = []
+    for device in devices:
+        matches = pci_map.get(device["device_id"], [])
+        if not matches:
+            continue
+        media_feature_names = sorted(
+            {match.get("media_feature") for match in matches if match.get("media_feature")}
+        )
+        media_feature_details = [
+            feature_map[name] for name in media_feature_names if name in feature_map
+        ]
+        results.append(
+            {
+                **device,
+                "media_features": media_feature_details,
+                "matches": matches,
+            }
+        )
+    return results
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Report Intel PCI device media features from media_features.json"
+    )
+    default_db = Path(__file__).resolve().parents[1] / "data" / "media_features.json"
+    parser.add_argument("--db", type=Path, default=default_db, help="Path to media_features.json")
+    parser.add_argument(
+        "--sysfs-root",
+        type=Path,
+        default=Path("/sys/bus/pci/devices"),
+        help="Path to PCI sysfs root",
+    )
+    parser.add_argument("--pretty", action="store_true", help="Pretty-print JSON output")
+    return parser.parse_args()
+
+
+def main() -> int:
+    args = parse_args()
+    if not args.db.exists():
+        print(f"media_features.json not found at {args.db}", file=sys.stderr)
+        return 2
+
+    pci_map, feature_map = load_media_db(args.db)
+    devices = iter_intel_pci_devices(args.sysfs_root)
+    results = build_results(pci_map, feature_map, devices)
+
+    dump_args = {"ensure_ascii": True}
+    if args.pretty:
+        dump_args.update({"indent": 2, "sort_keys": False})
+
+    print(json.dumps(results, **dump_args))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
