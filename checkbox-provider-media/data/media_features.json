@@ -1,5 +1,5 @@
 {
-  "intel_gpu_database": {
+  "gpu_database": {
     "metadata": {
       "version": "1.0",
       "last_updated": "2026-02-23",
@@ -25,7 +25,13 @@
       }
     ],
     "notes": [
-      "HEVC/VP9 12bit use P016/Y216/Y416 with the least significant 4 bits set to zero"
+      {
+        "scope": "intel",
+        "notes": [
+          "HEVC/VP9 12bit use P016/Y216/Y416 with the least significant 4 bits set to zero.",
+          "Before vaapi version(1.9.0), media driver only allow to create 16bit surface for 12bit bitstream decoding, padding bits will be filled with 0 by hardware. After 1.9.0 vaapi version, media driver is supported to create both 12bit and 16bit surface for 12bit bitstream decoding."
+        ]
+      }
     ],
     "image_resolution": {
       "2k": "2048x2048",
