@@ -1,0 +1,2560 @@
+{
+  "intel_gpu_database": {
+    "metadata": {
+      "version": "1.0",
+      "last_updated": "2026-02-23",
+      "description": "Comprehensive list of Intel GPU and capabilities."
+    },
+    "sources": [
+      {
+        "name": "Encode and Decode Capabilities for 7th Generation Intel® Core™ Processors and Newer",
+        "url": "https://www.intel.com/content/www/us/en/developer/articles/technical/encode-and-decode-capabilities-for-7th-generation-intel-core-processors-and-newer.html",
+        "description": "Official database of Intel GPU models and their specifications.",
+        "intel_id": "672488",
+        "updated": "2021-08-06"
+      },
+      {
+        "name": "Intel® software for general purpose GPU capabilities - Supported Hardware",
+        "url": "https://dgpu-docs.intel.com/devices/hardware-table.html",
+        "description": "Official documentation of Intel GPU hardware capabilities for general-purpose computing."
+      },
+      {
+        "name": "Intel® Media Driver GitHub - Media Features Summary",
+        "url": "https://github.com/intel/media-driver/blob/master/docs/media_features.md",
+        "description": "GitHub documentation of Intel GPU media features and supported codecs."
+      }
+    ],
+    "notes": [
+      "HEVC/VP9 12bit use P016/Y216/Y416 with the least significant 4 bits set to zero"
+    ],
+    "image_resolution": {
+      "2k": "2048x2048",
+      "4k": "4096x4096",
+      "8k": "8192x8192",
+      "16k": "16384x16384",
+      "16k_4:3": "16384x12288"
+    },
+    "platforms": [
+      {
+        "name": "Intel® HD Graphics",
+        "architecture": "Gen8",
+        "codename": "Cherryview",
+        "release_year": 2014,
+        "pci_ids": ["0x22B1", "0x22B0", "0x22B2", "0x22B3"],
+        "media_feature": "BDW"
+      },
+      {
+        "name": "Intel® HD Graphics",
+        "architecture": "Gen8",
+        "codename": "Broadwell",
+        "release_year": 2014,
+        "pci_ids": ["0x1602", "0x1606", "0x160a", "0x160b", "0x160d", "0x160e", "0x160e", "0x161b", "0x161d", "0x162d", "0x162e", "0x163D", "0x163A", "0x1632", "0x163E", "0x163B", "0x1636"],
+        "media_feature": "BDW"
+      },
+      {
+        "name": "Intel® HD Graphics 5300",
+        "architecture": "Gen8",
+        "codename": "Broadwell",
+        "release_year": 2014,
+        "pci_ids": ["0x161e"],
+        "media_feature": "BDW"
+      },
+      {
+        "name": "Intel® HD Graphics 5500",
+        "architecture": "Gen8",
+        "codename": "Broadwell",
+        "release_year": 2014,
+        "pci_ids": ["0x1616"],
+        "media_feature": "BDW"
+      },
+      {
+        "name": "Intel® HD Graphics 5600",
+        "architecture": "Gen8",
+        "codename": "Broadwell",
+        "release_year": 2014,
+        "pci_ids": ["0x1612"],
+        "media_feature": "BDW"
+      },
+      {
+        "name": "Intel® HD Graphics 5700",
+        "architecture": "Gen8",
+        "codename": "Broadwell",
+        "release_year": 2014,
+        "pci_ids": ["0x161a"],
+        "media_feature": "BDW"
+      },
+      {
+        "name": "Intel® HD Graphics 6000",
+        "architecture": "Gen8",
+        "codename": "Broadwell",
+        "release_year": 2014,
+        "pci_ids": ["0x1626"],
+        "media_feature": "BDW"
+      },
+      {
+        "name": "Intel® HD Graphics 6100",
+        "architecture": "Gen8",
+        "codename": "Broadwell",
+        "release_year": 2014,
+        "pci_ids": ["0x162b"],
+        "media_feature": "BDW"
+      },
+      {
+        "name": "Intel® Iris® Pro Graphics 6200",
+        "architecture": "Gen8",
+        "codename": "Broadwell",
+        "release_year": 2014,
+        "pci_ids": ["0x1622"],
+        "media_feature": "BDW"
+      },
+      {
+        "name": "Intel® Iris® Pro Graphics P6300",
+        "architecture": "Gen8",
+        "codename": "Broadwell",
+        "release_year": 2014,
+        "pci_ids": ["0x162a"],
+        "media_feature": "BDW"
+      },
+      {
+        "name": "Intel® HD Graphics",
+        "architecture": "Gen9",
+        "codename": "Skylake",
+        "release_year": 2015,
+        "pci_ids": ["0x190a", "0x190e", "0x1913", "0x1915", "0x1917", "0x191A", "0x192A"],
+        "media_feature": "SKL"
+      },
+      {
+        "name": "Intel® HD Graphics 510",
+        "architecture": "Gen9",
+        "codename": "Skylake",
+        "release_year": 2015,
+        "pci_ids": ["0x1902", "0x1906", "0x190b"],
+        "media_feature": "SKL"
+      },
+      {
+        "name": "Intel® HD Graphics 515",
+        "architecture": "Gen9",
+        "codename": "Skylake",
+        "release_year": 2015,
+        "pci_ids": ["0x191e"],
+        "media_feature": "SKL"
+      },
+      {
+        "name": "Intel® HD Graphics 520",
+        "architecture": "Gen9",
+        "codename": "Skylake",
+        "release_year": 2015,
+        "pci_ids": ["0x1916", "0x1921"],
+        "media_feature": "SKL"
+      },
+      {
+        "name": "Intel® HD Graphics 530",
+        "architecture": "Gen9",
+        "codename": "Skylake",
+        "release_year": 2015,
+        "pci_ids": ["0x190a", "0x1912", "0x191b", "0x191d", "0x191e", "0x1923", "0x1926", "0x1927"],
+        "media_feature": "SKL"
+      },
+      {
+        "name": "Intel® HD Graphics 535",
+        "architecture": "Gen9",
+        "codename": "Skylake",
+        "release_year": 2015,
+        "pci_ids": ["0x1923"],
+        "media_feature": "SKL"
+      },
+      {
+        "name": "Intel® HD Graphics 540",
+        "architecture": "Gen9",
+        "codename": "Skylake",
+        "release_year": 2015,
+        "pci_ids": ["0x1926"],
+        "media_feature": "SKL"
+      },
+      {
+        "name": "Intel® HD Graphics 550",
+        "architecture": "Gen9",
+        "codename": "Skylake",
+        "release_year": 2015,
+        "pci_ids": ["0x1927"],
+        "media_feature": "SKL"
+      },
+      {
+        "name": "Intel® HD Graphics 555",
+        "architecture": "Gen9",
+        "codename": "Skylake",
+        "release_year": 2015,
+        "pci_ids": ["0x192b"],
+        "media_feature": "SKL"
+      },
+      {
+        "name": "Intel® HD Graphics P555",
+        "architecture": "Gen9",
+        "codename": "Skylake",
+        "release_year": 2015,
+        "pci_ids": ["0x192d"],
+        "media_feature": "SKL"
+      },
+      {
+        "name": "Intel® Iris® Pro Graphics 580",
+        "architecture": "Gen9",
+        "codename": "Skylake",
+        "release_year": 2015,
+        "pci_ids": ["0x1932", "0x193b"],
+        "media_feature": "SKL"
+      },
+      {
+        "name": "Intel® Iris® Pro Graphics P580",
+        "architecture": "Gen9",
+        "codename": "Skylake",
+        "release_year": 2015,
+        "pci_ids": ["0x193a", "0x193d"],
+        "media_feature": "SKL"
+      },
+      {
+        "name": "Intel® Graphics",
+        "architecture": "Gen9",
+        "codename": "Broxton",
+        "release_year": 2017,
+        "pci_ids": ["0x0a84", "0x1a84", "0x5a84"],
+        "media_feature": "BXTx"
+      },
+      {
+        "name": "Intel® Graphics",
+        "architecture": "Gen9",
+        "codename": "Apollo Lake",
+        "release_year": 2017,
+        "pci_ids": ["0x0A84", "0x1A84", "0x1A85"],
+        "media_feature": "BXTx"
+      },
+      {
+        "name": "Intel® HD Graphics 500",
+        "architecture": "Gen9",
+        "codename": "Apollo Lake",
+        "release_year": 2017,
+        "pci_ids": ["0x5A85"],
+        "media_feature": "BXTx"
+      },
+      {
+        "name": "Intel® HD Graphics 505",
+        "architecture": "Gen9",
+        "codename": "Apollo Lake",
+        "release_year": 2017,
+        "pci_ids": ["0x5A84"],
+        "media_feature": "BXTx"
+      },
+      {
+        "name": "Intel® UHD Graphics 600",
+        "architecture": "Gen9",
+        "codename": "Gemini Lake",
+        "release_year": 2017,
+        "pci_ids": ["0x3185"],
+        "media_feature": "BXTx"
+      },
+      {
+        "name": "Intel® UHD Graphics 605",
+        "architecture": "Gen9",
+        "codename": "Gemini Lake",
+        "release_year": 2017,
+        "pci_ids": ["0x3184"],
+        "media_feature": "BXTx"
+      },
+      {
+        "name": "Intel® HD Graphics",
+        "architecture": "Gen9",
+        "codename": "Kaby Lake",
+        "release_year": 2016,
+        "pci_ids": ["0x590A", "0x5908", "0x590E", "0x5913", "0x5915", "0x593B"],
+        "media_feature": "KBLx"
+      },
+      {
+        "name": "Intel® HD Graphics 610",
+        "architecture": "Gen9",
+        "codename": "Kaby Lake",
+        "release_year": 2016,
+        "pci_ids": ["0x5902", "0x5906", "0x590B"],
+        "media_feature": "KBLx"
+      },
+      {
+        "name": "Intel® HD Graphics 615",
+        "architecture": "Gen9",
+        "codename": "Kaby Lake",
+        "release_year": 2016,
+        "pci_ids": ["0x591E"],
+        "media_feature": "KBLx"
+      },
+      {
+        "name": "Intel® UHD Graphics 615",
+        "architecture": "Gen9",
+        "codename": "Kaby Lake",
+        "release_year": 2016,
+        "pci_ids": ["0x591C"],
+        "media_feature": "KBLx"
+      },
+            {
+        "name": "Intel® UHD Graphics 617",
+        "architecture": "Gen9",
+        "codename": "Kaby Lake",
+        "release_year": 2016,
+        "pci_ids": ["0x87C0"],
+        "media_feature": "KBLx"
+      },
+      {
+        "name": "Intel® HD Graphics 620",
+        "architecture": "Gen9",
+        "codename": "Kaby Lake",
+        "release_year": 2016,
+        "pci_ids": ["0x5916", "0x5921"],
+        "media_feature": "KBLx"
+      },
+      {
+        "name": "Intel® UHD Graphics 620",
+        "architecture": "Gen9",
+        "codename": "Kaby Lake",
+        "release_year": 2016,
+        "pci_ids": ["0x5917"],
+        "media_feature": "KBLx"
+      },
+      {
+        "name": "Intel® HD Graphics 630",
+        "architecture": "Gen9",
+        "codename": "Kaby Lake",
+        "release_year": 2016,
+        "pci_ids": ["0x5912", "0x591B"],
+        "media_feature": "KBLx"
+      },
+      {
+        "name": "Intel® HD Graphics P630",
+        "architecture": "Gen9",
+        "codename": "Kaby Lake",
+        "release_year": 2016,
+        "pci_ids": ["0x591A", "0x591D"],
+        "media_feature": "KBLx"
+      },
+      {
+        "name": "Intel® HD Graphics 635",
+        "architecture": "Gen9",
+        "codename": "Kaby Lake",
+        "release_year": 2016,
+        "pci_ids": ["0x5923"],
+        "media_feature": "KBLx"
+      },
+      {
+        "name": "Intel® Iris® Plus Graphics 640",
+        "architecture": "Gen9",
+        "codename": "Kaby Lake",
+        "release_year": 2016,
+        "pci_ids": ["0x5926"],
+        "media_feature": "KBLx"
+      },
+      {
+        "name": "Intel® Iris® Plus Graphics 650",
+        "architecture": "Gen9",
+        "codename": "Kaby Lake",
+        "release_year": 2016,
+        "pci_ids": ["0x5927"],
+        "media_feature": "KBLx"
+      },
+      {
+        "name": "Intel® HD Graphics",
+        "architecture": "Gen9",
+        "codename": "Coffee Lake",
+        "release_year": 2016,
+        "pci_ids": ["0x3EA7"],
+        "media_feature": "KBLx"
+      },
+      {
+        "name": "Intel® UHD Graphics",
+        "architecture": "Gen9",
+        "codename": "Coffee Lake",
+        "release_year": 2016,
+        "pci_ids": ["0x3EA2", "0x87CA", "0x3EA3", "0x9B41", "0x9BC0", "0x9BC2", "0x9BC4", "0x9BCA", "0x9BCB", "0x9BCC", "0x3EA4", "0x9B21", "0x9BA0", "0x9BA2", "0x9BA4", "0x9BAA", "0x9BAB", "0x9BAC"],
+        "media_feature": "KBLx"
+      },
+      {
+        "name": "Intel® UHD Graphics 610",
+        "architecture": "Gen9",
+        "codename": "Coffee Lake",
+        "release_year": 2016,
+        "pci_ids": ["0x3E90", "0x3E93", "0x3E99", "0x3E9C", "0x3EA1", "0x9BA5", "0x9BA8"],
+        "media_feature": "KBLx"
+      },
+      {
+        "name": "Intel® UHD Graphics 620",
+        "architecture": "Gen9",
+        "codename": "Coffee Lake",
+        "release_year": 2016,
+        "pci_ids": ["0x3EA9", "0x3EA0"],
+        "media_feature": "KBLx"
+      },
+      {
+        "name": "Intel® UHD Graphics 630",
+        "architecture": "Gen9",
+        "codename": "Coffee Lake",
+        "release_year": 2016,
+        "pci_ids": ["0x3E91", "0x3E92", "0x3E98", "0x3E9B", "0x9BC5", "0x9BC8"],
+        "media_feature": "KBLx"
+      },
+      {
+        "name": "Intel® UHD Graphics P630",
+        "architecture": "Gen9",
+        "codename": "Coffee Lake",
+        "release_year": 2016,
+        "pci_ids": ["0x3E96", "0x3E9A", "0x3E94", "0x9BC6", "0x9BE6", "0x9BF6"],
+        "media_feature": "KBLx"
+      },
+      {
+        "name": "Intel® Iris® Plus Graphics 645",
+        "architecture": "Gen9",
+        "codename": "Coffee Lake",
+        "release_year": 2016,
+        "pci_ids": ["0x3EA6"],
+        "media_feature": "KBLx"
+      },
+      {
+        "name": "Intel® Iris® Plus Graphics 655",
+        "architecture": "Gen9",
+        "codename": "Coffee Lake",
+        "release_year": 2016,
+        "pci_ids": ["0x3EA5", "0x3EA8"],
+        "media_feature": "KBLx"
+      },
+      {
+        "name": "Intel® HD Graphics",
+        "architecture": "Gen11",
+        "codename": "Ice Lake",
+        "release_year": 2019,
+        "pci_ids": ["0x8a50", "0x8a57", "0x8a59", "0x8a5b", "0x8a5d", "0x8a70", "0x8a71"],
+        "media_feature": "ICL"
+      },
+      {
+        "name": "Intel® UHD Graphics",
+        "architecture": "Gen11",
+        "codename": "Ice Lake",
+        "release_year": 2019,
+        "pci_ids": ["0x8a56", "0x8a58"],
+        "media_feature": "ICL"
+      },
+      {
+        "name": "Intel® Iris® Plus Graphics",
+        "architecture": "Gen11",
+        "codename": "Ice Lake",
+        "release_year": 2019,
+        "pci_ids": ["0x8A51", "0x8A52", "0x8A53", "0x8A54", "0x8A5A", "0x8A5C"],
+        "media_feature": "ICL"
+      },
+      {
+        "name": "Intel® UHD Graphics",
+        "architecture": "Xe-LPG",
+        "codename": "Tiger Lake",
+        "release_year": 2020,
+        "pci_ids": ["0x9A59", "0x9A78", "0x9A60", "0x9A70", "0x9A68"],
+        "media_feature": "TGL"
+      },
+      {
+        "name": "Intel® Iris® Xe Graphics",
+        "architecture": "Xe",
+        "codename": "Tiger Lake",
+        "release_year": 2020,
+        "pci_ids": ["0x9a40", "0x9a49"],
+        "media_feature": "TGL"
+      },
+      {
+        "name": "Intel® UHD Graphics",
+        "architecture": "Xe",
+        "codename": "Elkhart Lake",
+        "release_year": 2020,
+        "pci_ids": ["0x4541", "0x4551", "0x4555", "0x4557", "0x4571"],
+        "media_feature": "EHL/JSL"
+      },
+      {
+        "name": "Intel® UHD Graphics",
+        "architecture": "Xe",
+        "codename": "Jasper Lake",
+        "release_year": 2020,
+        "pci_ids": ["0x4E51", "0x4E55", "0x4E57", "0x4E61", "0x4E71"],
+        "media_feature": "EHL/JSL"
+      },
+      {
+        "name": "Intel® UHD Graphics 730",
+        "architecture": "Xe",
+        "codename": "Rocket Lake",
+        "release_year": 2020,
+        "pci_ids": ["0x4C8B"],
+        "media_feature": "TGLx"
+      },
+      {
+        "name": "Intel® UHD Graphics 750",
+        "architecture": "Xe",
+        "codename": "Rocket Lake",
+        "release_year": 2020,
+        "pci_ids": ["0x4C8A"],
+        "media_feature": "TGLx"
+      },
+      {
+        "name": "Intel® UHD Graphics P750",
+        "architecture": "Xe",
+        "codename": "Rocket Lake",
+        "release_year": 2020,
+        "pci_ids": ["0x4C90", "0x4C9A"],
+        "media_feature": "TGLx"
+      },
+      {
+        "name": "Intel® UHD Graphics",
+        "architecture": "Xe",
+        "codename": "Alder Lake-N",
+        "release_year": 2020,
+        "pci_ids": ["0x46D2", "0x46D1", "0x46D0"],
+        "media_feature": "TGLx"
+      },
+      {
+        "name": "Intel® UHD Graphics",
+        "architecture": "Xe",
+        "codename": "Alder Lake-P",
+        "release_year": 2020,
+        "pci_ids": ["0x46A3", "0x46B2", "0x46C3", "0x46A2", "0x46B3", "0x46C2", "0x4626", "0x4628", "0x462A"],
+        "media_feature": "TGLx"
+      },
+      {
+        "name": "Intel® Iris® Xe Graphics",
+        "architecture": "Xe",
+        "codename": "Alder Lake-P",
+        "release_year": 2020,
+        "pci_ids": ["0x46A1", "0x46B1", "0x46C1", "0x46A6", "0x46AA", "0x46A8", "0x46A0", "0x46B0", "0x46C0"],
+        "media_feature": "TGLx"
+      },
+      {
+        "name": "Intel® UHD Graphics 710",
+        "architecture": "Xe",
+        "codename": "Alder Lake-S",
+        "release_year": 2020,
+        "pci_ids": ["0x4693"],
+        "media_feature": "TGLx"
+      },
+      {
+        "name": "Intel® UHD Graphics 730",
+        "architecture": "Xe",
+        "codename": "Alder Lake-S",
+        "release_year": 2020,
+        "pci_ids": ["0x4682", "0x4692"],
+        "media_feature": "TGLx"
+      },
+      {
+        "name": "Intel® UHD Graphics 770",
+        "architecture": "Xe",
+        "codename": "Alder Lake-S",
+        "release_year": 2020,
+        "pci_ids": ["0x468B", "0x468A", "0x4688", "0x4680", "0x4690"],
+        "media_feature": "TGLx"
+      },
+      {
+        "name": "Intel® Graphics",
+        "architecture": "Xe",
+        "codename": "Twin Lake",
+        "release_year": 2020,
+        "pci_ids": ["0x46D4", "0x46D3"],
+        "media_feature": "TGLx"
+      },
+      {
+        "name": "Intel® Iris® Xe MAX 100 Graphics",
+        "architecture": "Xe",
+        "codename": "DG1",
+        "release_year": 2021,
+        "pci_ids": ["0x4909"],
+        "media_feature": "DG1"
+      },
+      {
+        "name": "Intel® Iris® Xe Graphics",
+        "architecture": "Xe",
+        "codename": "DG1",
+        "release_year": 2021,
+        "pci_ids": ["0x4908"],
+        "media_feature": "DG1"
+      },
+      {
+        "name": "Intel Server GPU SG-18M",
+        "architecture": "Xe",
+        "codename": "DG1",
+        "release_year": 2021,
+        "pci_ids": ["0x4907"],
+        "media_feature": "DG1"
+      },
+      {
+        "name": "Intel® Iris® Xe MAX Graphics",
+        "architecture": "Xe",
+        "codename": "DG1",
+        "release_year": 2021,
+        "pci_ids": ["0x4905"],
+        "media_feature": "DG1"
+      },
+      {
+        "name": "Intel® Graphics",
+        "architecture": "Xe",
+        "codename": "Raptor Lake-U",
+        "release_year": 2021,
+        "pci_ids": ["0xA7AD", "0xA7AC"],
+        "media_feature": "TGLx"
+      },
+      {
+        "name": "Intel® Graphics",
+        "architecture": "Xe",
+        "codename": "Raptor Lake-P",
+        "release_year": 2021,
+        "pci_ids": ["0xA7AB", "0xA7AA"],
+        "media_feature": "TGLx"
+      },
+      {
+        "name": "Intel® UHD Graphics",
+        "architecture": "Xe",
+        "codename": "Raptor Lake-P",
+        "release_year": 2021,
+        "pci_ids": ["0xA721", "0xA7A9", "0xA7A8"],
+        "media_feature": "TGLx"
+      },
+      {
+        "name": "Intel® Iris® Xe Graphics",
+        "architecture": "Xe",
+        "codename": "Raptor Lake-P",
+        "release_year": 2021,
+        "pci_ids": ["0xA7A0", "0xA7A1"],
+        "media_feature": "TGLx"
+      },
+      {
+        "name": "Intel® UHD Graphics",
+        "architecture": "Xe",
+        "codename": "Raptor Lake-S",
+        "release_year": 2021,
+        "pci_ids": ["0xA78B", "0xA78A", "0xA781", "0xA788", "0xA789"],
+        "media_feature": "TGLx"
+      },
+      {
+        "name": "Intel® UHD Graphics 710",
+        "architecture": "Xe",
+        "codename": "Raptor Lake-S",
+        "release_year": 2021,
+        "pci_ids": ["0xA783"],
+        "media_feature": "TGLx"
+      },
+      {
+        "name": "Intel® UHD Graphics 730",
+        "architecture": "Xe",
+        "codename": "Raptor Lake-S",
+        "release_year": 2021,
+        "pci_ids": ["0xA782"],
+        "media_feature": "TGLx"
+      },
+      {
+        "name": "Intel® UHD Graphics 770",
+        "architecture": "Xe",
+        "codename": "Raptor Lake-S",
+        "release_year": 2021,
+        "pci_ids": ["0xA780"],
+        "media_feature": "TGLx"
+      },
+      {
+        "name": "Intel® Arc™ Graphics",
+        "architecture": "Xe-HPG",
+        "codename": "Alchemist (DG2)",
+        "release_year": 2022,
+        "pci_ids": ["0x56C0", "0x56C1", "0x5690", "0x5691", "0x5696", "0x5692", "0x5697", "0x5693", "0x5694", "0x56A0", "0x56A1", "0x56A2", "0x56A5", "0x56A6", "0x56B3", "0x56B2", "0x56B1", "0x56B0", "0x56BA", "0x56BC", "0x56BD", "0x56BB"],
+        "media_feature": "DG2"
+      },
+      {
+        "name": "Intel® Arc™ Graphics",
+        "architecture": "Xe-LPG",
+        "codename": "Meteor Lake",
+        "release_year": 2024,
+        "pci_ids": ["0x7D55"],
+        "media_feature": "MTLx"
+      },
+      {
+        "name": "Intel® Graphics",
+        "architecture": "Xe-LPG",
+        "codename": "Meteor Lake",
+        "release_year": 2024,
+        "pci_ids": ["0x7D45", "0x7D40", "0x7DD5"],
+        "media_feature": "MTLx"
+      },
+      {
+        "name": "Intel® Graphics",
+        "architecture": "Xe-LPG",
+        "codename": "Arrow Lake",
+        "release_year": 2024,
+        "pci_ids": ["0x7D51", "0x7D67", "0x7D41"],
+        "media_feature": "MTLx"
+      },
+      {
+        "name": "Intel® Graphics",
+        "architecture": "Xe2",
+        "codename": "Lunar Lake",
+        "release_year": 2024,
+        "pci_ids": ["0x6420"],
+        "media_feature": "LNL"
+      },
+      {
+        "name": "Intel® Arc™ Graphics",
+        "architecture": "Xe2",
+        "codename": "Lunar Lake",
+        "release_year": 2024,
+        "pci_ids": ["0x64A0"],
+        "media_feature": "LNL"
+      },
+      {
+        "name": "Intel® Arc™ Pro B50 Graphics",
+        "architecture": "Xe2",
+        "codename": "Battlemage",
+        "release_year": 2024,
+        "pci_ids": ["0xE212"],
+        "media_feature": "BMG"
+      },
+      {
+        "name": "Intel® Arc™ B570 GPU",
+        "architecture": "Xe2",
+        "codename": "Battlemage",
+        "release_year": 2024,
+        "pci_ids": ["0xE20C"],
+        "media_feature": "BMG"
+      },
+      {
+        "name": "Intel® Arc™ B580 GPU",
+        "architecture": "Xe2",
+        "codename": "Battlemage",
+        "release_year": 2024,
+        "pci_ids": ["0xE20B"],
+        "media_feature": "BMG"
+      },
+      {
+        "name": "Intel® Arc™ Pro B60 Graphics",
+        "architecture": "Xe2",
+        "codename": "Battlemage",
+        "release_year": 2024,
+        "pci_ids": ["0xE211"],
+        "media_feature": "BMG"
+      },
+      {
+        "name": "Intel® Graphics",
+        "architecture": "Xe3",
+        "codename": "Panther Lake",
+        "release_year": 2025,
+        "pci_ids": ["0xB090", "0xB0A0"],
+        "media_feature": "PTL"
+      },
+      {
+        "name": "Intel® Arc™ B370 GPU",
+        "architecture": "Xe3",
+        "codename": "Panther Lake",
+        "release_year": 2025,
+        "pci_ids": ["0xB081", "0xB083"],
+        "media_feature": "PTL"
+      },
+      {
+        "name": "Intel® Arc™ Pro B370 GPU",
+        "architecture": "Xe3",
+        "codename": "Panther Lake",
+        "release_year": 2025,
+        "pci_ids": ["0xB085", "0xB087"],
+        "media_feature": "PTL"
+      },
+      {
+        "name": "Intel® Arc™ B390 GPU",
+        "architecture": "Xe3",
+        "codename": "Panther Lake",
+        "release_year": 2025,
+        "pci_ids": ["0xB080", "0xB082"],
+        "media_feature": "PTL"
+      },
+      {
+        "name": "Intel® Arc™ Pro B390 GPU",
+        "architecture": "Xe3",
+        "codename": "Panther Lake",
+        "release_year": 2025,
+        "pci_ids": ["0xB084", "0xB086"],
+        "media_feature": "PTL"
+      }
+    ],
+    "media_features": [
+      {
+        "name": "BMG",
+        "codecs":{
+          "decoders": [
+            {
+              "name": "AVC",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "MPEG-2",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "2k"
+            },
+            {
+              "name": "VP8",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "HEVC",
+              "formats": {
+                "output": [
+                  "NV12","YUY2","AYUV",
+                  "P010","Y210","Y410",
+                  "P016","Y216","Y416"
+                ]
+              },
+              "max_resolution": "16k"
+            },
+            {
+              "name": "VP9",
+              "formats": {
+                "output": [
+                  "NV12","AYUV",
+                  "P010","Y410",
+                  "P016","Y416"
+                ]
+              },
+              "max_resolution": "16k"
+            },
+            {
+              "name": "AV1",
+              "formats": {
+                "output": ["NV12","P010"]
+              },
+              "max_resolution": "16k"
+            },
+            {
+              "name": "JPEG",
+              "formats": [
+                {
+                  "input": "420",
+                  "output": "IMC3"
+                },
+                {
+                  "input": "422",
+                  "output": ["422H","422V"]
+                },
+                {
+                  "input": "411",
+                  "output": "411P"
+                },
+                {
+                  "input": "444",
+                  "output": ["444P","RGBP","BGRP"]
+                },
+                {
+                  "input": "400",
+                  "output": "400P"
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["420","422H"]
+                  },
+                  "output": ["YUY2","UYVY"]
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["420","422H","422V"]
+                  },
+                  "output": ["NV12"]
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["400","420","422H","444","RGB","BGR"]
+                  },
+                  "output": ["A8R8G8B8"]
+                }
+              ],
+              "max_resolution": "16k"
+            }
+          ],
+           "encoders": [
+            {
+              "name": "AVC",
+              "process": "VDEnc/Huc",
+              "input_formats": [
+                "NV12","YUY2","YUYV","YVYU","UYVY","AYUV","ARGB"
+              ],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "JPEG",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","YUY2","UYVY","ABGR","Y8"],
+              "output_formats": [
+                "YUV400","YUV420","YUV422H_2Y","YUV444","RGB24"
+              ],
+              "max_resolution": "16k"
+            },
+            {
+              "name": "HEVC",
+              "process": "VDEnc/Huc",
+              "input_formats": [
+                "NV12","YUY2","AYUV","RGB8bits","P010","Y210","Y410","RGB10bits"
+              ],
+              "max_resolution": "16k_4:3"
+            },
+            {
+              "name": "AV1",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","P010"],
+              "max_resolution": "8k"
+            }
+          ]
+        },
+        "video_processing": {
+          "max_resolution": "16k"
+        }
+      },
+      {
+        "name": "PTL",
+        "codecs":{
+          "decoders": [
+            {
+              "name": "AVC",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "MPEG-2",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "2k"
+            },
+            {
+              "name": "VP8",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "HEVC",
+              "formats": {
+                "output": [
+                  "NV12","YUY2","AYUV",
+                  "P010","Y210","Y410",
+                  "P016","Y216","Y416"
+                ]
+              },
+              "max_resolution": "16k"
+            },
+            {
+              "name": "VP9",
+              "formats": {
+                "output": [
+                  "NV12","AYUV",
+                  "P010","Y410",
+                  "P016","Y416"
+                ]
+              },
+              "max_resolution": "16k"
+            },
+            {
+              "name": "AV1",
+              "formats": {
+                "output": ["NV12","P010"]
+              },
+              "max_resolution": "16k"
+            },
+            {
+              "name": "VVC",
+              "formats": {
+                "output": ["NV12","P010"]
+              },
+              "max_resolution": "16k"
+            },
+            {
+              "name": "JPEG",
+              "formats": [
+                {
+                  "input": "420",
+                  "output": "IMC3"
+                },
+                {
+                  "input": "422",
+                  "output": ["422H","422V"]
+                },
+                {
+                  "input": "411",
+                  "output": "411P"
+                },
+                {
+                  "input": "444",
+                  "output": ["444P","RGBP","BGRP"]
+                },
+                {
+                  "input": "400",
+                  "output": "400P"
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["420","422H"]
+                  },
+                  "output": ["YUY2","UYVY"]
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["420","422H","422V"]
+                  },
+                  "output": ["NV12"]
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["400","420","422H","444","RGB","BGR"]
+                  },
+                  "output": ["A8R8G8B8"]
+                }
+              ],
+              "max_resolution": "16k"
+            }
+          ],
+           "encoders": [
+            {
+              "name": "AVC",
+              "process": "VDEnc/Huc",
+              "input_formats": [
+                "NV12","YUY2","YUYV","YVYU","UYVY","AYUV","ARGB"
+              ],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "JPEG",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","YUY2","UYVY","ABGR","Y8"],
+              "output_formats": [
+                "YUV400","YUV420","YUV422H_2Y","YUV444","RGB24"
+              ],
+              "max_resolution": "16k"
+            },
+            {
+              "name": "HEVC",
+              "process": "VDEnc/Huc",
+              "input_formats": [
+                "NV12","YUY2","AYUV","RGB8bits","P010","Y210","Y410","RGB10bits"
+              ],
+              "max_resolution": "16k_4:3"
+            },
+            {
+              "name": "AV1",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","P010"],
+              "max_resolution": "8k"
+            },
+            {
+              "name": "AVC",
+              "process": "Hardware(PAK)/Shader(VME)",
+              "input_formats": "NV12",
+              "max_resolution": "4k"
+            },
+            {
+              "name": "MPEG-2",
+              "process": "Hardware(PAK)/Shader(VME)",
+              "input_formats": "NV12",
+              "max_resolution": "2k"
+            },
+            {
+              "name": "VP8",
+              "process": "Hardware(PAK)/Shader(VME)",
+              "input_formats": "NV12",
+              "max_resolution": "4k"
+            },
+            {
+              "name": "HEVC",
+              "process": "Hardware(PAK)/Shader(VME)",
+              "input_formats": ["NV12","YUY2","AYUV","P010","Y210","Y410"],
+              "max_resolution": "8k"
+            }
+          ]
+        },
+        "video_processing": {
+          "max_resolution": "16k"
+        }
+      },
+      {
+        "name": "LNL",
+        "codecs":{
+          "decoders": [
+            {
+              "name": "AVC",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "MPEG-2",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "2k"
+            },
+            {
+              "name": "VP8",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "HEVC",
+              "formats": {
+                "output": [
+                  "NV12","YUY2","AYUV",
+                  "P010","Y210","Y410",
+                  "P016","Y216","Y416"
+                ]
+              },
+              "max_resolution": "16k"
+            },
+            {
+              "name": "VP9",
+              "formats": {
+                "output": [
+                  "NV12","AYUV",
+                  "P010","Y410",
+                  "P016","Y416"
+                ]
+              },
+              "max_resolution": "16k"
+            },
+            {
+              "name": "AV1",
+              "formats": {
+                "output": ["NV12","P010"]
+              },
+              "max_resolution": "16k"
+            },
+            {
+              "name": "VVC",
+              "formats": {
+                "output": ["NV12","P010"]
+              },
+              "max_resolution": "16k"
+            },
+            {
+              "name": "JPEG",
+              "formats": [
+                {
+                  "input": "420",
+                  "output": "IMC3"
+                },
+                {
+                  "input": "422",
+                  "output": ["422H","422V"]
+                },
+                {
+                  "input": "411",
+                  "output": "411P"
+                },
+                {
+                  "input": "444",
+                  "output": ["444P","RGBP","BGRP"]
+                },
+                {
+                  "input": "400",
+                  "output": "400P"
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["420","422H"]
+                  },
+                  "output": ["YUY2","UYVY"]
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["420","422H","422V"]
+                  },
+                  "output": ["NV12"]
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["400","420","422H","444","RGB","BGR"]
+                  },
+                  "output": ["A8R8G8B8"]
+                }
+              ],
+              "max_resolution": "16k"
+            }
+          ],
+           "encoders": [
+            {
+              "name": "AVC",
+              "process": "VDEnc/Huc",
+              "input_formats": [
+                "NV12","YUY2","YUYV","YVYU","UYVY","AYUV","ARGB"
+              ],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "JPEG",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","YUY2","UYVY","ABGR","Y8"],
+              "output_formats": [
+                "YUV400","YUV420","YUV422H_2Y","YUV444","RGB24"
+              ],
+              "max_resolution": "16k"
+            },
+            {
+              "name": "HEVC",
+              "process": "VDEnc/Huc",
+              "input_formats": [
+                "NV12","YUY2","AYUV","RGB8bits","P010","Y210","Y410","RGB10bits"
+              ],
+              "max_resolution": "16k_4:3"
+            },
+            {
+              "name": "AV1",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","P010"],
+              "max_resolution": "8k"
+            }
+          ]
+        },
+        "video_processing": {
+          "max_resolution": "16k"
+        }
+      },
+      {
+        "name": "MTLx",
+        "codecs":{
+          "decoders": [
+            {
+              "name": "AVC",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "MPEG-2",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "2k"
+            },
+            {
+              "name": "VP8",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "HEVC",
+              "formats": {
+                "output": [
+                  "NV12","YUY2","AYUV",
+                  "P010","Y210","Y410",
+                  "P016","Y216","Y416"
+                ]
+              },
+              "max_resolution": "16k"
+            },
+            {
+              "name": "VP9",
+              "formats": {
+                "output": [
+                  "NV12","AYUV",
+                  "P010","Y410",
+                  "P016","Y416"
+                ]
+              },
+              "max_resolution": "16k"
+            },
+            {
+              "name": "AV1",
+              "formats": {
+                "output": ["NV12","P010"]
+              },
+              "max_resolution": "16k"
+            },
+            {
+              "name": "JPEG",
+              "formats": [
+                {
+                  "input": "420",
+                  "output": "IMC3"
+                },
+                {
+                  "input": "422",
+                  "output": ["422H","422V"]
+                },
+                {
+                  "input": "411",
+                  "output": "411P"
+                },
+                {
+                  "input": "444",
+                  "output": ["444P","RGBP","BGRP"]
+                },
+                {
+                  "input": "400",
+                  "output": "400P"
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["420","422H"]
+                  },
+                  "output": ["YUY2","UYVY"]
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["420","422H","422V"]
+                  },
+                  "output": ["NV12"]
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["400","420","422H","444","RGB","BGR"]
+                  },
+                  "output": ["A8R8G8B8"]
+                }
+              ],
+              "max_resolution": "16k"
+            }
+          ],
+           "encoders": [
+            {
+              "name": "AVC",
+              "process": "VDEnc/Huc",
+              "input_formats": [
+                "NV12","YUY2","YUYV","YVYU","UYVY","AYUV","ARGB"
+              ],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "JPEG",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","YUY2","UYVY","ABGR","Y8"],
+              "output_formats": [
+                "YUV400","YUV420","YUV422H_2Y","YUV444","RGB24"
+              ],
+              "max_resolution": "16k"
+            },
+            {
+              "name": "HEVC",
+              "process": "VDEnc/Huc",
+              "input_formats": [
+                "NV12","YUY2","AYUV","RGB8bits","P010","Y210","Y410","RGB10bits"
+              ],
+              "max_resolution": "16k_4:3"
+            },
+            {
+              "name": "VP9",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","AYUV","P010","Y410"],
+              "max_resolution": "8k"
+            },
+            {
+              "name": "AV1",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","P010"],
+              "max_resolution": "8k"
+            }
+          ]
+        },
+        "video_processing": {
+          "max_resolution": "16k"
+        }
+      },
+      {
+        "name": "DG2",
+        "codecs":{
+          "decoders": [
+            {
+              "name": "AVC",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "MPEG-2",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "2k"
+            },
+            {
+              "name": "VP8",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "HEVC",
+              "formats": {
+                "output": [
+                  "NV12","YUY2","AYUV",
+                  "P010","Y210","Y410",
+                  "P016","Y216","Y416"
+                ]
+              },
+              "max_resolution": "16k"
+            },
+            {
+              "name": "VP9",
+              "formats": {
+                "output": [
+                  "NV12","AYUV",
+                  "P010","Y410",
+                  "P016","Y416"
+                ]
+              },
+              "max_resolution": "16k"
+            },
+            {
+              "name": "AV1",
+              "formats": {
+                "output": ["NV12","P010"]
+              },
+              "max_resolution": "16k"
+            },
+            {
+              "name": "JPEG",
+              "formats": [
+                {
+                  "input": "420",
+                  "output": "IMC3"
+                },
+                {
+                  "input": "422",
+                  "output": ["422H","422V"]
+                },
+                {
+                  "input": "411",
+                  "output": "411P"
+                },
+                {
+                  "input": "444",
+                  "output": ["444P","RGBP","BGRP"]
+                },
+                {
+                  "input": "400",
+                  "output": "400P"
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["420","422H"]
+                  },
+                  "output": ["YUY2","UYVY"]
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["420","422H","422V"]
+                  },
+                  "output": ["NV12"]
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["400","420","422H","444","RGB","BGR"]
+                  },
+                  "output": ["A8R8G8B8"]
+                }
+              ],
+              "max_resolution": "16k"
+            }
+          ],
+           "encoders": [
+            {
+              "name": "AVC",
+              "process": "VDEnc/Huc",
+              "input_formats": [
+                "NV12","YUY2","YUYV","YVYU","UYVY","AYUV","ARGB"
+              ],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "JPEG",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","YUY2","UYVY","ABGR","Y8"],
+              "output_formats": [
+                "YUV400","YUV420","YUV422H_2Y","YUV444","RGB24"
+              ],
+              "max_resolution": "16k"
+            },
+            {
+              "name": "HEVC",
+              "process": "VDEnc/Huc",
+              "input_formats": [
+                "NV12","YUY2","AYUV","RGB8bits","P010","Y210","Y410","RGB10bits"
+              ],
+              "max_resolution": "16k_4:3"
+            },
+            {
+              "name": "AV1",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","P010"],
+              "max_resolution": "8k"
+            }
+          ]
+        },
+        "video_processing": {
+          "max_resolution": "16k"
+        }
+      },
+      {
+        "name": "DG1",
+        "codecs":{
+          "decoders": [
+            {
+              "name": "AVC",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "MPEG-2",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "2k"
+            },
+            {
+              "name": "VP8",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "HEVC",
+              "formats": {
+                "output": [
+                  "NV12","YUY2","AYUV",
+                  "P010","Y210","Y410"
+                ]
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "VP9",
+              "formats": {
+                "output": [
+                  "NV12","AYUV",
+                  "P010","Y410"
+                ]
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "JPEG",
+              "formats": [
+                {
+                  "input": "420",
+                  "output": "IMC3"
+                },
+                {
+                  "input": "422",
+                  "output": ["422H","422V"]
+                },
+                {
+                  "input": "411",
+                  "output": "411P"
+                },
+                {
+                  "input": "444",
+                  "output": ["444P","RGBP","BGRP"]
+                },
+                {
+                  "input": "400",
+                  "output": "400P"
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["420","422H"]
+                  },
+                  "output": ["YUY2","UYVY"]
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["420","422H","422V"]
+                  },
+                  "output": ["NV12"]
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["400","420","422H","444","RGB","BGR"]
+                  },
+                  "output": ["A8R8G8B8"]
+                }
+              ],
+              "max_resolution": "4k"
+            }
+          ],
+           "encoders": [
+            {
+              "name": "AVC",
+              "process": "VDEnc/Huc",
+              "input_formats": [
+                "NV12","YUY2","YUYV","YVYU","UYVY","AYUV","ARGB"
+              ],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "JPEG",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","YUY2","UYVY","ABGR","Y8"],
+              "output_formats": [
+                "YUV400","YUV420","YUV422H_2Y","YUV444","RGB24"
+              ],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "HEVC",
+              "process": "VDEnc/Huc",
+              "input_formats": [
+                "NV12","YUY2","AYUV","RGB8bits","P010","Y210","Y410"
+              ],
+              "max_resolution": "4k"
+            }
+          ]
+        },
+        "video_processing": {
+          "max_resolution": "4k"
+        }
+      },
+      {
+        "name": "TGL",
+        "codecs":{
+          "decoders": [
+            {
+              "name": "AVC",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "MPEG-2",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "2k"
+            },
+            {
+              "name": "VP8",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "HEVC",
+              "formats": {
+                "output": [
+                  "NV12","YUY2","AYUV",
+                  "P010","Y210","Y410"
+                ]
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "VP9",
+              "formats": {
+                "output": [
+                  "NV12","AYUV",
+                  "P010","Y410"
+                ]
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "JPEG",
+              "formats": [
+                {
+                  "input": "420",
+                  "output": "IMC3"
+                },
+                {
+                  "input": "422",
+                  "output": ["422H","422V"]
+                },
+                {
+                  "input": "411",
+                  "output": "411P"
+                },
+                {
+                  "input": "444",
+                  "output": ["444P","RGBP","BGRP"]
+                },
+                {
+                  "input": "400",
+                  "output": "400P"
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["420","422H"]
+                  },
+                  "output": ["YUY2","UYVY"]
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["420","422H","422V"]
+                  },
+                  "output": ["NV12"]
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["400","420","422H","444","RGB","BGR"]
+                  },
+                  "output": ["A8R8G8B8"]
+                }
+              ],
+              "max_resolution": "4k"
+            }
+          ],
+           "encoders": [
+            {
+              "name": "AVC",
+              "process": "VDEnc/Huc",
+              "input_formats": [
+                "NV12","YUY2","YUYV","YVYU","UYVY","AYUV","ARGB"
+              ],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "JPEG",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","YUY2","UYVY","ABGR","Y8"],
+              "output_formats": [
+                "YUV400","YUV420","YUV422H_2Y","YUV444","RGB24"
+              ],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "HEVC",
+              "process": "VDEnc/Huc",
+              "input_formats": [
+                "NV12","YUY2","AYUV","RGB8bits","P010","Y210","Y410"
+              ],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "AVC",
+              "process": "Hardware(PAK)/Shader(VME)",
+              "input_formats": "NV12",
+              "max_resolution": "4k"
+            },
+            {
+              "name": "MPEG-2",
+              "process": "Hardware(PAK)/Shader(VME)",
+              "input_formats": "NV12",
+              "max_resolution": "2k"
+            },
+            {
+              "name": "VP8",
+              "process": "Hardware(PAK)/Shader(VME)",
+              "input_formats": "NV12",
+              "max_resolution": "4k"
+            },
+            {
+              "name": "HEVC",
+              "process": "Hardware(PAK)/Shader(VME)",
+              "input_formats": ["NV12","YUY2","AYUV","P010","Y210","Y410"],
+              "max_resolution": "4k"
+            }
+          ]
+        },
+        "video_processing": {
+          "max_resolution": "4k"
+        }
+      },
+      {
+        "name": "TGLx",
+        "codecs":{
+          "decoders": [
+            {
+              "name": "AVC",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "MPEG-2",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "2k"
+            },
+            {
+              "name": "VP8",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "HEVC",
+              "formats": {
+                "output": [
+                  "NV12","YUY2","AYUV",
+                  "P010","Y210","Y410"
+                ]
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "VP9",
+              "formats": {
+                "output": [
+                  "NV12","AYUV",
+                  "P010","Y410"
+                ]
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "JPEG",
+              "formats": [
+                {
+                  "input": "420",
+                  "output": "IMC3"
+                },
+                {
+                  "input": "422",
+                  "output": ["422H","422V"]
+                },
+                {
+                  "input": "411",
+                  "output": "411P"
+                },
+                {
+                  "input": "444",
+                  "output": ["444P","RGBP","BGRP"]
+                },
+                {
+                  "input": "400",
+                  "output": "400P"
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["420","422H"]
+                  },
+                  "output": ["YUY2","UYVY"]
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["420","422H","422V"]
+                  },
+                  "output": ["NV12"]
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["400","420","422H","444","RGB","BGR"]
+                  },
+                  "output": ["A8R8G8B8"]
+                }
+              ],
+              "max_resolution": "4k"
+            }
+          ],
+           "encoders": [
+            {
+              "name": "AVC",
+              "process": "VDEnc/Huc",
+              "input_formats": [
+                "NV12","YUY2","YUYV","YVYU","UYVY","AYUV","ARGB"
+              ],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "JPEG",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","YUY2","UYVY","ABGR","Y8"],
+              "output_formats": [
+                "YUV400","YUV420","YUV422H_2Y","YUV444","RGB24"
+              ],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "HEVC",
+              "process": "VDEnc/Huc",
+              "input_formats": [
+                "NV12","YUY2","AYUV","RGB8bits","P010","Y210","Y410"
+              ],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "AVC",
+              "process": "Hardware(PAK)/Shader(VME)",
+              "input_formats": "NV12",
+              "max_resolution": "4k"
+            },
+            {
+              "name": "MPEG-2",
+              "process": "Hardware(PAK)/Shader(VME)",
+              "input_formats": "NV12",
+              "max_resolution": "2k"
+            },
+            {
+              "name": "VP8",
+              "process": "Hardware(PAK)/Shader(VME)",
+              "input_formats": "NV12",
+              "max_resolution": "4k"
+            },
+            {
+              "name": "HEVC",
+              "process": "Hardware(PAK)/Shader(VME)",
+              "input_formats": ["NV12","YUY2","AYUV","P010","Y210","Y410"],
+              "max_resolution": "4k"
+            }
+          ]
+        },
+        "video_processing": {
+          "max_resolution": "4k"
+        }
+      },
+      {
+        "name": "EHL/JSL",
+        "codecs":{
+          "decoders": [
+            {
+              "name": "AVC",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "MPEG-2",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "2k"
+            },
+            {
+              "name": "VP8",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "HEVC",
+              "formats": {
+                "output": [
+                  "NV12","YUY2","AYUV",
+                  "P010","Y210","Y410"
+                ]
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "VP9",
+              "formats": {
+                "output": [
+                  "NV12","AYUV",
+                  "P010","Y410"
+                ]
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "JPEG",
+              "formats": [
+                {
+                  "input": "420",
+                  "output": "IMC3"
+                },
+                {
+                  "input": "422",
+                  "output": ["422H","422V"]
+                },
+                {
+                  "input": "411",
+                  "output": "411P"
+                },
+                {
+                  "input": "444",
+                  "output": ["444P","RGBP","BGRP"]
+                },
+                {
+                  "input": "400",
+                  "output": "400P"
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["420","422H"]
+                  },
+                  "output": ["YUY2","UYVY"]
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["420","422H","422V"]
+                  },
+                  "output": ["NV12"]
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["400","420","422H","444","RGB","BGR"]
+                  },
+                  "output": ["A8R8G8B8"]
+                }
+              ],
+              "max_resolution": "4k"
+            }
+          ],
+           "encoders": [
+            {
+              "name": "AVC",
+              "process": "VDEnc/Huc",
+              "input_formats": [
+                "NV12","YUY2","YUYV","YVYU","UYVY","AYUV","ARGB"
+              ],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "JPEG",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","YUY2","UYVY","ABGR","Y8"],
+              "output_formats": [
+                "YUV400","YUV420","YUV422H_2Y","YUV444","RGB24"
+              ],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "HEVC",
+              "process": "VDEnc/Huc",
+              "input_formats": [
+                "NV12","YUY2","AYUV","RGB8bits","P010","Y210","Y410"
+              ],
+              "max_resolution": "4k"
+            }
+          ]
+        },
+        "video_processing": {
+          "max_resolution": "4k"
+        }
+      },
+      {
+        "name": "ICL",
+        "codecs":{
+          "decoders": [
+            {
+              "name": "AVC",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "MPEG-2",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "2k"
+            },
+            {
+              "name": "VP8",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "HEVC",
+              "formats": {
+                "output": [
+                  "NV12","YUY2","AYUV",
+                  "P010","Y210","Y410"
+                ]
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "VP9",
+              "formats": {
+                "output": [
+                  "NV12","AYUV",
+                  "P010","Y410"
+                ]
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "JPEG",
+              "formats": [
+                {
+                  "input": "420",
+                  "output": "IMC3"
+                },
+                {
+                  "input": "422",
+                  "output": ["422H","422V"]
+                },
+                {
+                  "input": "411",
+                  "output": "411P"
+                },
+                {
+                  "input": "444",
+                  "output": ["444P","RGBP","BGRP"]
+                },
+                {
+                  "input": "400",
+                  "output": "400P"
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["420","422H"]
+                  },
+                  "output": ["YUY2","UYVY"]
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["420","422H","422V"]
+                  },
+                  "output": ["NV12"]
+                },
+                {
+                  "input": {
+                    "type": "interleaved_single_scan",
+                    "sampling": ["400","420","422H","444","RGB","BGR"]
+                  },
+                  "output": ["A8R8G8B8"]
+                }
+              ],
+              "max_resolution": "4k"
+            }
+          ],
+           "encoders": [
+            {
+              "name": "AVC",
+              "process": "VDEnc/Huc",
+              "input_formats": [
+                "NV12","YUY2","YUYV","YVYU","UYVY","AYUV","ARGB"
+              ],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "JPEG",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","YUY2","UYVY","ABGR","Y8"],
+              "output_formats": [
+                "YUV400","YUV420","YUV422H_2Y","YUV444","RGB24"
+              ],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "HEVC",
+              "process": "VDEnc/Huc",
+              "input_formats": [
+                "NV12","YUY2","AYUV","RGB8bits","P010","Y210","Y410"
+              ],
+              "max_resolution": "4k"
+            }
+          ]
+        },
+        "video_processing": {
+          "max_resolution": "4k"
+        }
+      },
+      {
+        "name": "KBLx",
+        "codecs":{
+          "decoders": [
+            {
+              "name": "AVC",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "MPEG-2",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "2k"
+            },
+            {
+              "name": "VP8",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "HEVC",
+              "formats": {
+                "output": ["NV12","YUY2","AYUV","P010","Y410"]
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "VP9",
+              "formats": {
+                "output": ["NV12","P010"]
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "JPEG",
+              "formats": [
+                {
+                  "input": "420",
+                  "output": "IMC3"
+                },
+                {
+                  "input": "422",
+                  "output": ["422H","422V"]
+                },
+                {
+                  "input": "411",
+                  "output": "411P"
+                },
+                {
+                  "input": "444",
+                  "output": ["444P","RGBP","BGRP"]
+                },
+                {
+                  "input": "400",
+                  "output": "400P"
+                }
+              ],
+              "max_resolution": "4k"
+            }
+          ],
+           "encoders": [
+            {
+              "name": "AVC",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","YUY2","UYVY"],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "JPEG",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","YUY2","UYVY"],
+              "output_formats": ["YUV400","YUV420","YUV422H_2Y"],
+              "max_resolution": "2k"
+            },
+            {
+              "name": "HEVC",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","YUY2","AYUV","P010","Y210"],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "VP9",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","AYUV","P010"],
+              "max_resolution": "4k"
+            }
+          ]
+        },
+        "video_processing": {
+          "max_resolution": "4k"
+        }
+      },
+      {
+        "name": "BXTx",
+        "codecs":{
+          "decoders": [
+            {
+              "name": "AVC",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "MPEG-2",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "2k"
+            },
+            {
+              "name": "VP8",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "HEVC",
+              "formats": {
+                "output": ["NV12","YUY2","AYUV","P010","Y410"]
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "VP9",
+              "formats": {
+                "output": ["NV12","P010"]
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "JPEG",
+              "formats": [
+                {
+                  "input": "420",
+                  "output": "IMC3"
+                },
+                {
+                  "input": "422",
+                  "output": ["422H","422V"]
+                },
+                {
+                  "input": "411",
+                  "output": "411P"
+                },
+                {
+                  "input": "444",
+                  "output": ["444P","RGBP","BGRP"]
+                },
+                {
+                  "input": "400",
+                  "output": "400P"
+                }
+              ],
+              "max_resolution": "4k"
+            }
+          ],
+           "encoders": [
+            {
+              "name": "AVC",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","YUY2","UYVY"],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "JPEG",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","YUY2","UYVY"],
+              "output_formats": ["YUV400","YUV420","YUV422H_2Y"],
+              "max_resolution": "2k"
+            },
+            {
+              "name": "HEVC",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","YUY2","AYUV","P010","Y210"],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "VP9",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","AYUV","P010"],
+              "max_resolution": "4k"
+            }
+          ]
+        },
+        "video_processing": {
+          "max_resolution": "4k"
+        }
+      },
+      {
+        "name": "SKL",
+        "codecs":{
+          "decoders": [
+            {
+              "name": "AVC",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "MPEG-2",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "2k"
+            },
+            {
+              "name": "VP8",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "HEVC",
+              "formats": {
+                "output": ["NV12","YUY2","AYUV","P010"]
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "VP9",
+              "formats": {
+                "output": ["NV12","P010"]
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "JPEG",
+              "formats": [
+                {
+                  "input": "420",
+                  "output": "IMC3"
+                },
+                {
+                  "input": "422",
+                  "output": ["422H","422V"]
+                },
+                {
+                  "input": "411",
+                  "output": "411P"
+                },
+                {
+                  "input": "444",
+                  "output": ["444P","RGBP","BGRP"]
+                },
+                {
+                  "input": "400",
+                  "output": "400P"
+                }
+              ],
+              "max_resolution": "4k"
+            }
+          ],
+           "encoders": [
+            {
+              "name": "AVC",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","YUY2","UYVY"],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "JPEG",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","YUY2","UYVY"],
+              "output_formats": ["YUV400","YUV420","YUV422H_2Y"],
+              "max_resolution": "2k"
+            },
+            {
+              "name": "HEVC",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","YUY2","AYUV","P010"],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "VP9",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","AYUV","P010"],
+              "max_resolution": "4k"
+            }
+          ]
+        },
+        "video_processing": {
+          "max_resolution": "4k"
+        }
+      },
+      {
+        "name": "BDW",
+        "codecs":{
+          "decoders": [
+            {
+              "name": "AVC",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "4k"
+            },
+            {
+              "name": "MPEG-2",
+              "formats": {
+                "output": "NV12"
+              },
+              "max_resolution": "2k"
+            },
+            {
+              "name": "JPEG",
+              "formats": [
+                {
+                  "input": "420",
+                  "output": "IMC3"
+                },
+                {
+                  "input": "422",
+                  "output": ["422H","422V"]
+                },
+                {
+                  "input": "411",
+                  "output": "411P"
+                },
+                {
+                  "input": "444",
+                  "output": ["444P","RGBP","BGRP"]
+                },
+                {
+                  "input": "400",
+                  "output": "400P"
+                }
+              ],
+              "max_resolution": "2k"
+            }
+          ],
+           "encoders": [
+            {
+              "name": "AVC",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","YUY2","UYVY"],
+              "max_resolution": "4k"
+            },
+            {
+              "name": "JPEG",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12","YUY2","UYVY"],
+              "output_formats": ["YUV400","YUV420","YUV422H_2Y"],
+              "max_resolution": "2k"
+            },
+            {
+              "name": "MPEG-2",
+              "process": "VDEnc/Huc",
+              "input_formats": ["NV12"],
+              "max_resolution": "2k"
+            }
+          ]
+        },
+        "video_processing": {
+          "max_resolution": "2k"
+        }
+      }
+    ]
+    }
+}
