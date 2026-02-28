@@ -24,6 +24,13 @@ command:
   then
     wget -nv {{ video_url }} -P /tmp/
   fi
+  INTEL_RENDER_NODE=$(
+    for d in /dev/dri/renderD*; do
+      [ "$(cat /sys/class/drm/$(basename "$d")/device/vendor 2>/dev/null)" = "0x8086" ] && echo "$d" && break
+    done
+  )
+  [ -n "$INTEL_RENDER_NODE" ] || { echo "No Intel render node found"; return 1 2>/dev/null || exit 1; }
+  export GST_VAAPI_DRM_DEVICE="$INTEL_RENDER_NODE"
   export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
   export LIBVA_DRIVER_NAME=iHD
   export LIBVA_DRI3_ENABLE=1
