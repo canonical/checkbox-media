@@ -119,6 +119,84 @@ def build_results(
     return results
 
 
+def display_features_list(
+    pci_map: Dict[Tuple[str, str], List[dict]],
+    feature_map: Dict[str, dict],
+    devices: Iterable[dict],
+) -> None:
+    """Display a human-readable list of all media features with checkboxes."""
+    results = build_results(pci_map, feature_map, devices)
+    detected_features = {}
+    gpu_devices = []
+
+    for result in results:
+        gpu_devices.append(result)
+        for feature in result.get("media_features", []):
+            feature_name = feature.get("name")
+            if feature_name:
+                detected_features[feature_name] = feature
+
+    # Show detected GPUs
+    print("\nDetected GPU Devices:")
+    print("=" * 50)
+
+    for device in gpu_devices:
+        pci_addr = device.get("pci_address")
+        vendor_id = device.get("vendor_id")
+        device_id = device.get("device_id")
+
+        print(f"\n PCI: {pci_addr}")
+        print(f"    Vendor ID: {vendor_id}, Device ID: {device_id}")
+
+        # Show matched GPU models
+        matches = device.get("matches", [])
+        if matches:
+            for match in matches:
+                name = match.get("name", "Unknown")
+                arch = match.get("architecture", "")
+                codename = match.get("codename", "")
+                year = match.get("release_year", "")
+
+                print(f"    Model: {name}")
+                if arch:
+                    print(f"           Architecture: {arch}")
+                if codename:
+                    print(f"           Codename: {codename}")
+                if year:
+                    print(f"           Release Year: {year}")
+
+    print("\n" + "=" * 50)
+
+    if detected_features:
+        print("\nDetected Feature Details:")
+        print("=" * 50)
+
+        for feature_name in sorted(detected_features.keys()):
+            feature = detected_features[feature_name]
+            print(f"\n {feature_name}")
+            print("-" * 50)
+
+            codecs = feature.get("codecs", {})
+
+            # Decoders
+            decoders = codecs.get("decoders", [])
+            if decoders:
+                print("  Decoders:")
+                for decoder in decoders:
+                    codec_name = decoder.get("name")
+                    max_res = decoder.get("max_resolution", "N/A")
+                    print(f"    • {codec_name:<12} Max: {max_res}")
+
+            # Encoders
+            encoders = codecs.get("encoders", [])
+            if encoders:
+                print("  Encoders:")
+                for encoder in encoders:
+                    codec_name = encoder.get("name")
+                    max_res = encoder.get("max_resolution", "N/A")
+                    print(f"    • {codec_name:<12} Max: {max_res}")
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Report PCI device media features from media_features.json"
@@ -140,6 +218,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--pretty", action="store_true", help="Pretty-print JSON output")
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose logging")
     parser.add_argument('--version', action='version', version='%(prog)s 1.0')
+    parser.add_argument(
+        "-H",
+        "--human-readable",
+        action="store_true",
+        dest="human_readable",
+        help="Display human-readable list of media features with checkboxes",
+    )
     return parser.parse_args()
 
 
@@ -162,6 +247,11 @@ def main() -> int:
 
     pci_map, feature_map = load_media_db(args.db)
     devices = iter_pci_devices(args.sysfs_root, args.vendor_id)
+
+    if args.human_readable:
+        display_features_list(pci_map, feature_map, devices)
+        return 0
+
     results = build_results(pci_map, feature_map, devices)
 
     dump_args = {"ensure_ascii": True}
