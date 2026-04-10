@@ -976,7 +976,7 @@
         "name": "Intel® Iris® Xe Graphics",
         "architecture": "Xe",
         "codename": "Raptor Lake-P",
-        "release_year": 2021,
+        "release_year": 2023,
         "pci_ids": [
           "0xA7A0",
           "0xA7A1"
