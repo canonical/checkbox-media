@@ -1,6 +1,40 @@
+plugin: shell
+id: gpu_h264_decoder_check
+_summary: Check if GPU supports H.264 hardware decoding
+requires:
+  executable.name == "detect-media-features"
+estimated_duration: 1m
+command:
+  # Detect GPU capabilities and verify h264 decoder support
+  FEATURES_JSON=$(detect-media-features --pretty 2>/dev/null)
+  python3 << 'EOF'
+import sys, json
+try:
+    data = json.loads(sys.stdin.read())
+    found_h264 = False
+    for result in data:
+        media_features = result.get('media_features', [])
+        for feature in media_features:
+            decoders = feature.get('codecs', {}).get('decoders', [])
+            for decoder in decoders:
+                if decoder.get('name', '').lower() == 'h264':
+                    found_h264 = True
+                    print(f'Found h264 decoder in feature: {feature.get("name")}')
+    if found_h264:
+        print('[PASS] GPU supports h264 hardware decoding')
+        sys.exit(0)
+    else:
+        print('[FAIL] h264 decoder not found in any media features')
+        sys.exit(1)
+except Exception as e:
+    print(f'[ERROR] Failed to parse GPU features: {e}')
+    sys.exit(1)
+EOF
+  <<< "$FEATURES_JSON"
+
 id: youtubevideos
 plugin: resource
-command: 
+command:
     echo 'video_url: https://www.youtube.com/watch?v=aqz-KE-bpKQ'
     echo 'id: bigbuckbunny'
     echo

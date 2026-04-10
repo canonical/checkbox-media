@@ -3,6 +3,7 @@ id: fluster_h264_vaapi
 category_id: fluster
 user: root
 _summary: fluster framework h264 tests for VA-API
+require: gpu_h264_decoder_check.result == 'pass'
 environ:
   # necessary for local mode
   XDG_SESSION_TYPE
@@ -12,4 +13,3 @@ command:
   vainfo #logging va-api status
   fluster download -c H.264
   fluster run -d FFmpeg-H.264-VAAPI
-
