@@ -1,0 +1,77 @@
+#!/bin/bash
+# Usage: gstreamer-encode VIDEO_URL OPERATION LIBVA_PROFILE LIBVA_ENTRYPOINT CODEC RESOLUTION GSTREAMER_ENCODER GSTREAMER_PARSER GSTREAMER_MUXER OUTPUT_CONTAINER
+set -e
+
+VIDEO_URL="$1"
+OPERATION="$2"
+LIBVA_PROFILE="$3"
+LIBVA_ENTRYPOINT="$4"
+CODEC="$5"
+RESOLUTION="$6"
+GSTREAMER_ENCODER="$7"
+GSTREAMER_PARSER="$8"
+GSTREAMER_MUXER="$9"
+OUTPUT_CONTAINER="${10}"
+
+# Removes extra traces from manual testing
+rm -f /tmp/libva.trace*
+local_filename=$(basename "$VIDEO_URL")
+if [ ! -f "/tmp/$local_filename" ]
+then
+  wget -nv "$VIDEO_URL" -P /tmp/
+fi
+export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
+export LIBVA_DRIVER_NAME=iHD
+export LIBVA_DRI3_ENABLE=1
+export LIBVA_TRACE=/tmp/libva.trace
+export GST_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/gstreamer-1.0
+gst-launch-1.0 -q filesrc location="/tmp/$local_filename" ! decodebin ! videoconvert ! $GSTREAMER_ENCODER ! $GSTREAMER_PARSER ! $GSTREAMER_MUXER ! filesink location="/tmp/output.$OUTPUT_CONTAINER"
+return_status=$?
+# check libva trace logs for HW acceleration
+hw_used=1
+if awk "/profile *= *$LIBVA_PROFILE/ { p=1; next } p && /entrypoint *= *$LIBVA_ENTRYPOINT/ { print prev \"\n\" \$0; p=0 } { prev=\$0 }" /tmp/libva.trace*
+then
+    echo "---- [PASS] using HW $OPERATION"
+    hw_used=0
+else
+    cat /tmp/libva.trace* > "/tmp/gstreamer_${CODEC}_${RESOLUTION}_${OPERATION}.trace"
+    echo "---- [FAIL] not using HW $OPERATION"
+fi
+# check gstreamer for successful exit
+if [ $return_status -ne 0 ];
+then
+    echo "---- [FAIL] gstreamer returned an error"
+else
+  echo "---- [PASS] gstreamer command completed successfully"
+  # check SSIM between input and output video
+  metric_status=1
+  if [ -f "/tmp/output.$OUTPUT_CONTAINER" ] && [ -f "/tmp/$local_filename" ]
+  then
+    gst-launch-1.0 -q \
+      filesrc location="/tmp/$local_filename" ! queue ! decodebin ! videoconvert ! video/x-raw, format=I420 ! queue ! video_compare.sink_1 \
+      filesrc location="/tmp/output.$OUTPUT_CONTAINER" ! queue ! decodebin ! videoconvert ! video/x-raw, format=I420 ! queue ! video_compare.sink_2 \
+      avvideocompare method=ssim stats-file=/tmp/ssim.log name=video_compare ! fakesink
+  fi
+  # extract minimum SSIM value
+  if [ -f "/tmp/ssim.log" ]
+  then
+    min_ssim=$(grep -oP 'All:\K[0-9.]+' /tmp/ssim.log | sort -n | head -n 1)
+    if (( $(echo "$min_ssim >= 0.9" | bc -l) )); then
+        echo "---- [PASS] Minimum SSIM ($min_ssim) is above 0.9"
+        metric_status=0
+    else
+        echo "---- [FAIL] Minimum SSIM ($min_ssim) dropped below 0.9"
+    fi
+  else
+    echo "---- [FAIL] SSIM log file not found"
+  fi
+fi
+# cleanup files
+rm -f /tmp/ssim.log
+rm -f "/tmp/$local_filename"
+rm -f "/tmp/output.$OUTPUT_CONTAINER"
+rm -f /tmp/libva.trace*
+if [[ $hw_used -ne 0 ]] || [[ $return_status -ne 0 ]] || [[ $metric_status -ne 0 ]];
+then
+  exit 1
+fi

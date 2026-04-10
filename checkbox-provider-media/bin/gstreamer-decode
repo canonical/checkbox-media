@@ -1,0 +1,46 @@
+#!/bin/bash
+# Usage: gstreamer-decode VIDEO_URL OPERATION LIBVA_PROFILE LIBVA_ENTRYPOINT
+set -e
+
+VIDEO_URL="$1"
+OPERATION="$2"
+LIBVA_PROFILE="$3"
+LIBVA_ENTRYPOINT="$4"
+
+# Removes extra traces from manual testing
+rm -f /tmp/libva.trace*
+local_filename=$(basename "$VIDEO_URL")
+if [ ! -f "/tmp/$local_filename" ]
+then
+  wget -nv "$VIDEO_URL" -P /tmp/
+fi
+export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
+export LIBVA_DRIVER_NAME=iHD
+export LIBVA_DRI3_ENABLE=1
+export LIBVA_TRACE=/tmp/libva.trace
+export GST_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/gstreamer-1.0
+/usr/bin/gst-launch-1.0 -q filesrc location="/tmp/$local_filename" ! decodebin ! fakevideosink sync=false
+return_status=$?
+# check libva trace logs for HW acceleration
+hw_used=1
+if grep "profile = $LIBVA_PROFILE,.*entrypoint = $LIBVA_ENTRYPOINT" /tmp/libva.trace*
+then
+    echo "---- [PASS] using HW $OPERATION"
+    hw_used=0
+else
+    echo "---- [FAIL] not using HW $OPERATION"
+fi
+# check gstreamer for successful exit
+if [ $return_status -ne 0 ];
+then
+    echo "---- [FAIL] gstreamer returned an error"
+else
+    echo "---- [PASS] gstreamer command completed successfully"
+fi
+# cleanup files
+rm -f "/tmp/$local_filename"
+rm -f /tmp/libva.trace*
+if [[ $hw_used -ne 0 ]] || [[ $return_status -ne 0 ]];
+then
+  exit 1
+fi
