@@ -1,0 +1,62 @@
+#!/usr/bin/env python3
+"""Check if a GPU supports a specific codec for decoding or encoding."""
+
+import argparse
+import json
+import sys
+
+
+def check_codec(data: list, codec: str, operation: str) -> bool:
+    codec_lower = codec.lower()
+    found = False
+    for result in data:
+        media_features = result.get("media_features", [])
+        for feature in media_features:
+            codecs = feature.get("codecs", {})
+            entries = codecs.get(f"{operation}s", [])
+            for entry in entries:
+                if entry.get("name", "").lower() == codec_lower:
+                    found = True
+                    print(
+                        f"Found {codec} {operation}r in feature: "
+                        f"{feature.get('name')}"
+                    )
+    return found
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Check GPU codec support from detect-media-features output."
+    )
+    parser.add_argument(
+        "codec",
+        help="Codec name to search for (e.g. h264, vp9, av1)",
+    )
+    parser.add_argument(
+        "--operation",
+        choices=["decode", "encode"],
+        default="decode",
+        help="Operation to check (default: decode)",
+    )
+    args = parser.parse_args()
+
+    try:
+        data = json.loads(sys.stdin.read())
+    except json.JSONDecodeError as e:
+        print(f"[ERROR] Failed to parse GPU features: {e}")
+        sys.exit(1)
+
+    found = check_codec(data, args.codec, args.operation)
+
+    if found:
+        print(f"[PASS] GPU supports {args.codec} hardware {args.operation}ing")
+        sys.exit(0)
+    else:
+        print(
+            f"[FAIL] {args.codec} {args.operation}r not found in any media features"
+        )
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
