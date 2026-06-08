@@ -1,0 +1,151 @@
+#!/usr/bin/env python3
+"""Encode a video via GStreamer and verify hardware acceleration and quality (SSIM)."""
+
+import argparse
+import glob
+import os
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from gstreamer_utils import TRACE_GLOB, check_hw_acceleration, download
+
+SSIM_LOG = Path("/tmp/ssim.log")
+LIB_PATH = "/usr/lib/x86_64-linux-gnu"
+GST_LAUNCH = "gst-launch-1.0"
+SSIM_THRESHOLD = 0.9
+
+
+def cleanup(local_path: Path, output_path: Path) -> None:
+    for p in (local_path, output_path, SSIM_LOG):
+        p.unlink(missing_ok=True)
+    for f in glob.glob(TRACE_GLOB):
+        Path(f).unlink(missing_ok=True)
+
+
+def gst_env() -> dict:
+    env = os.environ.copy()
+    env["LD_LIBRARY_PATH"] = LIB_PATH + ":" + env.get("LD_LIBRARY_PATH", "")
+    env["LIBVA_DRIVER_NAME"] = "iHD"
+    env["LIBVA_DRI3_ENABLE"] = "1"
+    env["LIBVA_TRACE"] = "/tmp/libva.trace"
+    env["GST_PLUGIN_PATH"] = f"{LIB_PATH}/gstreamer-1.0"
+    return env
+
+
+def save_trace(codec: str, resolution: str, operation: str) -> None:
+    dest = Path(f"/tmp/gstreamer_{codec}_{resolution}_{operation}.trace")
+    parts = []
+    for f in glob.glob(TRACE_GLOB):
+        try:
+            parts.append(Path(f).read_text(errors="replace"))
+        except OSError:
+            pass
+    dest.write_text("\n".join(parts))
+
+
+def check_ssim() -> bool:
+    if not SSIM_LOG.exists():
+        print("---- [FAIL] SSIM log file not found")
+        return False
+    text = SSIM_LOG.read_text()
+    values = [float(v) for v in re.findall(r"All:([0-9.]+)", text)]
+    if not values:
+        print("---- [FAIL] No SSIM values found in log")
+        return False
+    min_ssim = min(values)
+    if min_ssim >= SSIM_THRESHOLD:
+        print(f"---- [PASS] Minimum SSIM ({min_ssim}) is above {SSIM_THRESHOLD}")
+        return True
+    else:
+        print(f"---- [FAIL] Minimum SSIM ({min_ssim}) dropped below {SSIM_THRESHOLD}")
+        return False
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Encode a video with GStreamer and verify HW acceleration + SSIM quality."
+    )
+    parser.add_argument("video_url")
+    parser.add_argument("operation")
+    parser.add_argument("libva_profile")
+    parser.add_argument("libva_entrypoint")
+    parser.add_argument("codec")
+    parser.add_argument("resolution")
+    parser.add_argument("gstreamer_encoder")
+    parser.add_argument("gstreamer_parser")
+    parser.add_argument("gstreamer_muxer")
+    parser.add_argument("output_container")
+    args = parser.parse_args()
+
+    local_path = Path("/tmp") / Path(args.video_url).name
+    output_path = Path(f"/tmp/output.{args.output_container}")
+
+    # Remove leftover traces from previous runs
+    for f in glob.glob(TRACE_GLOB):
+        Path(f).unlink(missing_ok=True)
+
+    if not local_path.exists():
+        download(args.video_url, local_path)
+
+    env = gst_env()
+
+    gst_result = subprocess.run(
+        [
+            GST_LAUNCH, "-q",
+            "filesrc", f"location={local_path}",
+            "!", "decodebin",
+            "!", "videoconvert",
+            "!", args.gstreamer_encoder,
+            "!", args.gstreamer_parser,
+            "!", args.gstreamer_muxer,
+            "!", "filesink", f"location={output_path}",
+        ],
+        env=env,
+    )
+
+    # Check libva trace logs for HW acceleration
+    hw_ok = check_hw_acceleration(args.libva_profile, args.libva_entrypoint)
+    if hw_ok:
+        print(f"---- [PASS] using HW {args.operation}")
+    else:
+        save_trace(args.codec, args.resolution, args.operation)
+        print(f"---- [FAIL] not using HW {args.operation}")
+
+    # Check GStreamer exit status and SSIM quality
+    gst_ok = gst_result.returncode == 0
+    metric_ok = False
+    if gst_ok:
+        print("---- [PASS] gstreamer command completed successfully")
+        if output_path.exists() and local_path.exists():
+            subprocess.run(
+                [
+                    GST_LAUNCH, "-q",
+                    "filesrc", f"location={local_path}",
+                    "!", "queue", "!", "decodebin", "!", "videoconvert",
+                    "!", "video/x-raw,format=I420",
+                    "!", "queue", "!", "video_compare.sink_1",
+                    "filesrc", f"location={output_path}",
+                    "!", "queue", "!", "decodebin", "!", "videoconvert",
+                    "!", "video/x-raw,format=I420",
+                    "!", "queue", "!", "video_compare.sink_2",
+                    "avvideocompare", "method=ssim",
+                    f"stats-file={SSIM_LOG}", "name=video_compare",
+                    "!", "fakesink",
+                ],
+                env=env,
+            )
+        metric_ok = check_ssim()
+    else:
+        print("---- [FAIL] gstreamer returned an error")
+
+    cleanup(local_path, output_path)
+
+    if not hw_ok or not gst_ok or not metric_ok:
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

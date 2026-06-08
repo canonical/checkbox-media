@@ -17,43 +17,7 @@ environ:
   XDG_RUNTIME_DIR
   NORMAL_USER
 command:
-  # Removes extra traces from manual testing
-  rm -f /tmp/libva.trace*
-  local_filename=$(basename {{ video_url }})
-  if [ ! -f "/tmp/$local_filename" ]
-  then
-    wget -nv {{ video_url }} -P /tmp/
-  fi
-  export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
-  export LIBVA_DRIVER_NAME=iHD
-  export LIBVA_DRI3_ENABLE=1
-  export LIBVA_TRACE=/tmp/libva.trace
-  export GST_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/gstreamer-1.0
-  /usr/bin/gst-launch-1.0 -q filesrc location=/tmp/$local_filename ! decodebin ! fakevideosink sync=false
-  return_status=$?
-  # check libva trace logs for HW acceleration
-  hw_used=1
-  if grep "profile = {{ libva_profile }},.*entrypoint = {{ libva_entrypoint }}" /tmp/libva.trace*
-  then
-      echo "---- [PASS] using HW {{ operation }}"
-      hw_used=0
-  else
-      echo "---- [FAIL] not using HW {{ operation }}"
-  fi
-  # check gstreamer for successful exit
-  if [ $return_status -ne 0 ];
-  then
-      echo "---- [FAIL] gstreamer returned an error"
-  else
-      echo "---- [PASS] gstreamer command completed successfully"
-  fi
-  # cleanup files
-  rm -f /tmp/$local_filename
-  rm -f /tmp/libva.trace*
-  if [[ $hw_used -ne 0 ]] || [[ $return_status -ne 0 ]];
-  then
-    exit 1
-  fi
+  gstreamer-decode "{{ video_url }}" "{{ operation }}" "{{ libva_profile }}" "{{ libva_entrypoint }}"
 
 unit: template
 template-resource: mediasource
@@ -74,65 +38,4 @@ environ:
   XDG_RUNTIME_DIR
   NORMAL_USER
 command:
-  # Removes extra traces from manual testing
-  rm -f /tmp/libva.trace*
-  local_filename=$(basename {{ video_url }})
-  if [ ! -f "/tmp/$local_filename" ]
-  then
-    wget -nv {{ video_url }} -P /tmp/
-  fi
-  export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
-  export LIBVA_DRIVER_NAME=iHD
-  export LIBVA_DRI3_ENABLE=1
-  export LIBVA_TRACE=/tmp/libva.trace
-  export GST_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/gstreamer-1.0
-  gst-launch-1.0 -q filesrc location=/tmp/$local_filename ! decodebin ! videoconvert ! {{ gstreamer_encoder }} ! {{ gstreamer_parser }} ! {{ gstreamer_muxer }} ! filesink location=/tmp/output.{{ output_container }}
-  return_status=$?
-  # check libva trace logs for HW acceleration
-  hw_used=1
-  if awk '/profile *= *{{ libva_profile }}/ { p=1; next } p && /entrypoint *= *{{ libva_entrypoint }}/ { print prev "\n" $0; p=0 } { prev=$0 }' /tmp/libva.trace*
-  then
-      echo "---- [PASS] using HW {{ operation }}"
-      hw_used=0
-  else
-      cat /tmp/libva.trace* > /tmp/gstreamer_{{ codec }}_{{ resolution }}_{{ operation }}.trace
-      echo "---- [FAIL] not using HW {{ operation }}"
-  fi
-  # check gstreamer for successful exit
-  if [ $return_status -ne 0 ];
-  then
-      echo "---- [FAIL] gstreamer returned an error"
-  else
-    echo "---- [PASS] gstreamer command completed successfully"
-    # check SSIM between input and output video
-    metric_status=1
-    if [ -f "/tmp/output.{{ output_container }}" ] && [ -f "/tmp/$local_filename" ]
-    then
-      gst-launch-1.0 -q \
-        filesrc location=/tmp/$local_filename ! queue ! decodebin ! videoconvert ! video/x-raw, format=I420 ! queue ! video_compare.sink_1 \
-        filesrc location=/tmp/output.{{ output_container }} ! queue ! decodebin ! videoconvert ! video/x-raw, format=I420 ! queue ! video_compare.sink_2 \
-        avvideocompare method=ssim stats-file=/tmp/ssim.log name=video_compare ! fakesink
-    fi
-    # extract minimum SSIM value
-    if [ -f "/tmp/ssim.log" ]
-    then
-      min_ssim=$(grep -oP 'All:\K[0-9.]+' /tmp/ssim.log | sort -n | head -n 1)
-      if (( $(echo "$min_ssim >= 0.9" | bc -l) )); then
-          echo "---- [PASS] Minimum SSIM ($min_ssim) is above 0.9"
-          metric_status=0
-      else
-          echo "---- [FAIL] Minimum SSIM ($min_ssim) dropped below 0.9"
-      fi
-    else
-      echo "---- [FAIL] SSIM log file not found"
-    fi
-  fi
-  # cleanup files
-  rm /tmp/ssim.log
-  rm -f /tmp/$local_filename
-  rm /tmp/output.{{ output_container }}
-  rm -f /tmp/libva.trace*
-  if [[ $hw_used -ne 0 ]] || [[ $return_status -ne 0 ]] || [[ $metric_status -ne 0 ]];
-  then
-    exit 1
-  fi
+  gstreamer-encode "{{ video_url }}" "{{ operation }}" "{{ libva_profile }}" "{{ libva_entrypoint }}" "{{ codec }}" "{{ resolution }}" "{{ gstreamer_encoder }}" "{{ gstreamer_parser }}" "{{ gstreamer_muxer }}" "{{ output_container }}"

@@ -1,6 +1,15 @@
+plugin: shell
+id: gpu_h264_decoder_check
+_summary: Check if GPU supports H.264 hardware decoding
+requires:
+  executable.name == "detect-media-features"
+estimated_duration: 1m
+command:
+  detect-media-features --pretty 2>/dev/null | check-gpu-codec h264
+
 id: youtubevideos
 plugin: resource
-command: 
+command:
     echo 'video_url: https://www.youtube.com/watch?v=aqz-KE-bpKQ'
     echo 'id: bigbuckbunny'
     echo
