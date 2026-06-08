@@ -7,8 +7,10 @@ import os
 import re
 import subprocess
 import sys
-import urllib.request
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from gstreamer_utils import download
 
 
 TRACE_GLOB = "/tmp/libva.trace*"
@@ -20,11 +22,6 @@ def cleanup(local_path: Path) -> None:
     local_path.unlink(missing_ok=True)
     for f in glob.glob(TRACE_GLOB):
         Path(f).unlink(missing_ok=True)
-
-
-def download(url: str, dest: Path) -> None:
-    print(f"Downloading {url} ...")
-    urllib.request.urlretrieve(url, dest)
 
 
 def check_hw_acceleration(libva_profile: str, libva_entrypoint: str) -> bool:
