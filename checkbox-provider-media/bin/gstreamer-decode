@@ -4,16 +4,13 @@
 import argparse
 import glob
 import os
-import re
 import subprocess
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from gstreamer_utils import download
+from gstreamer_utils import TRACE_GLOB, check_hw_acceleration, download
 
-
-TRACE_GLOB = "/tmp/libva.trace*"
 LIB_PATH = "/usr/lib/x86_64-linux-gnu"
 GST_LAUNCH = "/usr/bin/gst-launch-1.0"
 
@@ -22,20 +19,6 @@ def cleanup(local_path: Path) -> None:
     local_path.unlink(missing_ok=True)
     for f in glob.glob(TRACE_GLOB):
         Path(f).unlink(missing_ok=True)
-
-
-def check_hw_acceleration(libva_profile: str, libva_entrypoint: str) -> bool:
-    pattern = re.compile(
-        rf"profile = {re.escape(libva_profile)},.*entrypoint = {re.escape(libva_entrypoint)}"
-    )
-    for trace_file in glob.glob(TRACE_GLOB):
-        try:
-            text = Path(trace_file).read_text(errors="replace")
-        except OSError:
-            continue
-        if pattern.search(text):
-            return True
-    return False
 
 
 def main() -> None:
